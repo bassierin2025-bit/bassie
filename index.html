@@ -1850,12 +1850,11 @@ body {
     <div class="auth-mark">L</div>
     <div class="eyebrow">Your listening practice</div>
     <h1 id="authTitle">欢迎回来</h1>
-    <p>输入用户名即可进入。每个用户名都会保存自己独立的打卡、反思和月度热力图。</p>
+    <p>输入用户名和密码即可进入。首次使用会自动创建账户，以后在手机和电脑登录同一账户即可同步。</p>
     <form class="auth-form" id="loginForm">
       <input class="auth-input" id="loginUsername" name="username" maxlength="24" autocomplete="username" placeholder="用户名：3–24 位英文、数字或下划线" required>
       <input class="auth-input" id="loginPassword" name="password" type="password" minlength="6" autocomplete="current-password" placeholder="密码：至少 6 位" required>
-      <button class="auth-button" type="submit">登录</button>
-      <button class="auth-button" type="button" id="registerButton" style="background:transparent;color:var(--accent);border:1px solid var(--accent)">注册新账户</button>
+      <button class="auth-button" type="submit">登录 / 首次自动注册</button>
     </form>
     <div class="auth-note" id="authNote"></div>
   </div>
@@ -3309,43 +3308,35 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     note.textContent = '用户名只能使用 3–24 位英文、数字或下划线。';
     return;
   }
+  if (password.length < 6) {
+    note.textContent = '密码至少需要 6 位。';
+    return;
+  }
   note.textContent = '正在登录…';
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
+  const { data: loginData, error: loginError } = await supabaseClient.auth.signInWithPassword({
     email: accountEmail(username),
     password
   });
-  if (error) {
-    note.textContent = '登录失败：用户名或密码不正确。';
+  if (!loginError) {
+    await enterAccount(username, loginData.user.id);
+    note.textContent = '';
     return;
   }
-  await enterAccount(username, data.user.id);
-  note.textContent = '';
-});
 
-document.getElementById('registerButton').addEventListener('click', async () => {
-  const username = normalizeUsername(document.getElementById('loginUsername').value);
-  const password = document.getElementById('loginPassword').value;
-  const note = document.getElementById('authNote');
-  if (!cloudConfigured) {
-    note.textContent = '云端项目尚未配置，请先填写 Supabase URL 和 Publishable key。';
-    return;
-  }
-  if (!validUsername(username) || password.length < 6) {
-    note.textContent = '用户名需为 3–24 位英文/数字/下划线，密码至少 6 位。';
-    return;
-  }
-  note.textContent = '正在创建账户…';
-  const { data, error } = await supabaseClient.auth.signUp({
+  note.textContent = '未找到可登录账户，正在首次注册…';
+  const { data: signupData, error: signupError } = await supabaseClient.auth.signUp({
     email: accountEmail(username),
     password,
     options: { data: { username } }
   });
-  if (error) {
-    note.textContent = error.message.includes('already') ? '这个用户名已经注册。' : `注册失败：${error.message}`;
+  if (signupError) {
+    note.textContent = signupError.message.toLowerCase().includes('already')
+      ? '这个用户名已经存在，请检查密码。'
+      : `注册失败：${signupError.message}`;
     return;
   }
-  if (!data.session) {
-    note.textContent = '项目仍启用了邮箱确认。请在 Supabase Auth 设置中关闭 Confirm email。';
+  if (!signupData.session || !signupData.user || signupData.user.identities?.length === 0) {
+    note.textContent = '这个用户名已经存在，请检查密码。';
     return;
   }
   const { error: claimError } = await supabaseClient.rpc('claim_diary_username', { requested_username: username });
@@ -3353,7 +3344,7 @@ document.getElementById('registerButton').addEventListener('click', async () => 
     note.textContent = `用户名创建失败：${claimError.message}`;
     return;
   }
-  await enterAccount(username, data.user.id);
+  await enterAccount(username, signupData.user.id);
   await saveState();
   note.textContent = '';
 });
