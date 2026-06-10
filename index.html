@@ -1,0 +1,4375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2C4A3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Listening Diary">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon.svg">
+<title>A Listening Diary · Month One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F5EFE3;
+  --paper-warm: #ECE3D0;
+  --paper-deep: #E5DAC2;
+  --ink: #1C1813;
+  --ink-soft: #4A4036;
+  --margin: #8B7E68;
+  --hairline: #C8BDA7;
+  --accent: #2C4A3E;
+  --accent-soft: #4A6B5D;
+  --accent-faint: rgba(44, 74, 62, 0.08);
+  --check: #B5432E;
+  --check-bg: rgba(181, 67, 46, 0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 15% 20%, rgba(200, 189, 167, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 75%, rgba(200, 189, 167, 0.12) 0%, transparent 50%);
+  color: var(--ink);
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.7;
+  padding: 40px 22px 120px;
+  min-height: 100vh;
+}
+
+.container { max-width: 680px; margin: 0 auto; }
+
+/* ───────────── Cover ───────────── */
+.cover {
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 42px;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--margin);
+  margin-bottom: 22px;
+}
+
+.cover-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: clamp(36px, 8vw, 54px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+
+.cover-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.cover-subtitle {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 440px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+/* ───────────── Month Dashboard ───────────── */
+.month-dash {
+  margin-bottom: 48px;
+  padding: 28px 0 32px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.dash-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--margin);
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.month-hero {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.hero-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 72px;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.03em;
+}
+
+.hero-of {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 28px;
+  color: var(--margin);
+  margin-left: 6px;
+}
+
+.hero-label {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+/* Week summary cards */
+.week-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.week-card {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 14px 8px 12px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-decoration: none;
+  color: var(--ink);
+  display: block;
+}
+
+.week-card:hover {
+  border-color: var(--accent);
+}
+
+.week-card.active {
+  border-color: var(--accent);
+  background: var(--accent-faint);
+}
+
+.week-card .wc-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--accent);
+  opacity: 0.12;
+  transition: height 0.5s ease;
+  height: 0;
+  pointer-events: none;
+}
+
+.wc-roman {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--accent);
+  position: relative;
+  z-index: 1;
+}
+
+.wc-title {
+  font-family: 'Fraunces', serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-top: 4px;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+}
+
+.wc-pct {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--margin);
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Charts */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.chart-box {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 14px 12px 10px;
+}
+
+.chart-title {
+  font-family: 'Fraunces', serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--margin);
+  margin-bottom: 4px;
+}
+
+.chart-headline {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.chart-headline .ch-unit {
+  font-size: 12px;
+  color: var(--margin);
+  font-style: normal;
+  margin-left: 3px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 76px;
+  display: block;
+}
+
+.chart-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--margin);
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+/* Aggregate counters */
+.dash-section { margin-bottom: 28px; }
+
+.dash-section-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dash-section-title::before {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.month-counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.month-counter {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 12px 8px 10px;
+  text-align: center;
+}
+
+.mc-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.mc-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--margin);
+  margin-top: 6px;
+  line-height: 1.3;
+}
+
+.mc-sub {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 10px;
+  color: var(--margin);
+  margin-top: 2px;
+}
+
+/* Per-track aggregate */
+.track-stat {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 14px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dotted var(--hairline);
+}
+
+.track-stat:last-child { border-bottom: none; }
+
+.track-info { min-width: 0; }
+
+.track-name {
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.track-name .track-en {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--margin);
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.track-bar-bg {
+  height: 4px;
+  background: var(--paper-deep);
+  position: relative;
+  overflow: hidden;
+}
+
+.track-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s ease;
+  width: 0;
+}
+
+.track-count {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.track-count .track-total {
+  font-style: normal;
+  color: var(--margin);
+  font-size: 12px;
+}
+
+/* Time pill */
+.time-pill {
+  text-align: center;
+  padding: 14px 0;
+  background: var(--accent-faint);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.time-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--accent);
+  margin: 0 4px;
+}
+
+/* ───────────── Week Tabs ───────────── */
+.week-tabs {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 48px;
+}
+
+.wt-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--hairline);
+  padding: 14px 4px;
+  font-family: 'Fraunces', serif;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.wt-btn:last-child { border-right: none; }
+
+.wt-roman {
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.wt-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.15em;
+  color: var(--margin);
+  text-transform: uppercase;
+}
+
+.wt-btn:hover .wt-roman { color: var(--accent); }
+
+.wt-btn.active {
+  background: var(--accent-faint);
+}
+.wt-btn.active .wt-roman { color: var(--accent); font-weight: 500; }
+.wt-btn.active .wt-label { color: var(--accent); }
+
+.wt-btn .wt-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--check);
+  margin-top: 2px;
+  display: none;
+}
+
+.wt-btn.has-progress .wt-dot { display: block; }
+.wt-btn.complete .wt-dot { background: var(--accent); }
+
+/* ───────────── Week View ───────────── */
+.week-view { display: none; }
+.week-view.active { display: block; }
+
+.week-intro {
+  margin-bottom: 40px;
+}
+
+.week-intro p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.week-intro .lead::first-letter {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  float: left;
+  font-size: 50px;
+  line-height: 0.88;
+  padding: 6px 10px 0 0;
+  color: var(--accent);
+}
+
+.week-tracks {
+  border-left: 2px solid var(--accent);
+  padding: 4px 0 4px 22px;
+  margin-top: 28px;
+  margin-bottom: 36px;
+}
+
+.week-tracks h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.week-tracks ul { list-style: none; }
+.week-tracks li {
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.week-tracks li strong {
+  color: var(--ink);
+  font-weight: 600;
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  margin-right: 4px;
+}
+
+/* Index nav within week */
+.index-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0 0 48px;
+  justify-content: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.index-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  padding: 6px 10px;
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-soft);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: all 0.18s ease;
+  border: 1px solid transparent;
+}
+
+.index-nav a:hover { color: var(--accent); border-color: var(--hairline); }
+.index-nav a.complete { color: var(--accent); font-weight: 500; }
+.index-nav a.complete::after {
+  content: '·';
+  margin-left: 4px;
+  color: var(--check);
+  font-weight: bold;
+}
+
+/* Day */
+.day { margin-bottom: 56px; scroll-margin-top: 16px; }
+
+.day-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 24px;
+}
+
+.day-number {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: 46px;
+  line-height: 0.9;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+.day-title-group { flex: 1; padding-bottom: 4px; }
+
+.day-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 21px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.day-thesis {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--margin);
+  line-height: 1.4;
+}
+
+.day-progress {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--margin);
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+
+.section { margin-bottom: 26px; }
+
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::before {
+  content: '';
+  width: 13px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 6px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.task input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--ink-soft);
+  background: transparent;
+  margin-top: 5px;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.18s;
+}
+
+.task input[type="checkbox"]:hover {
+  border-color: var(--accent);
+  background: var(--check-bg);
+}
+
+.task input[type="checkbox"]:checked {
+  border-color: var(--check);
+  background: var(--check-bg);
+}
+
+.task input[type="checkbox"]:checked::before,
+.task input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 17px;
+  height: 1.5px;
+  background: var(--check);
+  border-radius: 1px;
+}
+
+.task input[type="checkbox"]:checked::before { transform: translate(-50%, -50%) rotate(45deg); }
+.task input[type="checkbox"]:checked::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+.task label {
+  flex: 1;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 15.5px;
+  line-height: 1.55;
+  transition: color 0.2s;
+}
+
+.task input[type="checkbox"]:checked + label { color: var(--margin); }
+
+/* Low state */
+.low-state {
+  margin-top: 20px;
+  padding: 16px 20px 12px;
+  background: rgba(74, 64, 54, 0.035);
+  border-left: 2px solid var(--hairline);
+}
+
+.low-state .section-title { margin-bottom: 6px; color: var(--margin); }
+.low-state .section-title::before { background: var(--margin); }
+
+.low-state-note {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--margin);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.pick-one {
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--margin);
+  margin: 4px 0 2px 0;
+}
+
+/* Reflection */
+.reflection-label {
+  font-style: italic;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  display: block;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.reflection-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--hairline);
+  font-family: 'Source Serif 4', serif;
+  font-size: 15.5px;
+  color: var(--ink);
+  padding: 6px 0 10px;
+  margin-bottom: 22px;
+  outline: none;
+  resize: none;
+  line-height: 1.6;
+  min-height: 28px;
+}
+
+.reflection-input:focus { border-bottom-color: var(--accent); }
+
+/* Week-end counters (per-week display) */
+.week-counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.counter {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 14px 8px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.counter-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.counter-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--margin);
+  margin-top: 6px;
+  line-height: 1.2;
+}
+
+.counter-controls { display: flex; gap: 4px; margin-top: 6px; }
+
+.counter-btn {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+
+.counter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.counter-btn:active { transform: scale(0.92); }
+
+/* ───────────── Data backup ───────────── */
+.data-panel {
+  margin-top: 64px;
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+}
+
+.data-panel summary {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--margin);
+  cursor: pointer;
+  outline: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.data-panel summary::-webkit-details-marker { display: none; }
+.data-panel summary::before { content: '+'; font-size: 14px; color: var(--accent); }
+.data-panel[open] summary::before { content: '−'; }
+
+.data-panel-content {
+  margin-top: 18px;
+  font-family: 'Source Serif 4', serif;
+}
+
+.data-panel-content p {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.data-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.data-btn {
+  flex: 1;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid var(--hairline);
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+}
+
+.data-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.data-btn.danger:hover { border-color: var(--check); color: var(--check); }
+
+.data-textarea {
+  width: 100%;
+  min-height: 90px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  padding: 10px;
+  border: 1px solid var(--hairline);
+  background: var(--paper-warm);
+  color: var(--ink-soft);
+  resize: vertical;
+  outline: none;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.data-textarea:focus { border-color: var(--accent); }
+
+.data-msg {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--accent);
+  margin-top: 6px;
+  min-height: 18px;
+}
+
+.data-msg.error { color: var(--check); }
+
+/* Footer */
+.colophon {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--hairline);
+  text-align: center;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--margin);
+  line-height: 1.7;
+}
+
+.colophon-mark {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 0.5em;
+}
+
+/* Float */
+.float-progress {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-radius: 100px;
+  box-shadow: 0 6px 24px rgba(28, 24, 19, 0.18);
+  z-index: 10;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.float-progress-num {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0;
+}
+
+.float-week {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 11px;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
+/* ───────────── Analysis box ───────────── */
+.analysis-box {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 16px 18px 14px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  position: relative;
+}
+
+.analysis-box .a-line {
+  margin-bottom: 8px;
+}
+.analysis-box .a-line:last-child { margin-bottom: 0; }
+
+.analysis-box .a-numbers {
+  font-family: 'Fraunces', serif;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.analysis-box .a-suggest {
+  font-style: italic;
+  color: var(--accent);
+  border-top: 1px dotted var(--hairline);
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.analysis-box .a-suggest strong {
+  font-family: 'Fraunces', serif;
+  font-style: normal;
+  font-weight: 500;
+  margin-right: 4px;
+  letter-spacing: 0.05em;
+}
+
+.analysis-box .a-empty {
+  font-style: italic;
+  color: var(--margin);
+  font-size: 13.5px;
+}
+
+.share-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.share-btn {
+  flex: 1;
+  min-width: 110px;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid var(--hairline);
+  font-family: 'Fraunces', serif;
+  font-size: 12.5px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.share-btn:hover { border-color: var(--accent); color: var(--accent); }
+.share-btn:active { transform: scale(0.97); }
+
+.share-btn .sb-icon {
+  font-style: normal;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.share-btn.primary {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+.share-btn.primary:hover { background: var(--accent-soft); color: var(--paper); border-color: var(--accent-soft); }
+
+/* Week mini-dashboard */
+.week-mini-dash {
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding: 24px 0;
+  margin-bottom: 32px;
+}
+
+.wmd-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.wmd-stat-box {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 14px 14px 10px;
+}
+
+.wmd-stat-label {
+  font-family: 'Fraunces', serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--margin);
+  margin-bottom: 6px;
+}
+
+.wmd-stat-value {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 24px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.wmd-stat-value .wmd-of {
+  font-size: 14px;
+  color: var(--margin);
+  font-weight: 300;
+  margin-left: 3px;
+}
+
+.wmd-day-bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+  height: 30px;
+  align-items: end;
+}
+
+.wmd-day-bar {
+  background: var(--paper-deep);
+  position: relative;
+  border-radius: 1px;
+  overflow: hidden;
+  min-height: 4px;
+}
+
+.wmd-day-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--accent);
+  opacity: 0.85;
+  transition: height 0.4s ease;
+}
+
+.wmd-day-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 10px;
+  color: var(--margin);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* Day stat strip (in day header replacement) */
+.day-stat-strip {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--margin);
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.day-stat-strip .dss-mins {
+  color: var(--accent-soft);
+}
+.day-stat-strip .dss-sep {
+  opacity: 0.5;
+}
+
+/* Data panel additions */
+.data-section {
+  margin-bottom: 22px;
+}
+
+.data-section h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.data-section p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.data-section ol {
+  padding-left: 22px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.data-section ol li { margin-bottom: 4px; }
+
+/* ───────────── Print view & Modal ───────────── */
+.print-area { display: none; }
+
+#textModal { 
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 24, 19, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+#textModal.show { display: flex; }
+.modal-content {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 22px 22px 18px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.modal-hint {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--margin);
+  margin-top: -4px;
+}
+.modal-text {
+  width: 100%;
+  flex: 1;
+  min-height: 280px;
+  max-height: 50vh;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  padding: 12px;
+  border: 1px solid var(--hairline);
+  background: var(--paper-warm);
+  color: var(--ink);
+  outline: none;
+  line-height: 1.5;
+  resize: none;
+  white-space: pre-wrap;
+}
+.modal-text:focus { border-color: var(--accent); }
+
+.day-export-row {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+.day-export-btn {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--margin);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  letter-spacing: 0.04em;
+  border-bottom: 1px dotted var(--margin);
+  transition: color 0.15s, border-color 0.15s;
+}
+.day-export-btn:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Print-only on-screen + print styles */
+.print-area.show {
+  display: block;
+  background: #FAFAFA;
+  padding: 30px 24px 50px;
+  font-family: 'Source Serif 4', 'Noto Serif SC', serif;
+  color: #1C1813;
+  max-width: 720px;
+  margin: 24px auto;
+  border: 1px solid #C8BDA7;
+}
+
+.pv-cover {
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #C8BDA7;
+}
+.pv-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #8B7E68;
+  margin-bottom: 12px;
+}
+.pv-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 24px;
+  color: #1C1813;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.pv-subtitle {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: #8B7E68;
+}
+.pv-stats {
+  margin-bottom: 22px;
+  padding: 14px 16px;
+  border: 1px solid #C8BDA7;
+  background: #F5EFE3;
+}
+.pv-stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Source Serif 4', serif;
+  font-size: 12px;
+  padding: 4px 0;
+  color: #4A4036;
+}
+.pv-stats-row strong {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  color: #2C4A3E;
+  font-size: 15px;
+}
+.pv-section {
+  margin-bottom: 22px;
+  page-break-inside: avoid;
+}
+.pv-section h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #2C4A3E;
+  border-bottom: 1px solid #C8BDA7;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+.pv-task {
+  display: flex;
+  gap: 9px;
+  padding: 4px 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  align-items: flex-start;
+  break-inside: avoid;
+}
+.pv-task-mark {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #4A4036;
+  flex-shrink: 0;
+  margin-top: 4px;
+  position: relative;
+}
+.pv-task-mark.done {
+  background: rgba(181, 67, 46, 0.08);
+  border-color: #B5432E;
+}
+.pv-task-mark.done::before,
+.pv-task-mark.done::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 14px; height: 1.2px;
+  background: #B5432E;
+}
+.pv-task-mark.done::before { transform: translate(-50%, -50%) rotate(45deg); }
+.pv-task-mark.done::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.pv-task.done { color: #8B7E68; }
+.pv-task-label { flex: 1; }
+
+.pv-section-note {
+  font-style: italic;
+  color: #8B7E68;
+  font-size: 11.5px;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.pv-analysis {
+  background: rgba(44, 74, 62, 0.05);
+  border-left: 2px solid #2C4A3E;
+  padding: 12px 14px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 18px 0;
+  break-inside: avoid;
+}
+.pv-analysis .pv-numbers {
+  font-family: 'Fraunces', serif;
+  color: #1C1813;
+  font-size: 12.5px;
+  margin-bottom: 6px;
+}
+.pv-analysis .pv-insight {
+  margin-bottom: 8px;
+}
+.pv-analysis .pv-suggest {
+  font-style: italic;
+  color: #2C4A3E;
+  border-top: 1px dotted #C8BDA7;
+  padding-top: 8px;
+  margin-top: 6px;
+}
+.pv-analysis .pv-suggest strong {
+  font-family: 'Fraunces', serif;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin-right: 4px;
+}
+
+.pv-day-row {
+  display: grid;
+  grid-template-columns: 24px 1fr 80px 80px;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 11.5px;
+  border-bottom: 1px dotted #C8BDA7;
+  align-items: center;
+}
+.pv-day-row:last-child { border-bottom: none; }
+.pv-day-roman {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: #2C4A3E;
+  font-size: 14px;
+}
+.pv-day-title { font-family: 'Fraunces', serif; font-weight: 500; }
+.pv-day-bar-cell {
+  background: #ECE3D0;
+  height: 5px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1px;
+}
+.pv-day-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: #2C4A3E;
+  transform-origin: left;
+}
+.pv-day-stat {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  color: #8B7E68;
+  font-size: 10.5px;
+  text-align: right;
+}
+
+.pv-track-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 60px;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 11.5px;
+  border-bottom: 1px dotted #C8BDA7;
+  align-items: center;
+}
+.pv-track-row:last-child { border-bottom: none; }
+.pv-track-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+}
+.pv-track-name .pv-track-en {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: #8B7E68;
+  margin-left: 4px;
+  font-size: 10.5px;
+}
+.pv-track-count {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  text-align: right;
+  color: #2C4A3E;
+}
+
+.pv-reflection {
+  margin-bottom: 14px;
+  break-inside: avoid;
+}
+.pv-reflection-label {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: #8B7E68;
+  display: block;
+  margin-bottom: 4px;
+}
+.pv-reflection-text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  padding: 4px 0;
+  border-bottom: 1px dotted #C8BDA7;
+}
+
+.pv-print-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  position: sticky;
+  top: 12px;
+  background: var(--paper);
+  padding: 8px;
+  border: 1px dashed var(--hairline);
+  z-index: 5;
+}
+.pv-print-actions button {
+  flex: 1;
+  padding: 10px;
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--accent);
+  color: var(--paper);
+  border: none;
+  letter-spacing: 0.04em;
+}
+.pv-print-actions button.secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+}
+.pv-print-actions .pv-hint {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: var(--margin);
+  flex-basis: 100%;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.pv-footer {
+  margin-top: 28px;
+  padding-top: 14px;
+  border-top: 1px solid #C8BDA7;
+  font-style: italic;
+  font-size: 10px;
+  color: #8B7E68;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+@media print {
+  @page { size: A4; margin: 14mm 14mm; }
+  body { background: white !important; padding: 0 !important; }
+  body > .container { display: none !important; }
+  body > .float-progress { display: none !important; }
+  body > #textModal { display: none !important; }
+  body > .print-area.show {
+    display: block !important;
+    background: white !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .pv-print-actions { display: none !important; }
+  .pv-stats { background: #F8F4EC !important; }
+  .pv-analysis { background: #EEF1EE !important; }
+}
+
+/* ───────────── Heatmap & Profile ───────────── */
+.auth-screen {
+  position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+  padding: 24px; background: radial-gradient(circle at 20% 15%, rgba(255,255,255,.55), transparent 35%), var(--paper);
+}
+.auth-screen[hidden] { display: none; }
+.auth-card {
+  width: min(100%, 430px); padding: 38px 32px; text-align: center;
+  background: rgba(245,239,227,.96); border: 1px solid var(--hairline);
+  box-shadow: 0 24px 70px rgba(28,24,19,.13);
+}
+.auth-mark {
+  width: 58px; height: 58px; display: grid; place-items: center; margin: 0 auto 20px;
+  border-radius: 18px; background: var(--accent); color: var(--paper);
+  font-family: 'Fraunces', serif; font-size: 29px; font-style: italic;
+}
+.auth-card h1 { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 400; line-height: 1.1; }
+.auth-card p { margin: 12px auto 24px; color: var(--ink-soft); font-size: 14px; }
+.auth-form { display: grid; gap: 10px; }
+.auth-input {
+  width: 100%; padding: 14px 15px; border: 1px solid var(--hairline);
+  background: rgba(255,255,255,.35); color: var(--ink);
+  font: 500 15px 'Inter', sans-serif; outline: none;
+}
+.auth-input:focus { border-color: var(--accent); }
+.auth-button, .logout-button, .month-nav-button { cursor: pointer; font-family: 'Inter', sans-serif; }
+.auth-button { padding: 14px; border: 0; background: var(--accent); color: var(--paper); font-size: 14px; font-weight: 600; }
+.auth-note { min-height: 20px; margin-top: 10px; color: var(--check); font: 12px 'Inter', sans-serif; }
+.app-userbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 22px; padding: 10px 12px; border: 1px solid var(--hairline);
+  background: rgba(255,255,255,.22); font: 12px 'Inter', sans-serif; color: var(--margin);
+}
+.current-user strong { color: var(--accent); font-weight: 600; }
+.logout-button {
+  padding: 7px 10px; border: 1px solid var(--hairline); background: transparent;
+  color: var(--ink-soft); font-size: 11px;
+}
+.month-nav { display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; gap: 8px; margin-bottom: 12px; }
+.month-nav .heatmap-month-label { margin: 0; }
+.month-nav-button {
+  width: 34px; height: 34px; border: 1px solid var(--hairline);
+  background: transparent; color: var(--accent); font-size: 18px;
+}
+.month-nav-button:disabled { opacity: .3; cursor: default; }
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.profile-name {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  text-align: center;
+  padding: 2px 6px;
+  outline: none;
+  max-width: 260px;
+  width: auto;
+  min-width: 100px;
+}
+.profile-name:hover, .profile-name:focus {
+  border-bottom-color: var(--hairline);
+}
+.profile-name:focus {
+  border-bottom-color: var(--accent);
+}
+.profile-name::placeholder {
+  color: var(--margin);
+  font-style: italic;
+  opacity: 0.7;
+}
+.profile-edit-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--margin);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.heatmap-block {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 16px 14px;
+}
+
+.heatmap-month-label {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-bottom: 14px;
+  letter-spacing: 0.04em;
+}
+
+.heatmap-dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.heatmap-dow span {
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: var(--margin);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.hm-cell {
+  aspect-ratio: 1;
+  border: 1px solid var(--hairline);
+  background: var(--paper-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--margin);
+  position: relative;
+  transition: transform 0.15s;
+  cursor: default;
+}
+.hm-cell.l0 { background: var(--paper-warm); }
+.hm-cell.l1 { background: rgba(44, 74, 62, 0.18); color: var(--ink-soft); }
+.hm-cell.l2 { background: rgba(44, 74, 62, 0.38); color: var(--ink); }
+.hm-cell.l3 { background: rgba(44, 74, 62, 0.65); color: var(--paper); }
+.hm-cell.l4 { background: rgba(44, 74, 62, 0.88); color: var(--paper); font-weight: 500; }
+.hm-cell.today {
+  border: 1.5px solid var(--check);
+  outline: 1px solid var(--paper);
+  outline-offset: -3px;
+}
+.hm-cell.future {
+  opacity: 0.4;
+  border-style: dashed;
+}
+.hm-cell.blank { background: transparent; border: none; visibility: hidden; }
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: var(--margin);
+  text-transform: uppercase;
+}
+
+.heatmap-legend-cells {
+  display: inline-flex;
+  gap: 3px;
+  margin: 0 6px;
+}
+
+.heatmap-legend-cells span {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--hairline);
+}
+
+.heatmap-summary {
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+
+.heatmap-summary strong {
+  font-family: 'Fraunces', serif;
+  color: var(--accent);
+  font-style: italic;
+  font-weight: 500;
+  margin: 0 2px;
+}
+
+/* App-install hint */
+.install-hint {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  background: rgba(44, 74, 62, 0.04);
+  border-left: 2px solid var(--accent);
+  font-family: 'Source Serif 4', serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.install-hint summary {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  cursor: pointer;
+  outline: none;
+  list-style: none;
+}
+
+.install-hint summary::-webkit-details-marker { display: none; }
+.install-hint summary::before { content: '+ '; color: var(--accent); }
+.install-hint[open] summary::before { content: '− '; }
+
+.install-hint p { margin: 10px 0 6px; }
+.install-hint ol { padding-left: 20px; }
+.install-hint ol li { margin-bottom: 4px; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  body { padding: 32px 16px 90px; font-size: 16px; }
+  .container { padding: 0 2px; }
+  .cover-title { font-size: 32px; }
+  .hero-num { font-size: 56px; }
+  .hero-of { font-size: 22px; }
+  .day-number { font-size: 38px; }
+  .day-title { font-size: 19px; }
+  .day-header { gap: 14px; }
+  .day-progress { font-size: 12px; }
+  .week-tracks { padding-left: 18px; }
+  .float-progress { bottom: 12px; right: 12px; padding: 8px 12px; }
+  .counter, .month-counter { padding: 10px 4px; }
+  .counter-num, .mc-num { font-size: 22px; }
+  .counter-label, .mc-label { font-size: 8px; letter-spacing: 0.08em; }
+  .week-cards { gap: 5px; }
+  .week-card { padding: 10px 4px 8px; }
+  .wc-roman { font-size: 16px; }
+  .wc-title { font-size: 9.5px; }
+  .wc-pct { font-size: 9px; }
+  .charts-grid { gap: 10px; }
+  .chart-box { padding: 10px 8px 6px; }
+  .chart-headline { font-size: 16px; }
+  .chart-title { font-size: 10px; }
+  .wt-btn { padding: 10px 2px; }
+  .wt-roman { font-size: 15px; }
+  .wt-label { font-size: 7.5px; }
+  .analysis-box { padding: 14px 14px 12px; font-size: 13.5px; }
+  .share-btn { font-size: 12px; padding: 9px 10px; min-width: 90px; }
+  .share-row { gap: 5px; }
+  .wmd-stat-value { font-size: 21px; }
+  .wmd-stat-label { font-size: 9.5px; }
+  .hm-cell { font-size: 10.5px; }
+  .heatmap-block { padding: 12px 10px; }
+  .heatmap-month-label { font-size: 12.5px; }
+  .heatmap-dow span { font-size: 8.5px; }
+  .profile-name { font-size: 14px; }
+  .auth-card { padding: 32px 22px; }
+  .app-userbar { position: sticky; top: 8px; z-index: 20; backdrop-filter: blur(12px); }
+}
+</style>
+</head>
+<body>
+<section class="auth-screen" id="authScreen" aria-labelledby="authTitle">
+  <div class="auth-card">
+    <div class="auth-mark">L</div>
+    <div class="eyebrow">Your listening practice</div>
+    <h1 id="authTitle">欢迎回来</h1>
+    <p>输入用户名即可进入。每个用户名都会保存自己独立的打卡、反思和月度热力图。</p>
+    <form class="auth-form" id="loginForm">
+      <input class="auth-input" id="loginUsername" name="username" maxlength="24" autocomplete="username" placeholder="用户名：3–24 位英文、数字或下划线" required>
+      <input class="auth-input" id="loginPassword" name="password" type="password" minlength="6" autocomplete="current-password" placeholder="密码：至少 6 位" required>
+      <button class="auth-button" type="submit">登录</button>
+      <button class="auth-button" type="button" id="registerButton" style="background:transparent;color:var(--accent);border:1px solid var(--accent)">注册新账户</button>
+    </form>
+    <div class="auth-note" id="authNote"></div>
+  </div>
+</section>
+
+<div class="container">
+<div class="app-userbar">
+  <span class="current-user">当前用户：<strong id="currentUsername">—</strong></span>
+  <button class="logout-button" type="button" id="logoutButton">退出 / 切换用户</button>
+</div>
+
+<header class="cover">
+  <div class="eyebrow">A Listening Diary · Month One</div>
+  <h1 class="cover-title"><em>Twenty-Eight Days</em><br>at Baker Street</h1>
+  <p class="cover-subtitle">Four weeks of deliberate practice with <em>Sherlock</em>.<br>From a first dictation to a voice you recognise.</p>
+</header>
+
+<!-- ═════════════ MONTH DASHBOARD ═════════════ -->
+<section class="month-dash">
+  <div class="dash-eyebrow">The Month at a Glance</div>
+
+  <div class="month-hero">
+    <span class="hero-num" id="heroNum">0</span><span class="hero-of">of <span id="heroTotal">0</span></span>
+    <div class="hero-label">tasks completed this month</div>
+  </div>
+
+  <div class="dash-section">
+    <h4 class="dash-section-title">每日热力图 · this month</h4>
+    <div class="heatmap-block">
+      <div class="month-nav">
+        <button class="month-nav-button" type="button" id="heatmapPrev" aria-label="上一个月">‹</button>
+        <div class="heatmap-month-label" id="heatmapMonthLabel">Loading…</div>
+        <button class="month-nav-button" type="button" id="heatmapNext" aria-label="下一个月">›</button>
+      </div>
+      <div class="heatmap-dow">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+      <div class="heatmap-legend">
+        <span>less</span>
+        <div class="heatmap-legend-cells">
+          <span class="hm-cell l0"></span>
+          <span class="hm-cell l1"></span>
+          <span class="hm-cell l2"></span>
+          <span class="hm-cell l3"></span>
+          <span class="hm-cell l4"></span>
+        </div>
+        <span>more</span>
+      </div>
+      <div class="heatmap-summary" id="heatmapSummary"></div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <h4 class="dash-section-title">Four Weeks</h4>
+    <div class="week-cards" id="weekCards"></div>
+  </div>
+
+  <div class="dash-section">
+    <h4 class="dash-section-title">Trend</h4>
+    <div class="charts-grid">
+      <div class="chart-box">
+        <div class="chart-title">Completion</div>
+        <div class="chart-headline" id="chartCompletion">0<span class="ch-unit">%</span></div>
+        <svg class="chart-svg" id="svgCompletion" viewBox="0 0 200 76" preserveAspectRatio="none"></svg>
+        <div class="chart-axis"><span>W1</span><span>W2</span><span>W3</span><span>W4</span></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">Time invested</div>
+        <div class="chart-headline" id="chartTime">0<span class="ch-unit">min</span></div>
+        <svg class="chart-svg" id="svgTime" viewBox="0 0 200 76" preserveAspectRatio="none"></svg>
+        <div class="chart-axis"><span>W1</span><span>W2</span><span>W3</span><span>W4</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <h4 class="dash-section-title">By track · across the month</h4>
+    <div id="trackStats"></div>
+  </div>
+
+  <div class="dash-section">
+    <h4 class="dash-section-title">Month-wide count</h4>
+    <div class="month-counters">
+      <div class="month-counter">
+        <span class="mc-num" id="mcPhrases">0</span>
+        <span class="mc-label">表达<br>collected</span>
+        <span class="mc-sub" id="mcPhrasesSub">across 4 weeks</span>
+      </div>
+      <div class="month-counter">
+        <span class="mc-num" id="mcMemos">0</span>
+        <span class="mc-label">Voice<br>memos</span>
+        <span class="mc-sub" id="mcMemosSub">across 4 weeks</span>
+      </div>
+      <div class="month-counter">
+        <span class="mc-num" id="mcStumbles">0</span>
+        <span class="mc-label">Stumbles<br>caught</span>
+        <span class="mc-sub" id="mcStumblesSub">across 4 weeks</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <h4 class="dash-section-title">月度小结 · auto-generated</h4>
+    <div class="analysis-box" id="monthAnalysisBox">
+      <div class="a-empty">勾几个再回来,这里会出现具体的进度小结、最强/最弱的 track、一条针对性建议。</div>
+    </div>
+    <div class="share-row">
+      <button class="share-btn primary" onclick="exportPDF('month')"><span class="sb-icon">↓</span> 导出 PDF</button>
+      <button class="share-btn" onclick="showAsText('month')"><span class="sb-icon">⧉</span> 看文字版</button>
+    </div>
+  </div>
+
+  <div class="time-pill">
+    invested <span class="time-num" id="timeNum">0</span> minutes this month
+  </div>
+</section>
+
+<!-- ═════════════ WEEK TABS ═════════════ -->
+<nav class="week-tabs" id="weekTabs"></nav>
+
+<!-- ═════════════ WEEK VIEWS ═════════════ -->
+<main id="weekViews"></main>
+
+<!-- ═════════════ DATA PANEL ═════════════ -->
+<details class="data-panel">
+  <summary>Data, sync &amp; backup</summary>
+  <div class="data-panel-content">
+
+    <div class="data-section">
+      <h4>本机自动保存</h4>
+      <p>你的所有勾选、反思、计数会立即保存在当前浏览器里。不同用户名的数据互相隔离，退出后可随时切换回来。</p>
+
+      <details class="install-hint">
+        <summary>当 APP 用 · 加到主屏幕</summary>
+        <p><strong>Android Chrome / 电脑 Chrome、Edge</strong>：打开浏览器菜单，选择「安装应用」或「添加到主屏幕」。</p>
+        <p><strong>iPhone Safari</strong>:</p>
+        <ol>
+          <li>底部分享按钮（中间那个方框上箭头）</li>
+          <li>下滑找「加到主屏幕」/「Add to Home Screen」</li>
+          <li>起个名字（比如 "Diary"）, 完成</li>
+        </ol>
+        <p>之后主屏幕会多一个图标，点开就是独立窗口，并支持已缓存页面的离线打开。</p>
+        <p style="margin-bottom:0;color:var(--margin);font-style:italic">目前用户名与记录保存在本机浏览器。手机和电脑自动同步需要再接入云端账户与数据库。</p>
+      </details>
+    </div>
+
+    <div class="data-section">
+      <h4>JSON 备份（保险）</h4>
+      <p>点「显示 JSON」会把你的全部数据导成一段文字。可以复制到任何地方保存——清浏览器或者换设备时,粘回来再点「导入」就能恢复。</p>
+    </div>
+
+    <div class="data-section">
+      <h4>导出 / 导入 / 重置</h4>
+      <div class="share-row">
+        <button class="share-btn primary" onclick="exportPDF('month')"><span class="sb-icon">↓</span> 导出月度 PDF</button>
+        <button class="share-btn" onclick="exportData()"><span class="sb-icon">⬇</span> 显示 JSON</button>
+        <button class="share-btn" onclick="copyData()"><span class="sb-icon">⧉</span> 复制 JSON</button>
+        <button class="share-btn" onclick="importPrompt()"><span class="sb-icon">⬆</span> 导入</button>
+        <button class="share-btn" onclick="resetMonth()" style="border-color:rgba(181,67,46,0.3);color:var(--check);"><span class="sb-icon">×</span> 清空</button>
+      </div>
+      <textarea class="data-textarea" id="dataArea" placeholder="点「显示 JSON」会把当前数据填到这里;或者把之前备份的文字粘贴到这里再点「导入」。"></textarea>
+      <div class="data-msg" id="dataMsg"></div>
+    </div>
+
+  </div>
+</details>
+
+<footer class="colophon">
+  <div class="colophon-mark">⁂</div>
+  <p>One month.<br>Then look back, and write the next one.</p>
+</footer>
+
+</div>
+
+<!-- Print view container -->
+<div id="printArea" class="print-area"></div>
+
+<!-- Text modal -->
+<div id="textModal" onclick="if(event.target.id==='textModal')closeTextModal()">
+  <div class="modal-content">
+    <div class="modal-title" id="modalTitle">报告文字</div>
+    <div class="modal-hint">长按选中、或点「复制全部」按钮</div>
+    <textarea class="modal-text" id="modalText" readonly></textarea>
+    <div class="share-row">
+      <button class="share-btn primary" onclick="copyModalText()"><span class="sb-icon">⧉</span> 复制全部</button>
+      <button class="share-btn" onclick="closeTextModal()">关闭</button>
+    </div>
+    <div class="data-msg" id="modalMsg"></div>
+  </div>
+</div>
+
+<a href="#" class="float-progress" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+  <span class="float-progress-num" id="floatNum">0</span> <span>/&nbsp;<span id="floatTotal">0</span></span>
+  <span class="float-week" id="floatWeek">W1</span>
+</a>
+
+<script src="./supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ═════════════ DATA ═════════════
+const MONTH_DATA = {
+  weeks: [
+    {
+      num: 1,
+      title: "First Light",
+      thesis: "建立协议，啃下第一段对白。",
+      lead: "第一周是用来收集数据的，不是用来完美执行的。每天露面、做最低版本也算。要避免的不是没做满，而是整天跳过。",
+      tracks: [
+        { name: "精读 · Deep work.", desc: "只在图书馆。Sherlock 一段对白，跑完整套协议。" },
+        { name: "精听 · Re-listen.", desc: "昨天那段在耳朵里，零碎时间都可以。" },
+        { name: "输出 · Stumble log.", desc: "工作中只捕捉，事后处理。第 V 天启动。" },
+        { name: "泡 · Soak.", desc: "这周不上。留到第二周。" }
+      ],
+      days: [
+        {
+          num: 1, title: "First Light", thesis: "把材料定下来，做第一次听写。",
+          sections: [
+            { title: "Setup", tasks: [
+              { text: "挑出 S1E1 中你最想啃的 5 段对白,记下时间戳（每段 30–40 秒）", track: "deep", mins: 5 },
+              { text: "手机备忘录建一条「Sherlock 表达本」", track: "deep", mins: 2 },
+              { text: "从 5 段里选定本周 Clip 1", track: "deep", mins: 3 }
+            ]},
+            { title: "Clip 1 · 听写协议", tasks: [
+              { text: "裸听一遍,标记耳朵「糊掉」的位置", track: "deep", mins: 3 },
+              { text: "听写：一句一句,每句最多重播 5 次,听不出就空着", track: "deep", mins: 20 },
+              { text: "对脚本,把错误分类（不认识 / 没听出来 / 连读 / 速度）", track: "deep", mins: 6 },
+              { text: "定点重听刚才错的位置,听到为止", track: "deep", mins: 6 },
+              { text: "在表达本写下今天最想用的一句话", track: "deep", mins: 2 }
+            ]}
+          ],
+          lowState: { note: "状态不好的日子,做完这两条就算完成。", tasks: [
+            { text: "把 Clip 1 完整听一遍", track: "minimum", mins: 3 },
+            { text: "在表达本写下一句话", track: "minimum", mins: 2 }
+          ]}
+        },
+        {
+          num: 2, title: "The Script", thesis: "今天处理的是语言,不是声音。",
+          sections: [
+            { title: "Clip 1 · 精读", tasks: [
+              { text: "打开 Clip 1 脚本,逐句读一遍", track: "deep", mins: 5 },
+              { text: "三色标记：🟡 不熟搭配 / 🔵 register 信号 / 🔴 用不出的句式", track: "deep", mins: 10 },
+              { text: "把标记的表达抄进「Sherlock 表达本」", track: "deep", mins: 6 },
+              { text: "每个表达用自己的生活造一句话（写下来）", track: "deep", mins: 10 }
+            ]},
+            { title: "转化练习 · 挑 1 个做", pick: true, tasks: [
+              { text: "替换造句：选 2 个搭配,用自己生活各造 3 句,说出来录音", track: "output", mins: 8 },
+              { text: "角色替换：假装你是 Watson,对 Sherlock 那段话即兴回应（录音）", track: "output", mins: 8 },
+              { text: "场景迁移：选 1 个表达,想 1 个 Woolworths 真实场景,演练", track: "output", mins: 6 }
+            ]},
+            { title: "收尾", tasks: [
+              { text: "选出明天上班想刻意用一次的那一句", track: "output", mins: 2 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "把 Clip 1 脚本读一遍,标 3 个表达", track: "minimum", mins: 5 },
+            { text: "录一条 30 秒 voice memo,用其中一个表达造句", track: "minimum", mins: 3 }
+          ]}
+        },
+        {
+          num: 3, title: "Mouth Work", thesis: "语言从眼睛走到嘴里的那一天。",
+          sections: [
+            { title: "Clip 1 · Shadowing 四步阶梯", tasks: [
+              { text: "分块复述：每句拆 2–3 个 chunk,每 chunk 跟读 3 遍", track: "deep", mins: 15 },
+              { text: "整句复述：每句整体跟读 3 遍,按原速", track: "deep", mins: 8 },
+              { text: "带稿 shadowing：滞后 1 秒,跟读全段", track: "deep", mins: 5 },
+              { text: "脱稿 shadowing：收起脚本,再来一遍", track: "deep", mins: 5 }
+            ]},
+            { title: "检验", tasks: [
+              { text: "录一段你脱稿 shadowing 的版本", track: "deep", mins: 3 },
+              { text: "对比原音,找一个你下次想修的点（重音 / 连读 / 降调）", track: "deep", mins: 4 }
+            ]},
+            { title: "收尾", tasks: [
+              { text: "那句话今天在 Woolworths 用上了吗？（用了 / 没机会 / 忘了）", track: "output", mins: 1 }
+            ]}
+          ],
+          lowState: { tasks: [ { text: "Clip 1 听一遍,跟一遍", track: "minimum", mins: 5 } ]}
+        },
+        {
+          num: 4, title: "A New Scene", thesis: "新材料,但昨天那段还留在耳朵里。",
+          sections: [
+            { title: "线 2 启动 · 复听 Clip 1", tasks: [
+              { text: "通勤路上 / 走路时把 Clip 1 的音频重听 2 遍", track: "relisten", mins: 6 },
+              { text: "注意一件事：今天比昨天顺多少？", track: "relisten", mins: 2 }
+            ]},
+            { title: "Clip 2 · 听写协议", tasks: [
+              { text: "裸听一遍,标记耳朵糊掉的位置", track: "deep", mins: 3 },
+              { text: "听写：每句最多重播 5 次", track: "deep", mins: 20 },
+              { text: "对脚本,把错误分类", track: "deep", mins: 6 },
+              { text: "定点重听错的段落", track: "deep", mins: 6 },
+              { text: "在表达本写下今天想用的一句话", track: "deep", mins: 2 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "路上把 Clip 1 听一遍", track: "minimum", mins: 4 },
+            { text: "Clip 2 听写到一半放弃也算（步骤 1+2 半截）", track: "minimum", mins: 10 }
+          ]}
+        },
+        {
+          num: 5, title: "Live Capture", thesis: "从今天开始,工作中的卡壳要被你看见。",
+          sections: [
+            { title: "Clip 2 · 精读", tasks: [
+              { text: "脚本逐句读,三色标记", track: "deep", mins: 5 },
+              { text: "抄进表达本", track: "deep", mins: 6 },
+              { text: "每个表达用自己生活造句", track: "deep", mins: 10 },
+              { text: "挑 1 个转化练习做（替换 / 角色 / 场景迁移）", track: "output", mins: 8 }
+            ]},
+            { title: "线 3 启动 · Stumble Log（只捕捉）", tasks: [
+              { text: "备忘录建一条「Stumble 今日」", track: "output", mins: 1 },
+              { text: "上班时如果有卡壳,打一行就行（15 秒）", track: "output", mins: 2 },
+              { text: "今天结束时把 stumble 留在那里,先不处理", track: "output", mins: 1 }
+            ]}
+          ],
+          lowState: { note: "stumble 一条都没有也算,不要硬凑。", tasks: [
+            { text: "Clip 2 脚本读一遍", track: "minimum", mins: 6 },
+            { text: "Stumble log 至少开起来", track: "minimum", mins: 1 }
+          ]}
+        },
+        {
+          num: 6, title: "Two Voices", thesis: "嘴上练 Sherlock,纸上理 stumble。",
+          sections: [
+            { title: "Clip 2 · Shadowing 四步", tasks: [
+              { text: "分块复述", track: "deep", mins: 15 },
+              { text: "整句复述", track: "deep", mins: 8 },
+              { text: "带稿 shadowing", track: "deep", mins: 5 },
+              { text: "脱稿 shadowing + 录音对照", track: "deep", mins: 6 }
+            ]},
+            { title: "Stumble 处理", note: "如果昨天捕捉到了 stumble,今天选 1–2 条处理。0 条就跳过这一节。", tasks: [
+              { text: "挑 1–2 条 stumble", track: "output", mins: 2 },
+              { text: "查母语者会怎么说,写在原 stumble 旁边", track: "output", mins: 5 },
+              { text: "朗读 3 遍", track: "output", mins: 2 },
+              { text: "录一条 30 秒 voice memo", track: "output", mins: 3 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 2 跟读一遍", track: "minimum", mins: 5 },
+            { text: "Stumble 不处理也行", track: "minimum", mins: 0 }
+          ]}
+        },
+        {
+          num: 7, title: "Looking Back", thesis: "这一周留下什么,由你来决定。",
+          sections: [
+            { title: "回顾", tasks: [
+              { text: "把 Clip 1、Clip 2 都从头听一遍（纯音频,不看脚本）", track: "review", mins: 10 },
+              { text: "翻一遍表达本一周写下来的所有表达", track: "review", mins: 8 },
+              { text: "圈出最想真正记住的 5 个", track: "review", mins: 5 }
+            ]},
+            { title: "整合", tasks: [
+              { text: "5 个表达,每个用自己的生活造 1 句,说出来录音", track: "review", mins: 10 },
+              { text: "听这一周所有 voice memo,挑 3 条还想再练的", track: "review", mins: 8 }
+            ]}
+          ],
+          reflections: [
+            { id: "r-w1-1", label: "这周我看到的最具体的进步是——" },
+            { id: "r-w1-2", label: "哪一天的执行让我最有成就感,为什么？" },
+            { id: "r-w1-3", label: "下周想调整一件事——" }
+          ]
+        }
+      ]
+    },
+    {
+      num: 2,
+      title: "Adding Voice",
+      thesis: "加进 Soak 线,继续往前两段。",
+      lead: "第二周开始扩。Soak 线本周上线——一个英式 podcast 在背景里。两段新对白进入协议。Stumble log 从「只捕捉」变成「捕捉 + 处理」。",
+      tracks: [
+        { name: "精读 · Deep work.", desc: "Clip 3 + Clip 4,跑完整套协议。" },
+        { name: "精听 · Re-listen.", desc: "上周的 Clip 1、2 继续在耳朵里。" },
+        { name: "输出 · Stumble log.", desc: "本周开始处理,不只是捕捉。" },
+        { name: "泡 · Soak.", desc: "本周启动。挑一个英式 podcast,每天背景听 30 分钟。" }
+      ],
+      days: [
+        {
+          num: 1, title: "New Pool", thesis: "Soak 线上线,Clip 3 听写。",
+          sections: [
+            { title: "Setup · 选 Soak 材料", tasks: [
+              { text: "选定本月的 Soak podcast（建议 In Our Time / The Rest is History / Desert Island Discs 其中一个）", track: "deep", mins: 5 },
+              { text: "订阅,下载一集到手机", track: "deep", mins: 3 }
+            ]},
+            { title: "Clip 3 · 听写协议", tasks: [
+              { text: "裸听一遍,标记耳朵糊掉的位置", track: "deep", mins: 3 },
+              { text: "听写,每句最多重播 5 次", track: "deep", mins: 20 },
+              { text: "对脚本,错误分类", track: "deep", mins: 6 },
+              { text: "定点重听", track: "deep", mins: 6 },
+              { text: "在表达本写下今天想用的一句话", track: "deep", mins: 2 }
+            ]},
+            { title: "Soak · 30 分钟背景", tasks: [
+              { text: "做饭 / 收拾 / 走路时,播 Soak podcast 至少 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 3 听一遍", track: "minimum", mins: 3 },
+            { text: "Soak 10 分钟", track: "minimum", mins: 10 }
+          ]}
+        },
+        {
+          num: 2, title: "Script III", thesis: "Clip 3 精读 + 一个转化。",
+          sections: [
+            { title: "Clip 3 · 精读", tasks: [
+              { text: "脚本逐句读,三色标记", track: "deep", mins: 8 },
+              { text: "抄进表达本", track: "deep", mins: 6 },
+              { text: "每个表达造一句", track: "deep", mins: 10 }
+            ]},
+            { title: "转化练习 · 挑 1 个", pick: true, tasks: [
+              { text: "替换造句", track: "output", mins: 8 },
+              { text: "角色替换", track: "output", mins: 8 },
+              { text: "场景迁移", track: "output", mins: 6 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak podcast 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 3 脚本读一遍", track: "minimum", mins: 5 },
+            { text: "Soak 一会", track: "minimum", mins: 10 }
+          ]}
+        },
+        {
+          num: 3, title: "Shadow III", thesis: "Clip 3 进嘴。",
+          sections: [
+            { title: "Clip 3 · Shadowing 四步", tasks: [
+              { text: "分块复述", track: "deep", mins: 15 },
+              { text: "整句复述", track: "deep", mins: 8 },
+              { text: "带稿 shadowing", track: "deep", mins: 5 },
+              { text: "脱稿 shadowing + 录音", track: "deep", mins: 6 }
+            ]},
+            { title: "检验 + 收尾", tasks: [
+              { text: "对比原音,定一个下次要修的点", track: "deep", mins: 4 },
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [ { text: "Clip 3 跟读一遍", track: "minimum", mins: 5 } ]}
+        },
+        {
+          num: 4, title: "Clip Four", thesis: "Clip 4 启动,Clip 3 在耳朵里。",
+          sections: [
+            { title: "复听 + 听写", tasks: [
+              { text: "路上把 Clip 3 重听 2 遍", track: "relisten", mins: 6 },
+              { text: "Clip 4 裸听", track: "deep", mins: 3 },
+              { text: "Clip 4 听写", track: "deep", mins: 20 },
+              { text: "对脚本 + 分类", track: "deep", mins: 6 },
+              { text: "定点重听", track: "deep", mins: 6 },
+              { text: "表达本记一句", track: "deep", mins: 2 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 3 复听一遍", track: "minimum", mins: 3 },
+            { text: "Clip 4 半截听写也算", track: "minimum", mins: 10 }
+          ]}
+        },
+        {
+          num: 5, title: "Process", thesis: "Clip 4 精读 + 第一次处理 stumble。",
+          sections: [
+            { title: "Clip 4 · 精读", tasks: [
+              { text: "脚本逐句读,三色标记", track: "deep", mins: 8 },
+              { text: "抄进表达本 + 造句", track: "deep", mins: 12 },
+              { text: "挑 1 个转化练习", track: "output", mins: 8 }
+            ]},
+            { title: "Stumble 处理（升级）", note: "本周开始不只是捕捉,而是处理。", tasks: [
+              { text: "上班继续捕捉 1–2 条 stumble", track: "output", mins: 2 },
+              { text: "查母语者说法,写在 stumble 旁边", track: "output", mins: 5 },
+              { text: "朗读 3 遍 + 录 voice memo", track: "output", mins: 5 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 4 脚本读一遍", track: "minimum", mins: 6 },
+            { text: "处理 1 条 stumble", track: "minimum", mins: 5 }
+          ]}
+        },
+        {
+          num: 6, title: "Speak It", thesis: "Clip 4 shadow + 主动用一句。",
+          sections: [
+            { title: "Clip 4 · Shadowing", tasks: [
+              { text: "分块复述", track: "deep", mins: 15 },
+              { text: "整句复述", track: "deep", mins: 8 },
+              { text: "带稿 shadowing", track: "deep", mins: 5 },
+              { text: "脱稿 + 录音对比", track: "deep", mins: 6 }
+            ]},
+            { title: "主动使用 · 关键的一步", note: "本周新动作：从表达本挑 1 句话,今天上班必须用一次。", tasks: [
+              { text: "出门前确定今天要用的那 1 句", track: "output", mins: 2 },
+              { text: "上班时找机会用上（哪怕硬塞）", track: "output", mins: 1 },
+              { text: "下班后记一笔：用了 / 没机会 / 忘了", track: "output", mins: 1 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 4 跟读一遍", track: "minimum", mins: 5 },
+            { text: "用上 1 句或者 Soak 一会", track: "minimum", mins: 10 }
+          ]}
+        },
+        {
+          num: 7, title: "Two Weeks In", thesis: "两周的数据,第一次回看。",
+          sections: [
+            { title: "回顾", tasks: [
+              { text: "把 Clip 3、4 都从头听一遍", track: "review", mins: 10 },
+              { text: "翻 Week I 和 Week II 的表达本", track: "review", mins: 10 },
+              { text: "对比：哪些表达从「写下来」变成了「说出来」？", track: "review", mins: 8 }
+            ]},
+            { title: "整合", tasks: [
+              { text: "挑 5 个还想留下的表达,各造 1 句录音", track: "review", mins: 10 },
+              { text: "看一眼月度仪表盘的 trend 图——你最稳定的是哪条线?", track: "review", mins: 5 }
+            ]}
+          ],
+          reflections: [
+            { id: "r-w2-1", label: "两周下来最具体的变化是——" },
+            { id: "r-w2-2", label: "哪条线我用得最多/最少,这告诉我什么？" },
+            { id: "r-w2-3", label: "Week III 想加一件事,或者减一件事——" }
+          ]
+        }
+      ]
+    },
+    {
+      num: 3,
+      title: "Bigger Bites",
+      thesis: "更长的片段,更主动的使用。",
+      lead: "第三周片段加长（45–60 秒）。重点不在「学多少」,在「让已学的真正活过来」。从表达本里翻出还没用过的,逼着自己上班用上。",
+      tracks: [
+        { name: "精读 · Deep work.", desc: "Clip 5 + Clip 6,长一点,难一点。" },
+        { name: "精听 · Re-listen.", desc: "把最早的 Clip 1 再听一遍,体感今昔对比。" },
+        { name: "输出 · Active use.", desc: "本周主线：从表达本主动调用,不靠运气。" },
+        { name: "泡 · Soak.", desc: "继续。可以换一档 podcast 试试。" }
+      ],
+      days: [
+        {
+          num: 1, title: "Longer Clip", thesis: "Clip 5,45–60 秒。预计需要多花时间。",
+          sections: [
+            { title: "Setup", tasks: [
+              { text: "从池子里选 Clip 5,这次挑长一点的（45–60 秒）", track: "deep", mins: 5 }
+            ]},
+            { title: "Clip 5 · 听写协议", tasks: [
+              { text: "裸听一遍", track: "deep", mins: 4 },
+              { text: "听写（更长所以更慢,不要急）", track: "deep", mins: 25 },
+              { text: "对脚本 + 分类", track: "deep", mins: 8 },
+              { text: "定点重听", track: "deep", mins: 8 },
+              { text: "表达本记一句", track: "deep", mins: 2 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [ { text: "Clip 5 听一遍", track: "minimum", mins: 4 } ]}
+        },
+        {
+          num: 2, title: "Force-Use", thesis: "从 Week I 的表达本翻出一句没用过的,今天必须用。",
+          sections: [
+            { title: "Clip 5 · 精读", tasks: [
+              { text: "脚本逐句读 + 三色标记", track: "deep", mins: 10 },
+              { text: "抄进表达本 + 造句", track: "deep", mins: 12 },
+              { text: "挑 1 个转化练习", track: "output", mins: 8 }
+            ]},
+            { title: "Force-Use Drill · 本周关键动作", note: "翻 Week I 的表达本,挑一句你还没用过的。", tasks: [
+              { text: "选定那一句", track: "output", mins: 2 },
+              { text: "上班时硬找机会用上（哪怕场景不完美）", track: "output", mins: 1 },
+              { text: "下班记一笔结果", track: "output", mins: 1 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 5 脚本读一遍", track: "minimum", mins: 8 },
+            { text: "force-use 那一句话还是要试", track: "minimum", mins: 2 }
+          ]}
+        },
+        {
+          num: 3, title: "Shadow V", thesis: "更长的 shadow,真正考验肌肉记忆。",
+          sections: [
+            { title: "Clip 5 · Shadowing", tasks: [
+              { text: "分块复述（长 clip 更要拆细）", track: "deep", mins: 18 },
+              { text: "整句复述", track: "deep", mins: 10 },
+              { text: "带稿 shadowing", track: "deep", mins: 6 },
+              { text: "脱稿 shadowing + 录音", track: "deep", mins: 8 }
+            ]},
+            { title: "对比", tasks: [
+              { text: "听原音,选一处你下次想修的", track: "deep", mins: 5 },
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [ { text: "Clip 5 跟读一遍（不求全）", track: "minimum", mins: 6 } ]}
+        },
+        {
+          num: 4, title: "Then and Now", thesis: "Clip 6 + 重听最早的 Clip 1,看今昔。",
+          sections: [
+            { title: "今昔对比", tasks: [
+              { text: "把 Week I 的 Clip 1 完整听一遍", track: "relisten", mins: 5 },
+              { text: "记一笔：现在跟三周前的感受差在哪", track: "relisten", mins: 3 }
+            ]},
+            { title: "Clip 6 · 听写", tasks: [
+              { text: "裸听", track: "deep", mins: 4 },
+              { text: "听写", track: "deep", mins: 22 },
+              { text: "对脚本 + 分类", track: "deep", mins: 7 },
+              { text: "定点重听 + 记一句", track: "deep", mins: 8 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 1 听一遍,体感对比就行", track: "minimum", mins: 5 }
+          ]}
+        },
+        {
+          num: 5, title: "Phrase Audit", thesis: "翻完整张表达本,分类。",
+          sections: [
+            { title: "Clip 6 · 精读", tasks: [
+              { text: "脚本读 + 三色标记", track: "deep", mins: 10 },
+              { text: "抄进表达本 + 造句", track: "deep", mins: 12 }
+            ]},
+            { title: "Phrase Audit · 本周特别动作", note: "翻 Week I + II + III 的所有表达,标记状态。", tasks: [
+              { text: "AUTO（不用想就能说）打 ✓", track: "review", mins: 6 },
+              { text: "FRESH（还要想但能用）打 ○", track: "review", mins: 4 },
+              { text: "STALE（已经忘了）打 ×", track: "review", mins: 4 },
+              { text: "圈出 3 个 STALE 想重新激活的", track: "review", mins: 3 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 6 脚本读一遍", track: "minimum", mins: 6 },
+            { text: "只做 phrase audit", track: "minimum", mins: 10 }
+          ]}
+        },
+        {
+          num: 6, title: "Use Two", thesis: "Clip 6 shadow + 今天上班用 2 句。",
+          sections: [
+            { title: "Clip 6 · Shadowing", tasks: [
+              { text: "分块复述", track: "deep", mins: 15 },
+              { text: "整句复述", track: "deep", mins: 8 },
+              { text: "带稿 shadowing", track: "deep", mins: 5 },
+              { text: "脱稿 + 录音", track: "deep", mins: 6 }
+            ]},
+            { title: "Double Use", note: "今天硬性目标：用上 2 句。一句新的 + 一句之前 STALE 想救的。", tasks: [
+              { text: "出门前定好这 2 句", track: "output", mins: 3 },
+              { text: "上班分别用上", track: "output", mins: 2 },
+              { text: "下班记一笔（用了几句、感受）", track: "output", mins: 2 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "Clip 6 跟读一遍", track: "minimum", mins: 5 },
+            { text: "用上 1 句也算（不强求 2 句）", track: "minimum", mins: 2 }
+          ]}
+        },
+        {
+          num: 7, title: "Three-Week Pattern", thesis: "三周的数据,看模式。",
+          sections: [
+            { title: "数据回看", tasks: [
+              { text: "看月度仪表盘,记下 trend 图的形状", track: "review", mins: 5 },
+              { text: "哪条 track 最稳定？哪条最弱？", track: "review", mins: 5 },
+              { text: "哪天最容易塌？什么时间段？", track: "review", mins: 5 }
+            ]},
+            { title: "材料回看", tasks: [
+              { text: "听 Week III 的 Clip 5、6 各一遍", track: "review", mins: 10 },
+              { text: "看 Force-Use 的成功率：6 次里用上几次？", track: "review", mins: 5 }
+            ]}
+          ],
+          reflections: [
+            { id: "r-w3-1", label: "三周下来,我能确定的进步是——" },
+            { id: "r-w3-2", label: "我执行最弱的那一环是——,原因可能是——" },
+            { id: "r-w3-3", label: "Week IV 我打算用来做——" }
+          ]
+        }
+      ]
+    },
+    {
+      num: 4,
+      title: "Synthesis",
+      thesis: "少加新东西,把一个月的合一。",
+      lead: "第四周不再加新的。回头审视、复述、合成。这周如果做对了,你会清楚下个月该长什么样。",
+      tracks: [
+        { name: "精读 · Revisit.", desc: "不开新 clip,深做一段最值得回访的。" },
+        { name: "精听 · Replay.", desc: "全月最爱片段循环听。" },
+        { name: "输出 · Monologue.", desc: "把累积的表达组装成你自己的一段话。" },
+        { name: "泡 · Soak.", desc: "继续,但本周可以选哲学/心理学题材的那期。" }
+      ],
+      days: [
+        {
+          num: 1, title: "Favourite Revival", thesis: "选最爱的 clip,重做一遍全协议。",
+          sections: [
+            { title: "选片", tasks: [
+              { text: "从 Clip 1–6 里挑你最喜欢的那段", track: "deep", mins: 3 }
+            ]},
+            { title: "完整重做", tasks: [
+              { text: "裸听一遍,留意现在听这段的感受", track: "deep", mins: 3 },
+              { text: "脱稿 shadowing 直接来（不靠脚本）", track: "deep", mins: 10 },
+              { text: "录音,跟原音对比", track: "deep", mins: 5 },
+              { text: "和一个月前的录音对比（如果你有）", track: "deep", mins: 5 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [ { text: "把那段听一遍,跟一遍", track: "minimum", mins: 5 } ]}
+        },
+        {
+          num: 2, title: "Phrase Audit II", thesis: "整张表达本,二次审计。",
+          sections: [
+            { title: "全月表达本回顾", tasks: [
+              { text: "翻完 Week I+II+III+IV 至今的所有表达", track: "review", mins: 12 },
+              { text: "AUTO / FRESH / STALE 重新分一次类", track: "review", mins: 10 },
+              { text: "对比 Week III 那次的分类——多少个升级了？多少个掉了？", track: "review", mins: 6 },
+              { text: "记一笔：哪一类 stale 你接受了（不再想救）？", track: "review", mins: 3 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [ { text: "翻表达本,圈 5 个还想留下的", track: "minimum", mins: 8 } ]}
+        },
+        {
+          num: 3, title: "Monologue Day", thesis: "用你收集的表达,组一段你自己的话。",
+          sections: [
+            { title: "草拟", tasks: [
+              { text: "想一个真实的话题（今天上班的事 / 一个想法 / 一个观察）", track: "review", mins: 3 },
+              { text: "写一段 1 分钟左右的英文（用上至少 5 个你的 AUTO 表达）", track: "review", mins: 15 },
+              { text: "再用上 2 个你想激活的 STALE", track: "review", mins: 5 }
+            ]},
+            { title: "录制", tasks: [
+              { text: "朗读 3 遍,调整语序和重音", track: "output", mins: 8 },
+              { text: "脱稿录一段 1 分钟 monologue", track: "output", mins: 5 },
+              { text: "回听一遍,跟 Sherlock 的 register 对比一下", track: "output", mins: 5 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "写一段 30 秒的英文,用上 3 个表达", track: "minimum", mins: 8 },
+            { text: "录一遍", track: "minimum", mins: 2 }
+          ]}
+        },
+        {
+          num: 4, title: "Listen Day", thesis: "今天什么都不练,只听。",
+          sections: [
+            { title: "纯享受", note: "今天破例,什么都不要做。只是听。", tasks: [
+              { text: "把这一个月最喜欢的 2–3 段 clip 循环听 30 分钟", track: "relisten", mins: 30 },
+              { text: "注意：现在听这些,感受是什么？", track: "relisten", mins: 3 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 多听一会（45 分钟）", track: "soak", mins: 45 }
+            ]}
+          ],
+          lowState: { tasks: [ { text: "随便听 10 分钟", track: "minimum", mins: 10 } ]}
+        },
+        {
+          num: 5, title: "Stumble Retro", thesis: "整月 stumble log,找模式。",
+          sections: [
+            { title: "看模式", tasks: [
+              { text: "翻完整月的 stumble log", track: "review", mins: 10 },
+              { text: "归类：你的 stumble 主要发生在哪些场景？（请假/推荐/解释/打招呼/...）", track: "review", mins: 8 },
+              { text: "找出 Top 3 场景", track: "review", mins: 3 }
+            ]},
+            { title: "针对性备料", tasks: [
+              { text: "为每个 Top 场景预备 1 句你想自动化的话", track: "output", mins: 8 },
+              { text: "把这 3 句各朗读 5 遍 + 录 voice memo", track: "output", mins: 6 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "翻 stumble log,圈最常出现的 1 个场景", track: "minimum", mins: 5 }
+          ]}
+        },
+        {
+          num: 6, title: "Mock Scenes", thesis: "演练 5 个真实工作场景。",
+          sections: [
+            { title: "选场景", tasks: [
+              { text: "列 5 个 Woolworths 常见对话场景（盘点、客人问路、跟同事打趣、请假、推荐...）", track: "review", mins: 5 }
+            ]},
+            { title: "排练", tasks: [
+              { text: "每个场景演练 1 分钟,出声说,不查词", track: "output", mins: 15 },
+              { text: "录一遍,听回放", track: "output", mins: 8 },
+              { text: "找出还卡的场景,标记下来", track: "output", mins: 3 }
+            ]},
+            { title: "Soak", tasks: [
+              { text: "Soak 30 分钟", track: "soak", mins: 30 }
+            ]}
+          ],
+          lowState: { tasks: [
+            { text: "选 2 个场景演练一下就行", track: "minimum", mins: 8 }
+          ]}
+        },
+        {
+          num: 7, title: "Month End", thesis: "一个月,合一,定下个月。",
+          sections: [
+            { title: "数据总览", tasks: [
+              { text: "回到月度仪表盘,看完整四周的 trend 图", track: "review", mins: 5 },
+              { text: "记下：完成度趋势是上升、平稳、还是下降？", track: "review", mins: 3 },
+              { text: "看 month-wide count：表达 / memos / stumbles 各多少？", track: "review", mins: 3 }
+            ]},
+            { title: "质性回顾", tasks: [
+              { text: "听 Week I Day III 的 shadowing 录音,跟今天的 monologue 对比", track: "review", mins: 6 },
+              { text: "翻最早一天的反思,看你那时担心什么——现在还成问题吗？", track: "review", mins: 4 },
+              { text: "选出一个月里你做得最好的那一天,记下为什么", track: "review", mins: 3 }
+            ]}
+          ],
+          reflections: [
+            { id: "r-w4-1", label: "这一个月最具体的变化是——" },
+            { id: "r-w4-2", label: "我能给这一个月一句话总结的话,是——" },
+            { id: "r-w4-3", label: "Month 2 想保留——,想砍掉——,想新加——" }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const TRACKS_META = {
+  deep: { name: "精读 + 精听", en: "deep work" },
+  output: { name: "输出", en: "output" },
+  relisten: { name: "复听", en: "re-listen" },
+  soak: { name: "泡", en: "soak" },
+  review: { name: "复盘", en: "review" },
+  minimum: { name: "最低版本", en: "low-state" }
+};
+
+// ═════════════ STATE ═════════════
+const STORAGE_PREFIX = 'listening-diary-user-v2:';
+const SESSION_KEY = 'listening-diary-current-user';
+const SUPABASE_CONFIG = window.LISTENING_DIARY_SUPABASE || {};
+const cloudConfigured = !!(SUPABASE_CONFIG.url && SUPABASE_CONFIG.publishableKey && window.supabase);
+const supabaseClient = cloudConfigured
+  ? window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publishableKey)
+  : null;
+let cloudUserId = '';
+let currentUser = '';
+let heatmapCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+function createInitialState(username = '') {
+  const fresh = {
+    activeWeek: 1,
+    weeks: {},
+    profile: { name: username },
+    actionLog: {}
+  };
+  for (let w = 1; w <= 4; w++) fresh.weeks[w] = emptyWeekState();
+  return fresh;
+}
+
+let state = createInitialState(currentUser);
+
+function emptyWeekState() {
+  return {
+    checks: {},
+    reflections: {},
+    counters: { phrases: 0, memos: 0, stumbles: 0 }
+  };
+}
+
+function userStorageKey(username = currentUser) {
+  return STORAGE_PREFIX + encodeURIComponent(username.trim().toLocaleLowerCase('zh-CN'));
+}
+
+async function storageGet(key) {
+  if (window.storage && window.storage.get) {
+    const result = await window.storage.get(key);
+    return result && result.value ? result.value : null;
+  }
+  return localStorage.getItem(key);
+}
+
+async function storageSet(key, value) {
+  if (window.storage && window.storage.set) return window.storage.set(key, value);
+  localStorage.setItem(key, value);
+}
+
+async function storageDelete(key) {
+  if (window.storage && window.storage.delete) return window.storage.delete(key);
+  localStorage.removeItem(key);
+}
+
+async function loadState() {
+  state = createInitialState(currentUser);
+  if (!currentUser) return;
+  try {
+    let raw = null;
+    if (supabaseClient && cloudUserId) {
+      const { data, error } = await supabaseClient
+        .from('diary_states')
+        .select('state')
+        .eq('user_id', cloudUserId)
+        .maybeSingle();
+      if (error) throw error;
+      if (data && data.state) raw = JSON.stringify(data.state);
+    }
+    if (!raw) raw = await storageGet(userStorageKey());
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.activeWeek) state.activeWeek = parsed.activeWeek;
+      state.profile = Object.assign({ name: currentUser }, parsed.profile || {}, { name: currentUser });
+      if (parsed.actionLog) state.actionLog = parsed.actionLog;
+      if (parsed.weeks) {
+        for (let w = 1; w <= 4; w++) {
+          if (parsed.weeks[w]) {
+            state.weeks[w] = Object.assign(emptyWeekState(), parsed.weeks[w]);
+            state.weeks[w].counters = Object.assign(
+              { phrases: 0, memos: 0, stumbles: 0 },
+              parsed.weeks[w].counters || {}
+            );
+          }
+        }
+      }
+    }
+  } catch (e) {}
+}
+
+async function saveState() {
+  if (!currentUser) return;
+  try {
+    state.profile.name = currentUser;
+    await storageSet(userStorageKey(), JSON.stringify(state));
+    if (supabaseClient && cloudUserId) {
+      const { error } = await supabaseClient.from('diary_states').upsert({
+        user_id: cloudUserId,
+        state,
+        updated_at: new Date().toISOString()
+      });
+      if (error) throw error;
+    }
+  } catch (e) {
+    console.error('Save failed:', e);
+    showMsg('云端同步暂时失败，数据已保存在本机。');
+  }
+}
+
+// ═════════════ RENDER ═════════════
+
+function taskId(weekNum, dayNum, sectionIdx, taskIdx, isLow) {
+  return `w${weekNum}-d${dayNum}-${isLow ? 'low' : 's' + sectionIdx}-${taskIdx}`;
+}
+
+function renderWeekContent(week) {
+  const root = document.createElement('section');
+  root.className = 'week-view';
+  root.id = 'week-view-' + week.num;
+  root.dataset.weekNum = week.num;
+
+  // Intro
+  const intro = document.createElement('div');
+  intro.className = 'week-intro';
+  intro.innerHTML = `
+    <p class="lead">${week.lead}</p>
+    <div class="week-tracks">
+      <h3>Week ${romanize(week.num)} · 本周四条线</h3>
+      <ul>
+        ${week.tracks.map(t => `<li><strong>${t.name}</strong> ${t.desc}</li>`).join('')}
+      </ul>
+    </div>
+  `;
+  root.appendChild(intro);
+
+  // Counters (per week)
+  const ws = state.weeks[week.num];
+  const countersDiv = document.createElement('div');
+  countersDiv.className = 'week-counters';
+  countersDiv.innerHTML = `
+    <div class="counter">
+      <span class="counter-num" id="cnt-${week.num}-phrases">${ws.counters.phrases}</span>
+      <span class="counter-label">表达<br>collected</span>
+      <div class="counter-controls">
+        <button class="counter-btn" data-cw="${week.num}" data-ck="phrases" data-ca="dec">−</button>
+        <button class="counter-btn" data-cw="${week.num}" data-ck="phrases" data-ca="inc">+</button>
+      </div>
+    </div>
+    <div class="counter">
+      <span class="counter-num" id="cnt-${week.num}-memos">${ws.counters.memos}</span>
+      <span class="counter-label">Voice<br>memos</span>
+      <div class="counter-controls">
+        <button class="counter-btn" data-cw="${week.num}" data-ck="memos" data-ca="dec">−</button>
+        <button class="counter-btn" data-cw="${week.num}" data-ck="memos" data-ca="inc">+</button>
+      </div>
+    </div>
+    <div class="counter">
+      <span class="counter-num" id="cnt-${week.num}-stumbles">${ws.counters.stumbles}</span>
+      <span class="counter-label">Stumbles<br>caught</span>
+      <div class="counter-controls">
+        <button class="counter-btn" data-cw="${week.num}" data-ck="stumbles" data-ca="dec">−</button>
+        <button class="counter-btn" data-cw="${week.num}" data-ck="stumbles" data-ca="inc">+</button>
+      </div>
+    </div>
+  `;
+  root.appendChild(countersDiv);
+
+  // Week mini-dashboard with stats + analysis (rendered later by updateAll)
+  const wmdDiv = document.createElement('div');
+  wmdDiv.className = 'week-mini-dash';
+  wmdDiv.dataset.weekDash = week.num;
+  wmdDiv.innerHTML = `
+    <div class="dash-eyebrow" style="margin-bottom:16px">Week ${romanize(week.num)} · 本周数据</div>
+    <div class="wmd-stats-grid">
+      <div class="wmd-stat-box">
+        <div class="wmd-stat-label">Completion</div>
+        <div class="wmd-stat-value" data-wmd-pct="${week.num}">0%</div>
+        <div class="wmd-stat-label" style="margin-top:8px;font-size:9.5px">每日完成情况</div>
+        <div class="wmd-day-bars">
+          ${[1,2,3,4,5,6,7].map(n => `<div class="wmd-day-bar"><div class="wmd-day-bar-fill" data-wmd-day="${week.num}-${n}" style="height:0"></div></div>`).join('')}
+        </div>
+        <div class="wmd-day-labels">
+          ${[1,2,3,4,5,6,7].map(n => `<span>${romanize(n)}</span>`).join('')}
+        </div>
+      </div>
+      <div class="wmd-stat-box">
+        <div class="wmd-stat-label">Tasks</div>
+        <div class="wmd-stat-value"><span data-wmd-done="${week.num}">0</span><span class="wmd-of">/ <span data-wmd-total="${week.num}">0</span></span></div>
+        <div class="wmd-stat-label" style="margin-top:14px">Time</div>
+        <div class="wmd-stat-value"><span data-wmd-mins="${week.num}">0</span><span class="wmd-of">min</span></div>
+      </div>
+    </div>
+    <div class="analysis-box" data-wmd-analysis="${week.num}">
+      <div class="a-empty">本周还没动。先勾一个最低版本试试。</div>
+    </div>
+    <div class="share-row">
+      <button class="share-btn primary" onclick="exportPDF('week', ${week.num})"><span class="sb-icon">↓</span> 导出 PDF · Week ${romanize(week.num)}</button>
+      <button class="share-btn" onclick="showAsText('week', ${week.num})"><span class="sb-icon">⧉</span> 看文字版</button>
+    </div>
+  `;
+  root.appendChild(wmdDiv);
+
+  // Index nav (7 days)
+  const nav = document.createElement('nav');
+  nav.className = 'index-nav';
+  nav.innerHTML = [1,2,3,4,5,6,7].map(n =>
+    `<a href="#day-${week.num}-${n}" data-day-link="${week.num}-${n}">${romanize(n)}</a>`
+  ).join('');
+  root.appendChild(nav);
+
+  // Days
+  week.days.forEach(day => {
+    const dayEl = document.createElement('article');
+    dayEl.className = 'day';
+    dayEl.id = `day-${week.num}-${day.num}`;
+    dayEl.dataset.weekDay = `${week.num}-${day.num}`;
+
+    let sectionsHtml = '';
+    day.sections.forEach((section, sIdx) => {
+      sectionsHtml += `<div class="section">
+        <h3 class="section-title">${section.title}</h3>
+        ${section.note ? `<p class="pick-one">${section.note}</p>` : ''}
+        ${section.pick ? `<p class="pick-one">不用全做，挑一个动起来比想做哪个更重要。</p>` : ''}
+        ${section.tasks.map((task, tIdx) => {
+          const id = taskId(week.num, day.num, sIdx, tIdx, false);
+          return `<div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
+            <input type="checkbox" id="${id}">
+            <label for="${id}">${task.text}</label>
+          </div>`;
+        }).join('')}
+      </div>`;
+    });
+
+    let lowHtml = '';
+    if (day.lowState) {
+      lowHtml = `<div class="low-state">
+        <h3 class="section-title">最低版本</h3>
+        ${day.lowState.note ? `<p class="low-state-note">${day.lowState.note}</p>` : ''}
+        ${day.lowState.tasks.map((task, tIdx) => {
+          const id = taskId(week.num, day.num, 0, tIdx, true);
+          return `<div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
+            <input type="checkbox" id="${id}">
+            <label for="${id}">${task.text}</label>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+
+    let reflHtml = '';
+    if (day.reflections) {
+      reflHtml = `<div class="section">
+        <h3 class="section-title">反思 · 写一两行就好</h3>
+        ${day.reflections.map(r => `
+          <label class="reflection-label" for="${r.id}">${r.label}</label>
+          <textarea id="${r.id}" class="reflection-input" data-week="${week.num}" rows="2"></textarea>
+        `).join('')}
+      </div>`;
+    }
+
+    // Day-level export
+    const exportRow = `<div class="day-export-row">
+      <button class="day-export-btn" onclick="exportPDF('day', [${week.num}, ${day.num}])">↓ 导出 Day ${romanize(day.num)} PDF</button>
+    </div>`;
+
+    dayEl.innerHTML = `
+      <header class="day-header">
+        <div class="day-number">${romanize(day.num)}</div>
+        <div class="day-title-group">
+          <h2 class="day-title">${day.title}</h2>
+          <p class="day-thesis">${day.thesis}</p>
+          <div class="day-stat-strip" data-day-strip="${week.num}-${day.num}">
+            <span class="dss-mins">0 min</span>
+          </div>
+        </div>
+        <div class="day-progress" data-day-prog="${week.num}-${day.num}"></div>
+      </header>
+      ${sectionsHtml}
+      ${lowHtml}
+      ${reflHtml}
+      ${exportRow}
+    `;
+    root.appendChild(dayEl);
+  });
+
+  return root;
+}
+
+function romanize(n) {
+  const map = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+  return map[n] || n;
+}
+
+function renderWeekTabs() {
+  const tabs = document.getElementById('weekTabs');
+  tabs.innerHTML = MONTH_DATA.weeks.map(w => `
+    <button class="wt-btn" data-tab-week="${w.num}">
+      <span class="wt-roman">${romanize(w.num)}</span>
+      <span class="wt-label">${w.title}</span>
+      <span class="wt-dot"></span>
+    </button>
+  `).join('');
+}
+
+function renderAllWeeks() {
+  const container = document.getElementById('weekViews');
+  container.innerHTML = '';
+  MONTH_DATA.weeks.forEach(w => container.appendChild(renderWeekContent(w)));
+}
+
+function applyCheckedState() {
+  document.querySelectorAll('.task input[type="checkbox"]').forEach(cb => {
+    const wnum = cb.closest('[data-week]')?.dataset.week;
+    if (!wnum) return;
+    cb.checked = !!state.weeks[wnum].checks[cb.id];
+  });
+  document.querySelectorAll('textarea.reflection-input').forEach(ta => {
+    const wnum = ta.dataset.week;
+    if (!wnum) return;
+    ta.value = state.weeks[wnum].reflections[ta.id] || '';
+  });
+}
+
+function showActiveWeek() {
+  document.querySelectorAll('.week-view').forEach(v => {
+    v.classList.toggle('active', parseInt(v.dataset.weekNum) === state.activeWeek);
+  });
+  document.querySelectorAll('.wt-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.tabWeek) === state.activeWeek);
+  });
+  document.getElementById('floatWeek').textContent = 'W' + state.activeWeek;
+}
+
+// ═════════════ COMPUTE & UPDATE ═════════════
+
+function weekStats(weekNum) {
+  const weekData = MONTH_DATA.weeks[weekNum - 1];
+  let total = 0, done = 0, mins = 0;
+  const byTrack = {};
+
+  weekData.days.forEach(day => {
+    day.sections.forEach((sec, sIdx) => {
+      sec.tasks.forEach((task, tIdx) => {
+        const id = taskId(weekNum, day.num, sIdx, tIdx, false);
+        total++;
+        if (!byTrack[task.track]) byTrack[task.track] = [0, 0];
+        byTrack[task.track][1]++;
+        if (state.weeks[weekNum].checks[id]) {
+          done++;
+          mins += task.mins || 0;
+          byTrack[task.track][0]++;
+        }
+      });
+    });
+    if (day.lowState) {
+      day.lowState.tasks.forEach((task, tIdx) => {
+        const id = taskId(weekNum, day.num, 0, tIdx, true);
+        total++;
+        if (!byTrack[task.track]) byTrack[task.track] = [0, 0];
+        byTrack[task.track][1]++;
+        if (state.weeks[weekNum].checks[id]) {
+          done++;
+          mins += task.mins || 0;
+          byTrack[task.track][0]++;
+        }
+      });
+    }
+  });
+
+  return { total, done, mins, byTrack };
+}
+
+function dayStats(weekNum, dayNum) {
+  const weekData = MONTH_DATA.weeks[weekNum - 1];
+  const day = weekData.days.find(d => d.num === dayNum);
+  if (!day) return { total: 0, done: 0, mins: 0, byTrack: {} };
+  let total = 0, done = 0, mins = 0;
+  const byTrack = {};
+  day.sections.forEach((sec, sIdx) => {
+    sec.tasks.forEach((task, tIdx) => {
+      const id = taskId(weekNum, dayNum, sIdx, tIdx, false);
+      total++;
+      if (!byTrack[task.track]) byTrack[task.track] = [0, 0];
+      byTrack[task.track][1]++;
+      if (state.weeks[weekNum].checks[id]) {
+        done++;
+        mins += task.mins || 0;
+        byTrack[task.track][0]++;
+      }
+    });
+  });
+  if (day.lowState) {
+    day.lowState.tasks.forEach((task, tIdx) => {
+      const id = taskId(weekNum, dayNum, 0, tIdx, true);
+      total++;
+      if (!byTrack[task.track]) byTrack[task.track] = [0, 0];
+      byTrack[task.track][1]++;
+      if (state.weeks[weekNum].checks[id]) {
+        done++;
+        mins += task.mins || 0;
+        byTrack[task.track][0]++;
+      }
+    });
+  }
+  return { total, done, mins, byTrack };
+}
+
+function updateAll() {
+  // Aggregate stats per week
+  const ws = [1,2,3,4].map(weekStats);
+  const monthTotal = ws.reduce((a, b) => a + b.total, 0);
+  const monthDone = ws.reduce((a, b) => a + b.done, 0);
+  const monthMins = ws.reduce((a, b) => a + b.mins, 0);
+
+  // Month-wide counters
+  const totalPhrases = [1,2,3,4].reduce((a, n) => a + state.weeks[n].counters.phrases, 0);
+  const totalMemos = [1,2,3,4].reduce((a, n) => a + state.weeks[n].counters.memos, 0);
+  const totalStumbles = [1,2,3,4].reduce((a, n) => a + state.weeks[n].counters.stumbles, 0);
+
+  // Top hero
+  document.getElementById('heroNum').textContent = monthDone;
+  document.getElementById('heroTotal').textContent = monthTotal;
+  document.getElementById('floatNum').textContent = monthDone;
+  document.getElementById('floatTotal').textContent = monthTotal;
+  document.getElementById('timeNum').textContent = monthMins;
+  document.getElementById('mcPhrases').textContent = totalPhrases;
+  document.getElementById('mcMemos').textContent = totalMemos;
+  document.getElementById('mcStumbles').textContent = totalStumbles;
+
+  // Week cards
+  const wcDiv = document.getElementById('weekCards');
+  wcDiv.innerHTML = MONTH_DATA.weeks.map((w, i) => {
+    const s = ws[i];
+    const pct = s.total > 0 ? Math.round(s.done / s.total * 100) : 0;
+    const isActive = state.activeWeek === w.num ? 'active' : '';
+    return `<a href="#" class="week-card ${isActive}" data-card-week="${w.num}">
+      <div class="wc-fill" style="height:${pct}%"></div>
+      <span class="wc-roman">${romanize(w.num)}</span>
+      <span class="wc-title">${w.title}</span>
+      <span class="wc-pct">${pct}%</span>
+    </a>`;
+  }).join('');
+
+  // Charts
+  drawCompletion(ws);
+  drawTime(ws);
+
+  // Track aggregate
+  renderTrackStats(ws);
+
+  // Per-week visible items
+  document.querySelectorAll('.day').forEach(dayEl => {
+    const [wn, dn] = dayEl.dataset.weekDay.split('-').map(Number);
+    const { total, done, mins, byTrack } = dayStats(wn, dn);
+    const prog = dayEl.querySelector('[data-day-prog]');
+    if (prog) prog.textContent = `${done} / ${total}`;
+    // Day stat strip
+    const strip = dayEl.querySelector(`[data-day-strip="${wn}-${dn}"]`);
+    if (strip) {
+      if (done === 0) {
+        strip.innerHTML = `<span class="dss-mins">0 min · 还没开始</span>`;
+      } else {
+        // find top track
+        let topTrack = null, topPct = -1;
+        for (const t in byTrack) {
+          if (t === 'minimum') continue;
+          const [d, tt] = byTrack[t];
+          if (d > 0 && d / tt > topPct) { topPct = d / tt; topTrack = t; }
+        }
+        const topName = topTrack ? TRACKS_META[topTrack].name : '最低版本';
+        strip.innerHTML = `<span class="dss-mins">${mins} min</span><span class="dss-sep">·</span><span>主线: ${topName}</span>`;
+      }
+    }
+    // index nav
+    const lnk = document.querySelector(`a[data-day-link="${wn}-${dn}"]`);
+    if (lnk) lnk.classList.toggle('complete', done === total && total > 0);
+  });
+
+  // Week tab dots
+  document.querySelectorAll('.wt-btn').forEach(b => {
+    const wn = parseInt(b.dataset.tabWeek);
+    const s = ws[wn - 1];
+    b.classList.toggle('has-progress', s.done > 0);
+    b.classList.toggle('complete', s.done === s.total && s.total > 0);
+  });
+
+  // Week mini-dashboards
+  [1,2,3,4].forEach(wn => updateWeekMiniDash(wn));
+
+  // Heatmap
+  renderHeatmap();
+
+  // Analysis text
+  renderMonthAnalysis(ws);
+}
+
+function renderTrackStats(ws) {
+  // Aggregate across 4 weeks
+  const agg = {};
+  ws.forEach(w => {
+    for (const t in w.byTrack) {
+      if (!agg[t]) agg[t] = [0, 0];
+      agg[t][0] += w.byTrack[t][0];
+      agg[t][1] += w.byTrack[t][1];
+    }
+  });
+  const order = ['deep', 'output', 'relisten', 'soak', 'review', 'minimum'];
+  const html = order.filter(k => agg[k]).map(k => {
+    const [d, t] = agg[k];
+    const pct = t > 0 ? d / t * 100 : 0;
+    const meta = TRACKS_META[k];
+    return `<div class="track-stat">
+      <div class="track-info">
+        <div class="track-name">${meta.name}<span class="track-en">${meta.en}</span></div>
+        <div class="track-bar-bg"><div class="track-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="track-count">${d} <span class="track-total">/ ${t}</span></div>
+    </div>`;
+  }).join('');
+  document.getElementById('trackStats').innerHTML = html;
+}
+
+// ═════════════ CHARTS ═════════════
+
+function drawCompletion(ws) {
+  const svg = document.getElementById('svgCompletion');
+  const pcts = ws.map(w => w.total > 0 ? w.done / w.total * 100 : 0);
+  const totalPct = (() => {
+    const t = ws.reduce((a,b) => a + b.total, 0);
+    const d = ws.reduce((a,b) => a + b.done, 0);
+    return t > 0 ? Math.round(d/t*100) : 0;
+  })();
+  document.getElementById('chartCompletion').innerHTML = `${totalPct}<span class="ch-unit">% month</span>`;
+
+  // SVG line chart
+  const W = 200, H = 76, padX = 8, padY = 10;
+  const maxY = 100;
+  const xs = [0,1,2,3].map(i => padX + (W - 2 * padX) * (i / 3));
+  const ys = pcts.map(p => H - padY - (p / maxY) * (H - 2 * padY));
+
+  let path = `M ${xs[0]} ${ys[0]}`;
+  for (let i = 1; i < 4; i++) path += ` L ${xs[i]} ${ys[i]}`;
+
+  let dots = '';
+  for (let i = 0; i < 4; i++) {
+    const hasData = ws[i].total > 0;
+    dots += `<circle cx="${xs[i]}" cy="${ys[i]}" r="${hasData ? 3 : 2}" fill="${hasData ? 'var(--accent)' : 'var(--hairline)'}" />`;
+  }
+
+  svg.innerHTML = `
+    <line x1="${padX}" y1="${H - padY}" x2="${W - padX}" y2="${H - padY}" stroke="var(--hairline)" stroke-width="0.5" stroke-dasharray="2 3"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}
+  `;
+}
+
+function drawTime(ws) {
+  const svg = document.getElementById('svgTime');
+  const mins = ws.map(w => w.mins);
+  const totalMins = mins.reduce((a,b) => a+b, 0);
+  document.getElementById('chartTime').innerHTML = `${totalMins}<span class="ch-unit">min total</span>`;
+
+  const W = 200, H = 76, padX = 8, padY = 10;
+  const barW = (W - 2 * padX) / 4 * 0.6;
+  const slotW = (W - 2 * padX) / 4;
+  const maxMin = Math.max(...mins, 60);
+
+  let bars = '';
+  for (let i = 0; i < 4; i++) {
+    const cx = padX + slotW * i + slotW / 2;
+    const h = mins[i] / maxMin * (H - 2 * padY);
+    const y = H - padY - h;
+    bars += `<rect x="${cx - barW/2}" y="${y}" width="${barW}" height="${h}" fill="var(--accent)" opacity="${mins[i] > 0 ? 0.85 : 0.15}"/>`;
+  }
+
+  svg.innerHTML = `
+    <line x1="${padX}" y1="${H - padY}" x2="${W - padX}" y2="${H - padY}" stroke="var(--hairline)" stroke-width="0.5"/>
+    ${bars}
+  `;
+}
+
+// ═════════════ EVENTS ═════════════
+
+function syncUserInterface() {
+  document.getElementById('currentUsername').textContent = currentUser || '—';
+  document.getElementById('authScreen').hidden = !!currentUser;
+  document.body.style.overflow = currentUser ? '' : 'hidden';
+  for (let w = 1; w <= 4; w++) {
+    ['phrases','memos','stumbles'].forEach(key => {
+      const el = document.getElementById(`cnt-${w}-${key}`);
+      if (el) el.textContent = state.weeks[w].counters[key] || 0;
+    });
+  }
+}
+
+function normalizeUsername(username) {
+  return username.trim().toLowerCase();
+}
+
+function accountEmail(username) {
+  return `${normalizeUsername(username)}@listening-diary.app`;
+}
+
+function validUsername(username) {
+  return /^[a-z0-9_]{3,24}$/.test(normalizeUsername(username));
+}
+
+async function enterAccount(username, userId) {
+  currentUser = normalizeUsername(username);
+  cloudUserId = userId;
+  heatmapCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  await loadState();
+  applyCheckedState();
+  syncUserInterface();
+  showActiveWeek();
+  updateAll();
+  window.scrollTo({ top: 0 });
+}
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = normalizeUsername(document.getElementById('loginUsername').value);
+  const password = document.getElementById('loginPassword').value;
+  const note = document.getElementById('authNote');
+  if (!cloudConfigured) {
+    note.textContent = '云端项目尚未配置，请先填写 Supabase URL 和 Publishable key。';
+    return;
+  }
+  if (!validUsername(username)) {
+    note.textContent = '用户名只能使用 3–24 位英文、数字或下划线。';
+    return;
+  }
+  note.textContent = '正在登录…';
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: accountEmail(username),
+    password
+  });
+  if (error) {
+    note.textContent = '登录失败：用户名或密码不正确。';
+    return;
+  }
+  await enterAccount(username, data.user.id);
+  note.textContent = '';
+});
+
+document.getElementById('registerButton').addEventListener('click', async () => {
+  const username = normalizeUsername(document.getElementById('loginUsername').value);
+  const password = document.getElementById('loginPassword').value;
+  const note = document.getElementById('authNote');
+  if (!cloudConfigured) {
+    note.textContent = '云端项目尚未配置，请先填写 Supabase URL 和 Publishable key。';
+    return;
+  }
+  if (!validUsername(username) || password.length < 6) {
+    note.textContent = '用户名需为 3–24 位英文/数字/下划线，密码至少 6 位。';
+    return;
+  }
+  note.textContent = '正在创建账户…';
+  const { data, error } = await supabaseClient.auth.signUp({
+    email: accountEmail(username),
+    password,
+    options: { data: { username } }
+  });
+  if (error) {
+    note.textContent = error.message.includes('already') ? '这个用户名已经注册。' : `注册失败：${error.message}`;
+    return;
+  }
+  if (!data.session) {
+    note.textContent = '项目仍启用了邮箱确认。请在 Supabase Auth 设置中关闭 Confirm email。';
+    return;
+  }
+  const { error: claimError } = await supabaseClient.rpc('claim_diary_username', { requested_username: username });
+  if (claimError) {
+    note.textContent = `用户名创建失败：${claimError.message}`;
+    return;
+  }
+  await enterAccount(username, data.user.id);
+  await saveState();
+  note.textContent = '';
+});
+
+document.getElementById('logoutButton').addEventListener('click', async () => {
+  if (supabaseClient) await supabaseClient.auth.signOut();
+  currentUser = '';
+  cloudUserId = '';
+  state = createInitialState();
+  applyCheckedState();
+  syncUserInterface();
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('authNote').textContent = '';
+  document.getElementById('loginUsername').focus();
+});
+
+document.getElementById('heatmapPrev').addEventListener('click', () => {
+  heatmapCursor = new Date(heatmapCursor.getFullYear(), heatmapCursor.getMonth() - 1, 1);
+  renderHeatmap();
+});
+
+document.getElementById('heatmapNext').addEventListener('click', () => {
+  const today = new Date();
+  const next = new Date(heatmapCursor.getFullYear(), heatmapCursor.getMonth() + 1, 1);
+  if (next <= new Date(today.getFullYear(), today.getMonth(), 1)) {
+    heatmapCursor = next;
+    renderHeatmap();
+  }
+});
+
+document.addEventListener('change', async (e) => {
+  if (e.target.matches('.task input[type="checkbox"]')) {
+    const taskDiv = e.target.closest('[data-week]');
+    if (!taskDiv) return;
+    const wnum = taskDiv.dataset.week;
+    const wasChecked = !!state.weeks[wnum].checks[e.target.id];
+    const isChecked = e.target.checked;
+    state.weeks[wnum].checks[e.target.id] = isChecked;
+
+    // Log action by today's calendar date (only on transitions)
+    if (wasChecked !== isChecked) {
+      const mins = parseInt(taskDiv.dataset.mins) || 0;
+      logAction(isChecked ? 1 : -1, isChecked ? mins : -mins);
+    }
+
+    await saveState();
+    updateAll();
+  }
+  // Profile name change
+  if (e.target.id === 'profileName') {
+    state.profile.name = e.target.value.trim();
+    saveState();
+  }
+});
+
+document.addEventListener('input', (e) => {
+  if (e.target.matches('textarea.reflection-input')) {
+    const wnum = e.target.dataset.week;
+    state.weeks[wnum].reflections[e.target.id] = e.target.value;
+    clearTimeout(window._reflTimer);
+    window._reflTimer = setTimeout(saveState, 500);
+  }
+  if (e.target.id === 'profileName') {
+    state.profile.name = e.target.value.trim();
+    clearTimeout(window._profileTimer);
+    window._profileTimer = setTimeout(saveState, 500);
+  }
+});
+
+document.addEventListener('click', async (e) => {
+  // Counter
+  if (e.target.matches('.counter-btn')) {
+    const wnum = e.target.dataset.cw;
+    const key = e.target.dataset.ck;
+    const action = e.target.dataset.ca;
+    if (!wnum || !key) return;
+    const c = state.weeks[wnum].counters;
+    if (action === 'inc') c[key]++;
+    if (action === 'dec' && c[key] > 0) c[key]--;
+    document.getElementById(`cnt-${wnum}-${key}`).textContent = c[key];
+    await saveState();
+    updateAll();
+    e.preventDefault();
+    return;
+  }
+  // Week tab
+  if (e.target.closest('.wt-btn')) {
+    const btn = e.target.closest('.wt-btn');
+    const w = parseInt(btn.dataset.tabWeek);
+    state.activeWeek = w;
+    showActiveWeek();
+    saveState();
+    return;
+  }
+  // Week card
+  if (e.target.closest('[data-card-week]')) {
+    const card = e.target.closest('[data-card-week]');
+    const w = parseInt(card.dataset.cardWeek);
+    state.activeWeek = w;
+    showActiveWeek();
+    saveState();
+    document.getElementById('weekTabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    e.preventDefault();
+    return;
+  }
+});
+
+// ═════════════ ANALYSIS GENERATORS ═════════════
+
+function bestWorstTrack(byTrackAgg, excludeMin = true) {
+  let best = null, bestP = -1, worst = null, worstP = 101;
+  for (const t in byTrackAgg) {
+    if (excludeMin && t === 'minimum') continue;
+    const [d, total] = byTrackAgg[t];
+    if (total === 0) continue;
+    const p = d / total * 100;
+    if (p > bestP) { bestP = p; best = t; }
+    if (p < worstP) { worstP = p; worst = t; }
+  }
+  return { best, bestP: Math.round(bestP), worst, worstP: Math.round(worstP) };
+}
+
+function monthAnalysis(ws) {
+  const total = ws.reduce((a,b) => a + b.total, 0);
+  const done = ws.reduce((a,b) => a + b.done, 0);
+  const mins = ws.reduce((a,b) => a + b.mins, 0);
+  if (done === 0) return null;
+
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  const agg = {};
+  ws.forEach(w => {
+    for (const t in w.byTrack) {
+      if (!agg[t]) agg[t] = [0, 0];
+      agg[t][0] += w.byTrack[t][0];
+      agg[t][1] += w.byTrack[t][1];
+    }
+  });
+  const { best, bestP, worst, worstP } = bestWorstTrack(agg);
+
+  // weekly trend
+  const weekPcts = ws.map(w => w.total > 0 ? w.done/w.total*100 : 0);
+  const activePcts = weekPcts.filter(p => p > 0);
+  let trend = '';
+  if (activePcts.length >= 2) {
+    const first = activePcts[0], last = activePcts[activePcts.length - 1];
+    if (last > first + 10) trend = '本月趋势是上升的';
+    else if (last < first - 10) trend = '本月趋势在回落';
+    else trend = '本月趋势平稳';
+  }
+
+  // Phrases & memos
+  const phrases = [1,2,3,4].reduce((a,n) => a + state.weeks[n].counters.phrases, 0);
+  const memos = [1,2,3,4].reduce((a,n) => a + state.weeks[n].counters.memos, 0);
+  const stumbles = [1,2,3,4].reduce((a,n) => a + state.weeks[n].counters.stumbles, 0);
+
+  // suggestion
+  let suggestion;
+  if (pct < 25) {
+    suggestion = '本月还很早。先让"出现"变成习惯,不必追求满勾——一周三天勾选过、就比满勾值钱。';
+  } else if (worst === 'output' && worstP < 30) {
+    suggestion = '输出明显落后。下周开始,每天至少留 5 分钟给输出——一句话造句、一段录音都算。';
+  } else if (worst === 'soak' && worstP < 30) {
+    suggestion = '泡这条线是被动的、零启动的。下次戴耳机就播,不要求听懂。';
+  } else if (worst === 'relisten' && worstP < 30) {
+    suggestion = '复听被忽略了。它是最便宜的"看见进步"——前一天的难片段第二天会变容易。';
+  } else if (pct > 70) {
+    suggestion = '执行非常稳。下个月可以考虑加长片段、或在主动调用上加难度。';
+  } else {
+    suggestion = '中位执行。看一眼最弱的 track,下周给它多留一点空间。';
+  }
+
+  return {
+    summary: `本月勾选 ${done}/${total}（${pct}%）,投入 ${mins} 分钟。表达 ${phrases}、voice memo ${memos}、stumble ${stumbles}。`,
+    insight: best ? `最强的是 ${TRACKS_META[best].name}（${bestP}%）,最弱的是 ${TRACKS_META[worst].name}（${worstP}%）。${trend ? trend + '。' : ''}` : '',
+    suggestion
+  };
+}
+
+function weekAnalysis(weekNum) {
+  const w = weekStats(weekNum);
+  if (w.done === 0) return null;
+
+  const pct = w.total > 0 ? Math.round(w.done/w.total*100) : 0;
+  const { best, bestP, worst, worstP } = bestWorstTrack(w.byTrack);
+
+  // day-by-day
+  const days = [1,2,3,4,5,6,7].map(d => dayStats(weekNum, d));
+  const dayPcts = days.map(d => d.total > 0 ? d.done/d.total : 0);
+  const strongestIdx = dayPcts.indexOf(Math.max(...dayPcts));
+  const skippedDays = dayPcts.map((p, i) => p === 0 ? i+1 : null).filter(x => x !== null);
+
+  // Counters
+  const ws_c = state.weeks[weekNum].counters;
+
+  let suggestion;
+  if (pct < 30) {
+    suggestion = '本周执行偏低。看看是哪个时段最容易塌——很可能不是动机问题,是时间没卡对。';
+  } else if (skippedDays.length >= 4) {
+    suggestion = '本周跳了好几天。下周可以试着只做"最低版本",哪怕 2 分钟也算露面。';
+  } else if (worst === 'output' && worstP < 30) {
+    suggestion = '输出在本周明显被绕开了。下次精读完直接接一个 voice memo,不要等。';
+  } else if (pct > 70) {
+    suggestion = '执行很扎实。下周可以挑战「主动使用」环节——从表达本里翻出一句话,上班逼自己用上。';
+  } else {
+    suggestion = '稳定推进中。继续。';
+  }
+
+  return {
+    summary: `Week ${romanize(weekNum)}：${w.done}/${w.total}（${pct}%）,${w.mins} 分钟。表达 ${ws_c.phrases}、memo ${ws_c.memos}、stumble ${ws_c.stumbles}。`,
+    insight: best ? `本周最强 ${TRACKS_META[best].name}（${bestP}%）,最弱 ${TRACKS_META[worst].name}（${worstP}%）。${strongestIdx >= 0 ? '执行最好的是 Day ' + romanize(strongestIdx + 1) : ''}${skippedDays.length > 0 ? '。跳过的天：' + skippedDays.map(romanize).join('、') : ''}` : '',
+    suggestion
+  };
+}
+
+function dayAnalysisText(weekNum, dayNum) {
+  const d = dayStats(weekNum, dayNum);
+  if (d.done === 0) return null;
+  const pct = d.total > 0 ? Math.round(d.done/d.total*100) : 0;
+  const { best } = bestWorstTrack(d.byTrack);
+  return {
+    summary: `Day ${romanize(dayNum)}：${d.done}/${d.total}（${pct}%）,${d.mins} 分钟。${best ? '主线: ' + TRACKS_META[best].name : ''}`
+  };
+}
+
+function renderMonthAnalysis(ws) {
+  const a = monthAnalysis(ws);
+  const box = document.getElementById('monthAnalysisBox');
+  if (!box) return;
+  if (!a) {
+    box.innerHTML = '<div class="a-empty">勾几个再回来,这里会出现具体的进度小结、最强/最弱的 track、一条针对性建议。</div>';
+    return;
+  }
+  box.innerHTML = `
+    <div class="a-line a-numbers">${a.summary}</div>
+    ${a.insight ? `<div class="a-line">${a.insight}</div>` : ''}
+    <div class="a-suggest"><strong>建议</strong>${a.suggestion}</div>
+  `;
+}
+
+function updateWeekMiniDash(weekNum) {
+  const w = weekStats(weekNum);
+  const pct = w.total > 0 ? Math.round(w.done/w.total*100) : 0;
+  const dash = document.querySelector(`[data-week-dash="${weekNum}"]`);
+  if (!dash) return;
+
+  // numbers
+  const setText = (sel, val) => { const el = dash.querySelector(sel); if (el) el.textContent = val; };
+  setText(`[data-wmd-pct="${weekNum}"]`, pct + '%');
+  setText(`[data-wmd-done="${weekNum}"]`, w.done);
+  setText(`[data-wmd-total="${weekNum}"]`, w.total);
+  setText(`[data-wmd-mins="${weekNum}"]`, w.mins);
+
+  // day bars
+  for (let dn = 1; dn <= 7; dn++) {
+    const d = dayStats(weekNum, dn);
+    const dpct = d.total > 0 ? d.done/d.total*100 : 0;
+    const bar = dash.querySelector(`[data-wmd-day="${weekNum}-${dn}"]`);
+    if (bar) bar.style.height = dpct + '%';
+  }
+
+  // analysis
+  const a = weekAnalysis(weekNum);
+  const aBox = dash.querySelector(`[data-wmd-analysis="${weekNum}"]`);
+  if (aBox) {
+    if (!a) {
+      aBox.innerHTML = '<div class="a-empty">本周还没动。先勾一个最低版本试试。</div>';
+    } else {
+      aBox.innerHTML = `
+        <div class="a-line a-numbers">${a.summary}</div>
+        ${a.insight ? `<div class="a-line">${a.insight}</div>` : ''}
+        <div class="a-suggest"><strong>建议</strong>${a.suggestion}</div>
+      `;
+    }
+  }
+}
+
+// ═════════════ HEATMAP & PROFILE ═════════════
+
+function isoDate(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function logAction(deltaChecks, deltaMins) {
+  const key = isoDate(new Date());
+  if (!state.actionLog) state.actionLog = {};
+  if (!state.actionLog[key]) state.actionLog[key] = { checks: 0, mins: 0 };
+  state.actionLog[key].checks = Math.max(0, state.actionLog[key].checks + deltaChecks);
+  state.actionLog[key].mins = Math.max(0, state.actionLog[key].mins + deltaMins);
+}
+
+function renderHeatmap() {
+  const today = new Date();
+  const year = heatmapCursor.getFullYear();
+  const month = heatmapCursor.getMonth();
+  const firstOfMonth = new Date(year, month, 1);
+  const lastOfMonth = new Date(year, month + 1, 0);
+  const daysInMonth = lastOfMonth.getDate();
+
+  // Monday-start: getDay() returns 0 (Sun) - 6 (Sat). We want Mon = 0.
+  const firstDow = firstOfMonth.getDay();
+  const padStart = (firstDow + 6) % 7;
+
+  // Activity per calendar day
+  const log = state.actionLog || {};
+
+  // Compute level thresholds based on this month's max
+  const monthActivity = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    const k = isoDate(new Date(year, month, d));
+    monthActivity.push((log[k] || {}).checks || 0);
+  }
+  // Active days
+  const activeDays = monthActivity.filter(c => c > 0).length;
+  const totalChecks = monthActivity.reduce((a, b) => a + b, 0);
+  const totalMins = (() => {
+    let m = 0;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const k = isoDate(new Date(year, month, d));
+      m += (log[k] || {}).mins || 0;
+    }
+    return m;
+  })();
+  const longestStreak = computeStreak(year, month, daysInMonth);
+
+  // Render label
+  const monthName = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'][month];
+  document.getElementById('heatmapMonthLabel').textContent = `${year} · ${monthName}`;
+  const nextButton = document.getElementById('heatmapNext');
+  const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
+  if (nextButton) nextButton.disabled = isCurrentMonth;
+
+  // Render grid
+  let html = '';
+  for (let i = 0; i < padStart; i++) {
+    html += `<div class="hm-cell blank"></div>`;
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const k = isoDate(date);
+    const count = (log[k] || {}).checks || 0;
+    const mins = (log[k] || {}).mins || 0;
+    let level = 0;
+    if (count >= 1) level = 1;
+    if (count >= 4) level = 2;
+    if (count >= 8) level = 3;
+    if (count >= 12) level = 4;
+
+    const classes = ['hm-cell', 'l' + level];
+    if (date.toDateString() === today.toDateString()) classes.push('today');
+    if (date > today) classes.push('future');
+
+    const tip = count > 0 ? `${k}: ${count} 个动作 · ${mins} 分钟` : `${k}: 没动`;
+    html += `<div class="${classes.join(' ')}" title="${tip}">${d}</div>`;
+  }
+
+  document.getElementById('heatmapGrid').innerHTML = html;
+
+  // Summary line
+  let summary;
+  if (activeDays === 0) {
+    summary = `本月还没勾选过。<strong>今天</strong>是个开始的好日子。`;
+  } else {
+    let streakBit = '';
+    if (longestStreak >= 3) streakBit = ` · 最长连续 <strong>${longestStreak}</strong> 天`;
+    summary = `本月 <strong>${activeDays}</strong> 天有动作 · 累计 <strong>${totalChecks}</strong> 次勾选 · <strong>${totalMins}</strong> 分钟${streakBit}`;
+  }
+  document.getElementById('heatmapSummary').innerHTML = summary;
+}
+
+function computeStreak(year, month, daysInMonth) {
+  const log = state.actionLog || {};
+  let longest = 0, current = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const k = isoDate(new Date(year, month, d));
+    const has = ((log[k] || {}).checks || 0) > 0;
+    if (has) {
+      current++;
+      if (current > longest) longest = current;
+    } else {
+      current = 0;
+    }
+  }
+  return longest;
+}
+
+function renderProfile() {
+  const el = document.getElementById('profileName');
+  if (el && state.profile && state.profile.name && el.value !== state.profile.name) {
+    el.value = state.profile.name;
+  }
+}
+
+// ═════════════ EXPORT PDF & TEXT MODAL ═════════════
+
+function exportPDF(scope, params) {
+  const html = buildPrintHTML(scope, params);
+  const area = document.getElementById('printArea');
+  area.innerHTML = `
+    <div class="pv-print-actions no-print">
+      <button onclick="window.print()">↓ 保存为 PDF</button>
+      <button class="secondary" onclick="closePrintView()">关闭预览</button>
+      <div class="pv-hint">点「保存为 PDF」会弹出系统打印,选择「保存到文件」/「邮件」/「打印机」等。在 iOS 上从打印预览还能 AirDrop 给其他设备。</div>
+    </div>
+    ${html}
+  `;
+  area.classList.add('show');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closePrintView() {
+  const area = document.getElementById('printArea');
+  area.classList.remove('show');
+  area.innerHTML = '';
+}
+
+function showAsText(scope, params) {
+  const { title, body } = buildReportText(scope, params);
+  const fullText = `${title}\n\n${body}`;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalText').value = fullText;
+  document.getElementById('textModal').classList.add('show');
+  document.getElementById('modalMsg').textContent = '';
+  // Auto-select for easy copy
+  setTimeout(() => {
+    const ta = document.getElementById('modalText');
+    ta.focus();
+    ta.setSelectionRange(0, 0);
+  }, 100);
+}
+
+function closeTextModal() {
+  document.getElementById('textModal').classList.remove('show');
+}
+
+function copyModalText() {
+  const text = document.getElementById('modalText').value;
+  copyToClipboard(text);
+  const msg = document.getElementById('modalMsg');
+  msg.textContent = '已复制到剪贴板';
+  msg.classList.remove('error');
+  setTimeout(() => { msg.textContent = ''; }, 2500);
+}
+
+// ═════════════ BUILD PRINT HTML ═════════════
+
+function buildPrintHTML(scope, params) {
+  const date = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+  if (scope === 'day') return buildDayPrintHTML(params[0], params[1], date);
+  if (scope === 'week') return buildWeekPrintHTML(params, date);
+  if (scope === 'month') return buildMonthPrintHTML(date);
+  return '';
+}
+
+function pvTask(text, done, indent = false) {
+  return `<div class="pv-task ${done ? 'done' : ''}" ${indent ? 'style="padding-left:8pt"' : ''}>
+    <span class="pv-task-mark ${done ? 'done' : ''}"></span>
+    <span class="pv-task-label">${text}</span>
+  </div>`;
+}
+
+function pvDaySections(week, day) {
+  let html = '';
+  day.sections.forEach((sec, sIdx) => {
+    html += `<div class="pv-section"><h3>${sec.title}</h3>`;
+    if (sec.note) html += `<p class="pv-section-note">${sec.note}</p>`;
+    if (sec.pick) html += `<p class="pv-section-note">不用全做,挑一个动起来。</p>`;
+    sec.tasks.forEach((task, tIdx) => {
+      const id = taskId(week.num, day.num, sIdx, tIdx, false);
+      html += pvTask(task.text, !!state.weeks[week.num].checks[id]);
+    });
+    html += `</div>`;
+  });
+  if (day.lowState) {
+    html += `<div class="pv-section"><h3>最低版本</h3>`;
+    if (day.lowState.note) html += `<p class="pv-section-note">${day.lowState.note}</p>`;
+    day.lowState.tasks.forEach((task, tIdx) => {
+      const id = taskId(week.num, day.num, 0, tIdx, true);
+      html += pvTask(task.text, !!state.weeks[week.num].checks[id]);
+    });
+    html += `</div>`;
+  }
+  return html;
+}
+
+function pvDayReflections(week, day) {
+  if (!day.reflections) return '';
+  const filled = day.reflections.filter(r => state.weeks[week.num].reflections[r.id]);
+  if (filled.length === 0) return '';
+  let html = `<div class="pv-section"><h3>反思</h3>`;
+  filled.forEach(r => {
+    html += `<div class="pv-reflection">
+      <span class="pv-reflection-label">${r.label}</span>
+      <div class="pv-reflection-text">${escapeHtml(state.weeks[week.num].reflections[r.id])}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+function buildDayPrintHTML(weekNum, dayNum, date) {
+  const week = MONTH_DATA.weeks[weekNum - 1];
+  const day = week.days.find(d => d.num === dayNum);
+  if (!day) return '';
+  const stats = dayStats(weekNum, dayNum);
+  const pct = stats.total > 0 ? Math.round(stats.done / stats.total * 100) : 0;
+  let topTrack = null, topCount = 0;
+  for (const t in stats.byTrack) {
+    if (t === 'minimum') continue;
+    if (stats.byTrack[t][0] > topCount) { topCount = stats.byTrack[t][0]; topTrack = t; }
+  }
+
+  let html = `
+    <div class="pv-cover">
+      <div class="pv-eyebrow">A Listening Diary · Week ${romanize(weekNum)} · Day ${romanize(dayNum)}</div>
+      <h1 class="pv-title">${day.title}</h1>
+      <p class="pv-subtitle">${day.thesis}</p>
+    </div>
+
+    <div class="pv-stats">
+      <div class="pv-stats-row"><span>完成度</span><strong>${stats.done} / ${stats.total} · ${pct}%</strong></div>
+      <div class="pv-stats-row"><span>时间投入</span><strong>${stats.mins} min</strong></div>
+      ${topTrack ? `<div class="pv-stats-row"><span>主线</span><strong>${TRACKS_META[topTrack].name}</strong></div>` : ''}
+    </div>
+
+    ${pvDaySections(week, day)}
+    ${pvDayReflections(week, day)}
+
+    <div class="pv-footer">Generated ${date} · A Listening Diary</div>
+  `;
+  return html;
+}
+
+function buildWeekPrintHTML(weekNum, date) {
+  const week = MONTH_DATA.weeks[weekNum - 1];
+  const w = weekStats(weekNum);
+  const pct = w.total > 0 ? Math.round(w.done / w.total * 100) : 0;
+  const ws_c = state.weeks[weekNum].counters;
+
+  // Per-day data
+  let daysHtml = `<div class="pv-section"><h3>每日完成情况</h3>`;
+  for (let dn = 1; dn <= 7; dn++) {
+    const d = dayStats(weekNum, dn);
+    const dpct = d.total > 0 ? Math.round(d.done/d.total*100) : 0;
+    const dayData = week.days.find(x => x.num === dn);
+    daysHtml += `<div class="pv-day-row">
+      <span class="pv-day-roman">${romanize(dn)}</span>
+      <span class="pv-day-title">${dayData?.title || ''}</span>
+      <div class="pv-day-bar-cell"><div class="pv-day-bar-fill" style="transform:scaleX(${dpct/100})"></div></div>
+      <span class="pv-day-stat">${d.done}/${d.total} · ${d.mins}min</span>
+    </div>`;
+  }
+  daysHtml += `</div>`;
+
+  // By track
+  let trackHtml = `<div class="pv-section"><h3>各 track 完成度</h3>`;
+  const order = ['deep', 'output', 'relisten', 'soak', 'review', 'minimum'];
+  order.filter(k => w.byTrack[k]).forEach(k => {
+    const [d, t] = w.byTrack[k];
+    const tpct = t > 0 ? Math.round(d/t*100) : 0;
+    const meta = TRACKS_META[k];
+    trackHtml += `<div class="pv-track-row">
+      <span class="pv-track-name">${meta.name}<span class="pv-track-en">${meta.en}</span></span>
+      <div class="pv-day-bar-cell"><div class="pv-day-bar-fill" style="transform:scaleX(${tpct/100})"></div></div>
+      <span class="pv-track-count">${d}/${t}</span>
+    </div>`;
+  });
+  trackHtml += `</div>`;
+
+  // Analysis
+  const a = weekAnalysis(weekNum);
+  let analysisHtml = '';
+  if (a) {
+    analysisHtml = `<div class="pv-analysis">
+      <div class="pv-numbers">${a.summary}</div>
+      ${a.insight ? `<div class="pv-insight">${a.insight}</div>` : ''}
+      <div class="pv-suggest"><strong>建议</strong>${a.suggestion}</div>
+    </div>`;
+  }
+
+  // Day-by-day details (all tasks)
+  let detailsHtml = `<div class="pv-section"><h3>本周任务清单 · 全部</h3>`;
+  week.days.forEach(day => {
+    const dStats = dayStats(weekNum, day.num);
+    detailsHtml += `<div style="margin-top:14px;page-break-inside:avoid">
+      <div style="font-family:'Fraunces',serif;font-weight:500;font-size:13px;margin-bottom:6px">
+        <span style="font-style:italic;color:#2C4A3E">${romanize(day.num)}</span>
+        · ${day.title} <span style="font-style:italic;color:#8B7E68;font-size:11px;margin-left:6px">${dStats.done}/${dStats.total} · ${dStats.mins} min</span>
+      </div>
+      ${pvDaySections(week, day)}
+      ${pvDayReflections(week, day)}
+    </div>`;
+  });
+  detailsHtml += `</div>`;
+
+  return `
+    <div class="pv-cover">
+      <div class="pv-eyebrow">A Listening Diary · Week ${romanize(weekNum)}</div>
+      <h1 class="pv-title">${week.title}</h1>
+      <p class="pv-subtitle">${week.thesis}</p>
+    </div>
+
+    <div class="pv-stats">
+      <div class="pv-stats-row"><span>本周完成</span><strong>${w.done} / ${w.total} · ${pct}%</strong></div>
+      <div class="pv-stats-row"><span>时间投入</span><strong>${w.mins} min</strong></div>
+      <div class="pv-stats-row"><span>表达 / memos / stumbles</span><strong>${ws_c.phrases} / ${ws_c.memos} / ${ws_c.stumbles}</strong></div>
+    </div>
+
+    ${daysHtml}
+    ${trackHtml}
+    ${analysisHtml}
+    ${detailsHtml}
+
+    <div class="pv-footer">Generated ${date} · A Listening Diary</div>
+  `;
+}
+
+function buildMonthPrintHTML(date) {
+  const ws = [1,2,3,4].map(weekStats);
+  const monthDone = ws.reduce((a,b) => a + b.done, 0);
+  const monthTotal = ws.reduce((a,b) => a + b.total, 0);
+  const monthMins = ws.reduce((a,b) => a + b.mins, 0);
+  const monthPct = monthTotal > 0 ? Math.round(monthDone/monthTotal*100) : 0;
+  const totalPhrases = [1,2,3,4].reduce((a,n) => a + state.weeks[n].counters.phrases, 0);
+  const totalMemos = [1,2,3,4].reduce((a,n) => a + state.weeks[n].counters.memos, 0);
+  const totalStumbles = [1,2,3,4].reduce((a,n) => a + state.weeks[n].counters.stumbles, 0);
+
+  // Per-week breakdown
+  let weeksHtml = `<div class="pv-section"><h3>四周对比</h3>`;
+  ws.forEach((w, i) => {
+    const wpct = w.total > 0 ? Math.round(w.done/w.total*100) : 0;
+    const wd = MONTH_DATA.weeks[i];
+    weeksHtml += `<div class="pv-day-row">
+      <span class="pv-day-roman">W${romanize(i+1)}</span>
+      <span class="pv-day-title">${wd.title}</span>
+      <div class="pv-day-bar-cell"><div class="pv-day-bar-fill" style="transform:scaleX(${wpct/100})"></div></div>
+      <span class="pv-day-stat">${w.done}/${w.total} · ${w.mins}min</span>
+    </div>`;
+  });
+  weeksHtml += `</div>`;
+
+  // By track (aggregate)
+  const agg = {};
+  ws.forEach(w => {
+    for (const t in w.byTrack) {
+      if (!agg[t]) agg[t] = [0,0];
+      agg[t][0] += w.byTrack[t][0];
+      agg[t][1] += w.byTrack[t][1];
+    }
+  });
+  let trackHtml = `<div class="pv-section"><h3>各 track 累计</h3>`;
+  ['deep','output','relisten','soak','review','minimum'].filter(k => agg[k]).forEach(k => {
+    const [d, t] = agg[k];
+    const tpct = t > 0 ? Math.round(d/t*100) : 0;
+    const meta = TRACKS_META[k];
+    trackHtml += `<div class="pv-track-row">
+      <span class="pv-track-name">${meta.name}<span class="pv-track-en">${meta.en}</span></span>
+      <div class="pv-day-bar-cell"><div class="pv-day-bar-fill" style="transform:scaleX(${tpct/100})"></div></div>
+      <span class="pv-track-count">${d}/${t}</span>
+    </div>`;
+  });
+  trackHtml += `</div>`;
+
+  // Analysis
+  const a = monthAnalysis(ws);
+  let analysisHtml = '';
+  if (a) {
+    analysisHtml = `<div class="pv-analysis">
+      <div class="pv-numbers">${a.summary}</div>
+      ${a.insight ? `<div class="pv-insight">${a.insight}</div>` : ''}
+      <div class="pv-suggest"><strong>建议</strong>${a.suggestion}</div>
+    </div>`;
+  }
+
+  // Collect all reflections across the month
+  let reflHtml = '';
+  const anyRefls = [1,2,3,4].some(wn => Object.values(state.weeks[wn].reflections || {}).some(v => v && v.trim()));
+  if (anyRefls) {
+    reflHtml = `<div class="pv-section"><h3>本月反思</h3>`;
+    [1,2,3,4].forEach(wn => {
+      const week = MONTH_DATA.weeks[wn - 1];
+      week.days.forEach(day => {
+        if (!day.reflections) return;
+        const filled = day.reflections.filter(r => state.weeks[wn].reflections[r.id]);
+        if (filled.length === 0) return;
+        reflHtml += `<div style="margin-top:10px"><div style="font-family:'Fraunces',serif;font-style:italic;color:#2C4A3E;font-size:11.5px;margin-bottom:4px">Week ${romanize(wn)}</div>`;
+        filled.forEach(r => {
+          reflHtml += `<div class="pv-reflection">
+            <span class="pv-reflection-label">${r.label}</span>
+            <div class="pv-reflection-text">${escapeHtml(state.weeks[wn].reflections[r.id])}</div>
+          </div>`;
+        });
+        reflHtml += `</div>`;
+      });
+    });
+    reflHtml += `</div>`;
+  }
+
+  return `
+    <div class="pv-cover">
+      <div class="pv-eyebrow">A Listening Diary · Month One</div>
+      <h1 class="pv-title">Twenty-Eight Days at Baker Street</h1>
+      <p class="pv-subtitle">Four weeks of deliberate practice with Sherlock</p>
+    </div>
+
+    <div class="pv-stats">
+      <div class="pv-stats-row"><span>本月完成</span><strong>${monthDone} / ${monthTotal} · ${monthPct}%</strong></div>
+      <div class="pv-stats-row"><span>时间投入</span><strong>${monthMins} min</strong></div>
+      <div class="pv-stats-row"><span>表达 / memos / stumbles</span><strong>${totalPhrases} / ${totalMemos} / ${totalStumbles}</strong></div>
+    </div>
+
+    ${weeksHtml}
+    ${trackHtml}
+    ${analysisHtml}
+    ${reflHtml}
+
+    <div class="pv-footer">Generated ${date} · A Listening Diary</div>
+  `;
+}
+
+// ═════════════ TEXT REPORT (for "Show as text") ═════════════
+
+function buildReportText(scope, params) {
+  const dateStr = new Date().toLocaleDateString('zh-CN');
+  let title = '', body = '';
+
+  if (scope === 'month') {
+    title = `A Listening Diary · 月度报告 (${dateStr})`;
+    const ws = [1,2,3,4].map(weekStats);
+    const a = monthAnalysis(ws);
+    body = a ? `${a.summary}\n\n${a.insight}\n\n建议：${a.suggestion}` : '本月还没勾选过任何任务。';
+
+    body += '\n\n— 各周完成度 —';
+    ws.forEach((w, i) => {
+      const pct = w.total > 0 ? Math.round(w.done/w.total*100) : 0;
+      body += `\nWeek ${romanize(i+1)} (${MONTH_DATA.weeks[i].title})：${w.done}/${w.total} (${pct}%) · ${w.mins} min`;
+    });
+
+    body += '\n\n— 各 track 累计 —';
+    const agg = {};
+    ws.forEach(w => {
+      for (const t in w.byTrack) {
+        if (!agg[t]) agg[t] = [0, 0];
+        agg[t][0] += w.byTrack[t][0];
+        agg[t][1] += w.byTrack[t][1];
+      }
+    });
+    ['deep','output','relisten','soak','review','minimum'].forEach(k => {
+      if (!agg[k]) return;
+      const [d, t] = agg[k];
+      const pct = t > 0 ? Math.round(d/t*100) : 0;
+      body += `\n${TRACKS_META[k].name}：${d}/${t} (${pct}%)`;
+    });
+
+  } else if (scope === 'week') {
+    const wn = params;
+    const w = weekStats(wn);
+    const wData = MONTH_DATA.weeks[wn - 1];
+    title = `A Listening Diary · Week ${romanize(wn)} ${wData.title} (${dateStr})`;
+    const a = weekAnalysis(wn);
+    body = a ? `${a.summary}\n\n${a.insight}\n\n建议：${a.suggestion}` : `Week ${romanize(wn)}：还没勾选过任务。`;
+
+    body += '\n\n— 每日 —';
+    for (let dn = 1; dn <= 7; dn++) {
+      const d = dayStats(wn, dn);
+      const dpct = d.total > 0 ? Math.round(d.done/d.total*100) : 0;
+      const day = wData.days.find(x => x.num === dn);
+      body += `\nDay ${romanize(dn)} (${day?.title || ''})：${d.done}/${d.total} (${dpct}%) · ${d.mins} min`;
+    }
+
+    // reflections if filled
+    const refls = state.weeks[wn].reflections || {};
+    const filled = Object.entries(refls).filter(([k, v]) => v && v.trim());
+    if (filled.length > 0) {
+      body += '\n\n— 本周反思 —';
+      filled.forEach(([k, v]) => {
+        body += `\n· ${v.trim()}`;
+      });
+    }
+
+  } else if (scope === 'day') {
+    const [wn, dn] = params;
+    const week = MONTH_DATA.weeks[wn - 1];
+    const day = week.days.find(x => x.num === dn);
+    if (!day) return { title: '', body: '' };
+    title = `A Listening Diary · Day ${romanize(dn)} ${day.title} (${dateStr})`;
+    const d = dayStats(wn, dn);
+    const dpct = d.total > 0 ? Math.round(d.done/d.total*100) : 0;
+    body = `Day ${romanize(dn)} · Week ${romanize(wn)}\n${day.thesis}\n\n完成度：${d.done}/${d.total} (${dpct}%)\n时间投入：${d.mins} min`;
+
+    body += '\n\n— 任务清单 —';
+    day.sections.forEach((sec, sIdx) => {
+      body += `\n\n[${sec.title}]`;
+      sec.tasks.forEach((task, tIdx) => {
+        const id = taskId(wn, dn, sIdx, tIdx, false);
+        const done = !!state.weeks[wn].checks[id];
+        body += `\n${done ? '✓' : '○'} ${task.text}`;
+      });
+    });
+    if (day.lowState) {
+      body += `\n\n[最低版本]`;
+      day.lowState.tasks.forEach((task, tIdx) => {
+        const id = taskId(wn, dn, 0, tIdx, true);
+        const done = !!state.weeks[wn].checks[id];
+        body += `\n${done ? '✓' : '○'} ${task.text}`;
+      });
+    }
+    if (day.reflections) {
+      const filledR = day.reflections.filter(r => state.weeks[wn].reflections[r.id]);
+      if (filledR.length > 0) {
+        body += '\n\n— 反思 —';
+        filledR.forEach(r => {
+          body += `\n${r.label}\n${state.weeks[wn].reflections[r.id]}`;
+        });
+      }
+    }
+  }
+  return { title, body };
+}
+
+async function shareScope(scope, params) {
+  const { title, body } = buildReportText(scope, params);
+  const text = `${title}\n\n${body}`;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, text });
+    } catch (e) {
+      // user cancelled or unsupported
+      if (e.name !== 'AbortError') copyToClipboard(text);
+    }
+  } else {
+    copyToClipboard(text);
+    alert('设备不支持原生分享。报告已复制到剪贴板,粘到任何地方即可。');
+  }
+}
+
+async function copyScope(scope, params) {
+  const { title, body } = buildReportText(scope, params);
+  const text = `${title}\n\n${body}`;
+  copyToClipboard(text);
+  showMsg('报告已复制到剪贴板。');
+}
+
+async function shareData() {
+  const json = JSON.stringify(state, null, 2);
+  const date = new Date().toLocaleDateString('zh-CN');
+  const wrapper = `A Listening Diary · 数据备份 (${date})\n\n${json}`;
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `Diary Backup ${date}`,
+        text: wrapper
+      });
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        copyToClipboard(wrapper);
+        showDataMsg('设备不支持原生分享。已复制到剪贴板。');
+      }
+    }
+  } else {
+    copyToClipboard(wrapper);
+    showDataMsg('设备不支持原生分享。已复制到剪贴板,粘到备忘录即可。');
+  }
+}
+
+async function copyData() {
+  const json = JSON.stringify(state, null, 2);
+  document.getElementById('dataArea').value = json;
+  copyToClipboard(json);
+  showDataMsg('JSON 已复制到剪贴板。');
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function showMsg(msg) {
+  // tiny toast — reuse data msg if available else alert
+  const el = document.getElementById('dataMsg');
+  if (el) {
+    el.textContent = msg;
+    el.classList.remove('error');
+    clearTimeout(window._msgTimer);
+    window._msgTimer = setTimeout(() => { el.textContent = ''; }, 3500);
+  }
+}
+
+function showDataMsg(msg, isError = false) {
+  const el = document.getElementById('dataMsg');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.toggle('error', isError);
+}
+
+// ═════════════ DATA BACKUP ═════════════
+
+function exportData() {
+  const json = JSON.stringify(state, null, 2);
+  document.getElementById('dataArea').value = json;
+  showDataMsg('已显示在下面。');
+}
+
+async function importPrompt() {
+  const raw = document.getElementById('dataArea').value.trim();
+  if (!raw) {
+    showDataMsg('先把备份的文字粘贴到上面那个框里。', true);
+    return;
+  }
+  // Extract the JSON object from raw input (which might have a wrapper header)
+  let text = raw;
+  const m = raw.match(/(\{[\s\S]*\})/);
+  if (m) text = m[1];
+
+  try {
+    const parsed = JSON.parse(text);
+    if (!parsed.weeks) throw new Error('not the right shape');
+    if (!confirm('用粘贴的数据替换当前的勾选、反思和计数？此动作不可撤销。')) return;
+    state = Object.assign(state, parsed);
+    // Make sure each week has the right shape
+    for (let w = 1; w <= 4; w++) {
+      if (!state.weeks[w]) state.weeks[w] = emptyWeekState();
+      state.weeks[w].counters = Object.assign({ phrases: 0, memos: 0, stumbles: 0 }, state.weeks[w].counters || {});
+    }
+    await saveState();
+    applyCheckedState();
+    [1,2,3,4].forEach(w => {
+      ['phrases','memos','stumbles'].forEach(k => {
+        const el = document.getElementById(`cnt-${w}-${k}`);
+        if (el) el.textContent = state.weeks[w].counters[k];
+      });
+    });
+    updateAll();
+    showActiveWeek();
+    document.getElementById('dataMsg').textContent = '已恢复。';
+    document.getElementById('dataMsg').classList.remove('error');
+  } catch (e) {
+    document.getElementById('dataMsg').textContent = '导入失败：那段文字不是有效的备份格式。';
+    document.getElementById('dataMsg').classList.add('error');
+  }
+}
+
+async function resetMonth() {
+  if (!confirm('清空整个月度（所有 4 周的勾选、反思、计数、热力图）？此动作不可撤销。')) return;
+  for (let w = 1; w <= 4; w++) state.weeks[w] = emptyWeekState();
+  state.activeWeek = 1;
+  state.actionLog = {};
+  // keep profile name — that's identity, not progress
+  await saveState();
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+  document.querySelectorAll('textarea.reflection-input').forEach(ta => ta.value = '');
+  [1,2,3,4].forEach(w => {
+    ['phrases','memos','stumbles'].forEach(k => {
+      const el = document.getElementById(`cnt-${w}-${k}`);
+      if (el) el.textContent = 0;
+    });
+  });
+  updateAll();
+  showActiveWeek();
+  document.getElementById('dataMsg').textContent = '已清空。';
+  document.getElementById('dataMsg').classList.remove('error');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═════════════ INIT ═════════════
+
+async function init() {
+  renderWeekTabs();
+  renderAllWeeks();
+  if (supabaseClient) {
+    const { data } = await supabaseClient.auth.getSession();
+    const sessionUser = data.session && data.session.user;
+    if (sessionUser) {
+      const username = sessionUser.user_metadata && sessionUser.user_metadata.username;
+      if (username) {
+        currentUser = normalizeUsername(username);
+        cloudUserId = sessionUser.id;
+        await loadState();
+      }
+    }
+  }
+  applyCheckedState();
+  syncUserInterface();
+  showActiveWeek();
+  updateAll();
+  if (!currentUser) {
+    if (!cloudConfigured) {
+      document.getElementById('authNote').textContent = '等待连接云端项目配置。';
+    }
+    setTimeout(() => document.getElementById('loginUsername').focus(), 50);
+  }
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+}
+
+init();
+</script>
+
+</body>
+</html>
