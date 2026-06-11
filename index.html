@@ -701,6 +701,30 @@ body {
 
 .task input[type="checkbox"]:checked + label { color: var(--margin); }
 
+.task-block { margin-bottom: 5px; }
+.task-block .task { padding-bottom: 2px; }
+.task-note {
+  width: calc(100% - 28px);
+  min-height: 30px;
+  margin: 0 0 5px 28px;
+  padding: 4px 8px 6px;
+  resize: vertical;
+  border: 0;
+  border-left: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: 'Source Serif 4', serif;
+  font-size: 13.5px;
+  font-style: italic;
+  line-height: 1.45;
+  outline: none;
+}
+.task-note::placeholder { color: var(--margin); opacity: .65; }
+.task-note:focus {
+  border-left-color: var(--accent);
+  background: rgba(255,255,255,.18);
+}
+
 /* Low state */
 .low-state {
   margin-top: 20px;
@@ -1374,6 +1398,16 @@ body {
 .pv-task-mark.done::after { transform: translate(-50%, -50%) rotate(-45deg); }
 .pv-task.done { color: #8B7E68; }
 .pv-task-label { flex: 1; }
+.pv-task-note {
+  margin: -2pt 0 7pt 18pt;
+  padding: 4pt 7pt;
+  border-left: 1pt solid #C8BDA7;
+  color: #4A4036;
+  font-size: 8.5pt;
+  font-style: italic;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
 
 .pv-section-note {
   font-style: italic;
@@ -2705,6 +2739,7 @@ let state = createInitialState(currentUser);
 function emptyWeekState() {
   return {
     checks: {},
+    notes: {},
     reflections: {},
     counters: { phrases: 0, memos: 0, stumbles: 0 }
   };
@@ -2756,6 +2791,7 @@ async function loadState() {
         for (let w = 1; w <= 4; w++) {
           if (parsed.weeks[w]) {
             state.weeks[w] = Object.assign(emptyWeekState(), parsed.weeks[w]);
+            state.weeks[w].notes = Object.assign({}, parsed.weeks[w].notes || {});
             state.weeks[w].counters = Object.assign(
               { phrases: 0, memos: 0, stumbles: 0 },
               parsed.weeks[w].counters || {}
@@ -2902,9 +2938,12 @@ function renderWeekContent(week) {
         ${section.pick ? `<p class="pick-one">不用全做，挑一个动起来比想做哪个更重要。</p>` : ''}
         ${section.tasks.map((task, tIdx) => {
           const id = taskId(week.num, day.num, sIdx, tIdx, false);
-          return `<div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
-            <input type="checkbox" id="${id}">
-            <label for="${id}">${task.text}</label>
+          return `<div class="task-block">
+            <div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
+              <input type="checkbox" id="${id}">
+              <label for="${id}">${task.text}</label>
+            </div>
+            <textarea id="${id}-note" class="task-note" data-week="${week.num}" data-task-id="${id}" rows="1" placeholder="Note · 当时的感受、卡点或灵感…"></textarea>
           </div>`;
         }).join('')}
       </div>`;
@@ -2917,9 +2956,12 @@ function renderWeekContent(week) {
         ${day.lowState.note ? `<p class="low-state-note">${day.lowState.note}</p>` : ''}
         ${day.lowState.tasks.map((task, tIdx) => {
           const id = taskId(week.num, day.num, 0, tIdx, true);
-          return `<div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
-            <input type="checkbox" id="${id}">
-            <label for="${id}">${task.text}</label>
+          return `<div class="task-block">
+            <div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
+              <input type="checkbox" id="${id}">
+              <label for="${id}">${task.text}</label>
+            </div>
+            <textarea id="${id}-note" class="task-note" data-week="${week.num}" data-task-id="${id}" rows="1" placeholder="Note · 当时的感受、卡点或灵感…"></textarea>
           </div>`;
         }).join('')}
       </div>`;
@@ -2996,6 +3038,12 @@ function applyCheckedState() {
     const wnum = ta.dataset.week;
     if (!wnum) return;
     ta.value = state.weeks[wnum].reflections[ta.id] || '';
+  });
+  document.querySelectorAll('textarea.task-note').forEach(ta => {
+    const wnum = ta.dataset.week;
+    const taskKey = ta.dataset.taskId;
+    if (!wnum || !taskKey) return;
+    ta.value = state.weeks[wnum].notes[taskKey] || '';
   });
 }
 
@@ -3408,6 +3456,13 @@ document.addEventListener('input', (e) => {
     clearTimeout(window._reflTimer);
     window._reflTimer = setTimeout(saveState, 500);
   }
+  if (e.target.matches('textarea.task-note')) {
+    const wnum = e.target.dataset.week;
+    const taskKey = e.target.dataset.taskId;
+    state.weeks[wnum].notes[taskKey] = e.target.value;
+    clearTimeout(window._taskNoteTimer);
+    window._taskNoteTimer = setTimeout(saveState, 600);
+  }
   if (e.target.id === 'profileName') {
     state.profile.name = e.target.value.trim();
     clearTimeout(window._profileTimer);
@@ -3799,11 +3854,12 @@ function buildPrintHTML(scope, params) {
   return '';
 }
 
-function pvTask(text, done, indent = false) {
+function pvTask(text, done, note = '', indent = false) {
   return `<div class="pv-task ${done ? 'done' : ''}" ${indent ? 'style="padding-left:8pt"' : ''}>
     <span class="pv-task-mark ${done ? 'done' : ''}"></span>
     <span class="pv-task-label">${text}</span>
-  </div>`;
+  </div>
+  ${note && note.trim() ? `<div class="pv-task-note"><strong>Note ·</strong> ${escapeHtml(note.trim())}</div>` : ''}`;
 }
 
 function pvDaySections(week, day) {
@@ -3814,7 +3870,7 @@ function pvDaySections(week, day) {
     if (sec.pick) html += `<p class="pv-section-note">不用全做,挑一个动起来。</p>`;
     sec.tasks.forEach((task, tIdx) => {
       const id = taskId(week.num, day.num, sIdx, tIdx, false);
-      html += pvTask(task.text, !!state.weeks[week.num].checks[id]);
+      html += pvTask(task.text, !!state.weeks[week.num].checks[id], state.weeks[week.num].notes[id] || '');
     });
     html += `</div>`;
   });
@@ -3823,7 +3879,7 @@ function pvDaySections(week, day) {
     if (day.lowState.note) html += `<p class="pv-section-note">${day.lowState.note}</p>`;
     day.lowState.tasks.forEach((task, tIdx) => {
       const id = taskId(week.num, day.num, 0, tIdx, true);
-      html += pvTask(task.text, !!state.weeks[week.num].checks[id]);
+      html += pvTask(task.text, !!state.weeks[week.num].checks[id], state.weeks[week.num].notes[id] || '');
     });
     html += `</div>`;
   }
@@ -4023,6 +4079,38 @@ function buildMonthPrintHTML(date) {
     </div>`;
   }
 
+  // Collect task-level notes across the month
+  let taskNotesHtml = '';
+  [1,2,3,4].forEach(wn => {
+    const week = MONTH_DATA.weeks[wn - 1];
+    week.days.forEach(day => {
+      const entries = [];
+      day.sections.forEach((sec, sIdx) => {
+        sec.tasks.forEach((task, tIdx) => {
+          const id = taskId(wn, day.num, sIdx, tIdx, false);
+          const note = state.weeks[wn].notes[id];
+          if (note && note.trim()) entries.push({ task: task.text, note });
+        });
+      });
+      if (day.lowState) {
+        day.lowState.tasks.forEach((task, tIdx) => {
+          const id = taskId(wn, day.num, 0, tIdx, true);
+          const note = state.weeks[wn].notes[id];
+          if (note && note.trim()) entries.push({ task: task.text, note });
+        });
+      }
+      if (!entries.length) return;
+      if (!taskNotesHtml) taskNotesHtml = `<div class="pv-section"><h3>任务 Notes</h3>`;
+      taskNotesHtml += `<div style="margin-top:10px"><div style="font-family:'Fraunces',serif;font-style:italic;color:#2C4A3E;font-size:11.5px;margin-bottom:4px">Week ${romanize(wn)} · Day ${romanize(day.num)} · ${day.title}</div>`;
+      entries.forEach(entry => {
+        taskNotesHtml += `<div class="pv-task"><span class="pv-task-mark"></span><span class="pv-task-label">${entry.task}</span></div>
+          <div class="pv-task-note"><strong>Note ·</strong> ${escapeHtml(entry.note.trim())}</div>`;
+      });
+      taskNotesHtml += `</div>`;
+    });
+  });
+  if (taskNotesHtml) taskNotesHtml += `</div>`;
+
   // Collect all reflections across the month
   let reflHtml = '';
   const anyRefls = [1,2,3,4].some(wn => Object.values(state.weeks[wn].reflections || {}).some(v => v && v.trim()));
@@ -4063,6 +4151,7 @@ function buildMonthPrintHTML(date) {
     ${weeksHtml}
     ${trackHtml}
     ${analysisHtml}
+    ${taskNotesHtml}
     ${reflHtml}
 
     <div class="pv-footer">Generated ${date} · A Listening Diary</div>
@@ -4070,6 +4159,30 @@ function buildMonthPrintHTML(date) {
 }
 
 // ═════════════ TEXT REPORT (for "Show as text") ═════════════
+
+function collectTaskNotes(weekNums) {
+  const items = [];
+  weekNums.forEach(wn => {
+    const week = MONTH_DATA.weeks[wn - 1];
+    week.days.forEach(day => {
+      day.sections.forEach((sec, sIdx) => {
+        sec.tasks.forEach((task, tIdx) => {
+          const id = taskId(wn, day.num, sIdx, tIdx, false);
+          const note = state.weeks[wn].notes[id];
+          if (note && note.trim()) items.push({ wn, day, task: task.text, note: note.trim() });
+        });
+      });
+      if (day.lowState) {
+        day.lowState.tasks.forEach((task, tIdx) => {
+          const id = taskId(wn, day.num, 0, tIdx, true);
+          const note = state.weeks[wn].notes[id];
+          if (note && note.trim()) items.push({ wn, day, task: task.text, note: note.trim() });
+        });
+      }
+    });
+  });
+  return items;
+}
 
 function buildReportText(scope, params) {
   const dateStr = new Date().toLocaleDateString('zh-CN');
@@ -4102,6 +4215,13 @@ function buildReportText(scope, params) {
       const pct = t > 0 ? Math.round(d/t*100) : 0;
       body += `\n${TRACKS_META[k].name}：${d}/${t} (${pct}%)`;
     });
+    const taskNotes = collectTaskNotes([1,2,3,4]);
+    if (taskNotes.length) {
+      body += '\n\n— 任务 Notes —';
+      taskNotes.forEach(item => {
+        body += `\n\nWeek ${romanize(item.wn)} · Day ${romanize(item.day.num)} · ${item.day.title}\n${item.task}\nNote：${item.note}`;
+      });
+    }
 
   } else if (scope === 'week') {
     const wn = params;
@@ -4128,6 +4248,13 @@ function buildReportText(scope, params) {
         body += `\n· ${v.trim()}`;
       });
     }
+    const taskNotes = collectTaskNotes([wn]);
+    if (taskNotes.length) {
+      body += '\n\n— 任务 Notes —';
+      taskNotes.forEach(item => {
+        body += `\n\nDay ${romanize(item.day.num)} · ${item.day.title}\n${item.task}\nNote：${item.note}`;
+      });
+    }
 
   } else if (scope === 'day') {
     const [wn, dn] = params;
@@ -4146,6 +4273,8 @@ function buildReportText(scope, params) {
         const id = taskId(wn, dn, sIdx, tIdx, false);
         const done = !!state.weeks[wn].checks[id];
         body += `\n${done ? '✓' : '○'} ${task.text}`;
+        const note = state.weeks[wn].notes[id];
+        if (note && note.trim()) body += `\n  Note：${note.trim()}`;
       });
     });
     if (day.lowState) {
@@ -4154,6 +4283,8 @@ function buildReportText(scope, params) {
         const id = taskId(wn, dn, 0, tIdx, true);
         const done = !!state.weeks[wn].checks[id];
         body += `\n${done ? '✓' : '○'} ${task.text}`;
+        const note = state.weeks[wn].notes[id];
+        if (note && note.trim()) body += `\n  Note：${note.trim()}`;
       });
     }
     if (day.reflections) {
@@ -4285,6 +4416,7 @@ async function importPrompt() {
     // Make sure each week has the right shape
     for (let w = 1; w <= 4; w++) {
       if (!state.weeks[w]) state.weeks[w] = emptyWeekState();
+      state.weeks[w].notes = Object.assign({}, state.weeks[w].notes || {});
       state.weeks[w].counters = Object.assign({ phrases: 0, memos: 0, stumbles: 0 }, state.weeks[w].counters || {});
     }
     await saveState();
@@ -4314,6 +4446,7 @@ async function resetMonth() {
   await saveState();
   document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
   document.querySelectorAll('textarea.reflection-input').forEach(ta => ta.value = '');
+  document.querySelectorAll('textarea.task-note').forEach(ta => ta.value = '');
   [1,2,3,4].forEach(w => {
     ['phrases','memos','stumbles'].forEach(k => {
       const el = document.getElementById(`cnt-${w}-${k}`);
