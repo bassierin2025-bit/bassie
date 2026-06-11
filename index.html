@@ -724,6 +724,146 @@ body {
   border-left-color: var(--accent);
   background: rgba(255,255,255,.18);
 }
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px 28px;
+}
+.timer-btn {
+  padding: 5px 9px;
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--accent);
+  font: 600 10px 'Inter', sans-serif;
+  letter-spacing: .06em;
+  cursor: pointer;
+}
+.timer-btn.running {
+  border-color: var(--check);
+  color: var(--check);
+  background: var(--check-bg);
+}
+.task-actual-time {
+  color: var(--margin);
+  font: 11px 'Inter', sans-serif;
+}
+
+.active-timer {
+  position: sticky;
+  top: 8px;
+  z-index: 30;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -10px 0 18px;
+  padding: 12px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 8px 28px rgba(28,24,19,.2);
+}
+.active-timer.show { display: flex; }
+.active-timer-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 13px 'Source Serif 4', serif;
+}
+.active-timer-clock {
+  flex-shrink: 0;
+  color: var(--paper);
+  font: 600 17px 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.active-timer-stop {
+  flex-shrink: 0;
+  padding: 7px 9px;
+  border: 1px solid rgba(245,239,227,.5);
+  background: transparent;
+  color: var(--paper);
+  font: 600 10px 'Inter', sans-serif;
+  cursor: pointer;
+}
+
+.actual-dashboard {
+  padding: 16px 14px;
+  border: 1px solid var(--hairline);
+  background: rgba(255,255,255,.18);
+}
+.today-total {
+  margin-bottom: 14px;
+  color: var(--ink-soft);
+  font-style: italic;
+  text-align: center;
+}
+.today-total strong {
+  color: var(--accent);
+  font: 500 28px 'Fraunces', serif;
+}
+.today-chart-grid {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+.time-pie {
+  width: 142px;
+  aspect-ratio: 1;
+  margin: auto;
+  border-radius: 50%;
+  background: var(--paper-deep);
+  position: relative;
+}
+.time-pie::after {
+  content: '';
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  background: var(--paper);
+}
+.time-bars { display: grid; gap: 9px; }
+.time-bar-row {
+  display: grid;
+  grid-template-columns: minmax(80px,1fr) 2fr 48px;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+}
+.time-bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.time-bar-bg { height: 6px; background: var(--paper-deep); }
+.time-bar-fill { height: 100%; background: var(--accent); }
+.time-bar-value { text-align: right; color: var(--margin); font-family: 'Inter', sans-serif; }
+.week-actual-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  align-items: end;
+  height: 128px;
+  margin-top: 14px;
+}
+.week-actual-day {
+  display: grid;
+  grid-template-rows: 1fr auto auto auto;
+  gap: 5px;
+  height: 100%;
+  text-align: center;
+}
+.week-actual-bar-wrap { display: flex; align-items: end; justify-content: center; }
+.week-actual-bar { width: 70%; min-height: 3px; background: var(--accent); opacity: .78; }
+.week-actual-min { color: var(--ink-soft); font: 9px 'Inter', sans-serif; }
+.week-actual-label { color: var(--margin); font: 9px 'Inter', sans-serif; text-transform: uppercase; }
+.week-task-dots { display: flex; justify-content: center; gap: 2px; min-height: 5px; flex-wrap: wrap; }
+.week-task-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--check); display: block; }
+.week-actual-line {
+  width: 100%;
+  height: 78px;
+  display: block;
+  margin-top: 16px;
+  border-top: 1px dotted var(--hairline);
+  padding-top: 8px;
+}
 
 /* Low state */
 .low-state {
@@ -1875,6 +2015,9 @@ body {
   .profile-name { font-size: 14px; }
   .auth-card { padding: 32px 22px; }
   .app-userbar { position: sticky; top: 8px; z-index: 20; backdrop-filter: blur(12px); }
+  .today-chart-grid { grid-template-columns: 1fr; }
+  .time-pie { width: 130px; }
+  .active-timer { top: 60px; }
 }
 </style>
 </head>
@@ -1898,6 +2041,11 @@ body {
 <div class="app-userbar">
   <span class="current-user">当前用户：<strong id="currentUsername">—</strong></span>
   <button class="logout-button" type="button" id="logoutButton">退出 / 切换用户</button>
+</div>
+<div class="active-timer" id="activeTimerBar">
+  <span class="active-timer-title" id="activeTimerTitle">正在计时</span>
+  <span class="active-timer-clock" id="activeTimerClock">00:00:00</span>
+  <button class="active-timer-stop" type="button" id="activeTimerStop">结束 + 日历</button>
 </div>
 
 <header class="cover">
@@ -1939,6 +2087,21 @@ body {
         <span>more</span>
       </div>
       <div class="heatmap-summary" id="heatmapSummary"></div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <h4 class="dash-section-title">今日真实投入 · actual time</h4>
+    <div class="actual-dashboard">
+      <div class="today-total">今天累计 <strong id="todayActualTotal">0 min</strong></div>
+      <div class="today-chart-grid">
+        <div class="time-pie" id="todayTimePie" aria-label="今日任务时间配比"></div>
+        <div class="time-bars" id="todayTimeBars">
+          <div class="heatmap-summary">完成计时后，这里会显示每个任务的真实时间配比。</div>
+        </div>
+      </div>
+      <div class="week-actual-grid" id="weekActualGrid"></div>
+      <svg class="week-actual-line" id="weekActualLine" viewBox="0 0 700 70" preserveAspectRatio="none" aria-label="本周实际时长折线图"></svg>
     </div>
   </div>
 
@@ -2728,7 +2891,9 @@ function createInitialState(username = '') {
     activeWeek: 1,
     weeks: {},
     profile: { name: username },
-    actionLog: {}
+    actionLog: {},
+    sessions: [],
+    activeTimer: null
   };
   for (let w = 1; w <= 4; w++) fresh.weeks[w] = emptyWeekState();
   return fresh;
@@ -2787,6 +2952,8 @@ async function loadState() {
       if (parsed.activeWeek) state.activeWeek = parsed.activeWeek;
       state.profile = Object.assign({ name: currentUser }, parsed.profile || {}, { name: currentUser });
       if (parsed.actionLog) state.actionLog = parsed.actionLog;
+      state.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
+      state.activeTimer = parsed.activeTimer || null;
       if (parsed.weeks) {
         for (let w = 1; w <= 4; w++) {
           if (parsed.weeks[w]) {
@@ -2943,6 +3110,10 @@ function renderWeekContent(week) {
               <input type="checkbox" id="${id}">
               <label for="${id}">${task.text}</label>
             </div>
+            <div class="task-actions">
+              <button type="button" class="timer-btn" data-timer-task="${id}" data-week="${week.num}" data-day="${day.num}" data-task-title="${escapeHtml(task.text)}">开始计时</button>
+              <span class="task-actual-time" data-task-time="${id}">实际 0 min</span>
+            </div>
             <textarea id="${id}-note" class="task-note" data-week="${week.num}" data-task-id="${id}" rows="1" placeholder="Note · 当时的感受、卡点或灵感…"></textarea>
           </div>`;
         }).join('')}
@@ -2960,6 +3131,10 @@ function renderWeekContent(week) {
             <div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
               <input type="checkbox" id="${id}">
               <label for="${id}">${task.text}</label>
+            </div>
+            <div class="task-actions">
+              <button type="button" class="timer-btn" data-timer-task="${id}" data-week="${week.num}" data-day="${day.num}" data-task-title="${escapeHtml(task.text)}">开始计时</button>
+              <span class="task-actual-time" data-task-time="${id}">实际 0 min</span>
             </div>
             <textarea id="${id}-note" class="task-note" data-week="${week.num}" data-task-id="${id}" rows="1" placeholder="Note · 当时的感受、卡点或灵感…"></textarea>
           </div>`;
@@ -3059,9 +3234,46 @@ function showActiveWeek() {
 
 // ═════════════ COMPUTE & UPDATE ═════════════
 
+function sessionSeconds(session) {
+  return Math.max(0, Number(session.durationSeconds) || 0);
+}
+
+function taskActualSeconds(taskKey) {
+  return (state.sessions || [])
+    .filter(session => session.taskId === taskKey)
+    .reduce((sum, session) => sum + sessionSeconds(session), 0);
+}
+
+function rangeActualSeconds(filterFn) {
+  return (state.sessions || [])
+    .filter(filterFn)
+    .reduce((sum, session) => sum + sessionSeconds(session), 0);
+}
+
+function actualSecondsForDay(weekNum, dayNum) {
+  return rangeActualSeconds(session => Number(session.week) === weekNum && Number(session.day) === dayNum);
+}
+
+function actualSecondsForWeek(weekNum) {
+  return rangeActualSeconds(session => Number(session.week) === weekNum);
+}
+
+function formatDuration(seconds, compact = false) {
+  const safe = Math.max(0, Math.round(seconds || 0));
+  const hours = Math.floor(safe / 3600);
+  const mins = Math.floor((safe % 3600) / 60);
+  const secs = safe % 60;
+  if (compact) {
+    if (hours) return `${hours}h ${mins}m`;
+    if (mins) return `${mins}m`;
+    return `${secs}s`;
+  }
+  return [hours, mins, secs].map(n => String(n).padStart(2, '0')).join(':');
+}
+
 function weekStats(weekNum) {
   const weekData = MONTH_DATA.weeks[weekNum - 1];
-  let total = 0, done = 0, mins = 0;
+  let total = 0, done = 0, estimatedMins = 0;
   const byTrack = {};
 
   weekData.days.forEach(day => {
@@ -3073,7 +3285,7 @@ function weekStats(weekNum) {
         byTrack[task.track][1]++;
         if (state.weeks[weekNum].checks[id]) {
           done++;
-          mins += task.mins || 0;
+          estimatedMins += task.mins || 0;
           byTrack[task.track][0]++;
         }
       });
@@ -3086,21 +3298,22 @@ function weekStats(weekNum) {
         byTrack[task.track][1]++;
         if (state.weeks[weekNum].checks[id]) {
           done++;
-          mins += task.mins || 0;
+          estimatedMins += task.mins || 0;
           byTrack[task.track][0]++;
         }
       });
     }
   });
 
-  return { total, done, mins, byTrack };
+  const actualSeconds = actualSecondsForWeek(weekNum);
+  return { total, done, mins: Math.round(actualSeconds / 60), actualSeconds, estimatedMins, byTrack };
 }
 
 function dayStats(weekNum, dayNum) {
   const weekData = MONTH_DATA.weeks[weekNum - 1];
   const day = weekData.days.find(d => d.num === dayNum);
   if (!day) return { total: 0, done: 0, mins: 0, byTrack: {} };
-  let total = 0, done = 0, mins = 0;
+  let total = 0, done = 0, estimatedMins = 0;
   const byTrack = {};
   day.sections.forEach((sec, sIdx) => {
     sec.tasks.forEach((task, tIdx) => {
@@ -3110,7 +3323,7 @@ function dayStats(weekNum, dayNum) {
       byTrack[task.track][1]++;
       if (state.weeks[weekNum].checks[id]) {
         done++;
-        mins += task.mins || 0;
+        estimatedMins += task.mins || 0;
         byTrack[task.track][0]++;
       }
     });
@@ -3123,12 +3336,13 @@ function dayStats(weekNum, dayNum) {
       byTrack[task.track][1]++;
       if (state.weeks[weekNum].checks[id]) {
         done++;
-        mins += task.mins || 0;
+        estimatedMins += task.mins || 0;
         byTrack[task.track][0]++;
       }
     });
   }
-  return { total, done, mins, byTrack };
+  const actualSeconds = actualSecondsForDay(weekNum, dayNum);
+  return { total, done, mins: Math.round(actualSeconds / 60), actualSeconds, estimatedMins, byTrack };
 }
 
 function updateAll() {
@@ -3177,14 +3391,14 @@ function updateAll() {
   // Per-week visible items
   document.querySelectorAll('.day').forEach(dayEl => {
     const [wn, dn] = dayEl.dataset.weekDay.split('-').map(Number);
-    const { total, done, mins, byTrack } = dayStats(wn, dn);
+    const { total, done, mins, actualSeconds, byTrack } = dayStats(wn, dn);
     const prog = dayEl.querySelector('[data-day-prog]');
     if (prog) prog.textContent = `${done} / ${total}`;
     // Day stat strip
     const strip = dayEl.querySelector(`[data-day-strip="${wn}-${dn}"]`);
     if (strip) {
-      if (done === 0) {
-        strip.innerHTML = `<span class="dss-mins">0 min · 还没开始</span>`;
+      if (done === 0 && actualSeconds === 0) {
+        strip.innerHTML = `<span class="dss-mins">实际 0 min · 还没开始</span>`;
       } else {
         // find top track
         let topTrack = null, topPct = -1;
@@ -3194,7 +3408,7 @@ function updateAll() {
           if (d > 0 && d / tt > topPct) { topPct = d / tt; topTrack = t; }
         }
         const topName = topTrack ? TRACKS_META[topTrack].name : '最低版本';
-        strip.innerHTML = `<span class="dss-mins">${mins} min</span><span class="dss-sep">·</span><span>主线: ${topName}</span>`;
+        strip.innerHTML = `<span class="dss-mins">实际 ${formatDuration(actualSeconds, true)}</span><span class="dss-sep">·</span><span>主线: ${topName}</span>`;
       }
     }
     // index nav
@@ -3215,6 +3429,8 @@ function updateAll() {
 
   // Heatmap
   renderHeatmap();
+  renderActualTimeDashboard();
+  updateTimerInterface();
 
   // Analysis text
   renderMonthAnalysis(ws);
@@ -3319,6 +3535,201 @@ function syncUserInterface() {
   }
 }
 
+let timerTicker = null;
+
+function updateTimerInterface() {
+  const active = state.activeTimer;
+  const bar = document.getElementById('activeTimerBar');
+  document.querySelectorAll('.timer-btn').forEach(button => {
+    const running = !!active && active.taskId === button.dataset.timerTask;
+    button.classList.toggle('running', running);
+    button.textContent = running ? '结束 + 日历' : '开始计时';
+  });
+  document.querySelectorAll('[data-task-time]').forEach(el => {
+    el.textContent = `实际 ${formatDuration(taskActualSeconds(el.dataset.taskTime), true)}`;
+  });
+  if (!active) {
+    bar.classList.remove('show');
+    clearInterval(timerTicker);
+    timerTicker = null;
+    return;
+  }
+  bar.classList.add('show');
+  document.getElementById('activeTimerTitle').textContent = active.title;
+  const tick = () => {
+    const elapsed = Math.max(0, (Date.now() - new Date(active.startedAt).getTime()) / 1000);
+    document.getElementById('activeTimerClock').textContent = formatDuration(elapsed);
+  };
+  tick();
+  if (!timerTicker) timerTicker = setInterval(() => {
+    tick();
+    renderActualTimeDashboard();
+  }, 1000);
+}
+
+async function startTaskTimer(button) {
+  if (state.activeTimer) {
+    if (state.activeTimer.taskId === button.dataset.timerTask) return stopTaskTimer(true);
+    showMsg(`请先结束正在计时的任务：${state.activeTimer.title}`);
+    return;
+  }
+  state.activeTimer = {
+    taskId: button.dataset.timerTask,
+    title: button.dataset.taskTitle,
+    week: Number(button.dataset.week),
+    day: Number(button.dataset.day),
+    startedAt: new Date().toISOString()
+  };
+  await saveState();
+  updateTimerInterface();
+  renderActualTimeDashboard();
+}
+
+async function stopTaskTimer(addToCalendar = true) {
+  const active = state.activeTimer;
+  if (!active) return;
+  const endedAt = new Date();
+  const startedAt = new Date(active.startedAt);
+  const durationSeconds = Math.max(1, Math.round((endedAt - startedAt) / 1000));
+  const note = state.weeks[active.week]?.notes?.[active.taskId] || '';
+  const session = {
+    id: `${active.taskId}-${endedAt.getTime()}`,
+    taskId: active.taskId,
+    title: active.title,
+    week: active.week,
+    day: active.day,
+    startedAt: startedAt.toISOString(),
+    endedAt: endedAt.toISOString(),
+    durationSeconds,
+    note
+  };
+  state.sessions.push(session);
+  state.activeTimer = null;
+  const dateKey = isoDate(startedAt);
+  if (!state.actionLog[dateKey]) state.actionLog[dateKey] = { checks: 0, mins: 0, actualSeconds: 0 };
+  state.actionLog[dateKey].actualSeconds = Math.max(0, Number(state.actionLog[dateKey].actualSeconds) || 0) + durationSeconds;
+  if (addToCalendar) shareCalendarSession(session);
+  await saveState();
+  updateTimerInterface();
+  updateAll();
+  showMsg(`已记录 ${formatDuration(durationSeconds, true)}，日历事件已生成。`);
+}
+
+function escapeIcs(text) {
+  return String(text || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+}
+
+function icsUtc(dateValue) {
+  return new Date(dateValue).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+}
+
+async function shareCalendarSession(session) {
+  const description = [
+    `Listening Diary · Week ${romanize(session.week)} · Day ${romanize(session.day)}`,
+    session.note ? `Note: ${session.note}` : '',
+    `实际时长: ${formatDuration(session.durationSeconds, true)}`
+  ].filter(Boolean).join('\n');
+  const ics = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Listening Diary//Task Timer//ZH',
+    'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
+    `UID:${session.id}@listening-diary.app`, `DTSTAMP:${icsUtc(new Date())}`,
+    `DTSTART:${icsUtc(session.startedAt)}`, `DTEND:${icsUtc(session.endedAt)}`,
+    `SUMMARY:${escapeIcs(session.title)}`, `DESCRIPTION:${escapeIcs(description)}`,
+    'END:VEVENT', 'END:VCALENDAR'
+  ].join('\r\n');
+  const file = new File([ics], `Listening-${session.id}.ics`, { type: 'text/calendar' });
+  try {
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ title: session.title, files: [file] });
+      return;
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') return;
+  }
+  const url = URL.createObjectURL(file);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = file.name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function sessionsForDate(date) {
+  const key = isoDate(date);
+  return (state.sessions || []).filter(session => isoDate(new Date(session.startedAt)) === key);
+}
+
+function renderActualTimeDashboard() {
+  const today = new Date();
+  const byTask = {};
+  sessionsForDate(today).forEach(session => {
+    if (!byTask[session.taskId]) byTask[session.taskId] = { title: session.title, seconds: 0 };
+    byTask[session.taskId].seconds += sessionSeconds(session);
+  });
+  if (state.activeTimer && isoDate(new Date(state.activeTimer.startedAt)) === isoDate(today)) {
+    const activeSeconds = Math.max(0, (Date.now() - new Date(state.activeTimer.startedAt).getTime()) / 1000);
+    if (!byTask[state.activeTimer.taskId]) byTask[state.activeTimer.taskId] = { title: state.activeTimer.title, seconds: 0 };
+    byTask[state.activeTimer.taskId].seconds += activeSeconds;
+  }
+  const entries = Object.values(byTask).sort((a, b) => b.seconds - a.seconds);
+  const total = entries.reduce((sum, entry) => sum + entry.seconds, 0);
+  document.getElementById('todayActualTotal').textContent = formatDuration(total, true);
+  const colors = ['#2C4A3E','#B5432E','#8B7E68','#4A6B5D','#C28B52','#756A90','#397A89','#9A5661'];
+  let cursor = 0;
+  const segments = entries.map((entry, index) => {
+    const start = total ? cursor / total * 100 : 0;
+    cursor += entry.seconds;
+    return `${colors[index % colors.length]} ${start}% ${total ? cursor / total * 100 : 0}%`;
+  });
+  document.getElementById('todayTimePie').style.background = segments.length ? `conic-gradient(${segments.join(',')})` : 'var(--paper-deep)';
+  const bars = document.getElementById('todayTimeBars');
+  if (!entries.length) {
+    bars.innerHTML = '<div class="heatmap-summary">完成计时后，这里会显示每个任务的真实时间配比。</div>';
+  } else {
+    const max = entries[0].seconds || 1;
+    bars.innerHTML = entries.map((entry, index) => `
+      <div class="time-bar-row" title="${escapeHtml(entry.title)}">
+        <span class="time-bar-label"><span style="color:${colors[index % colors.length]}">●</span> ${escapeHtml(entry.title)}</span>
+        <span class="time-bar-bg"><span class="time-bar-fill" style="display:block;width:${entry.seconds / max * 100}%;background:${colors[index % colors.length]}"></span></span>
+        <span class="time-bar-value">${formatDuration(entry.seconds, true)}</span>
+      </div>`).join('');
+  }
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+  monday.setHours(0,0,0,0);
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + i);
+    const daySessions = sessionsForDate(date);
+    let seconds = daySessions.reduce((sum, session) => sum + sessionSeconds(session), 0);
+    if (state.activeTimer && isoDate(new Date(state.activeTimer.startedAt)) === isoDate(date)) {
+      seconds += Math.max(0, (Date.now() - new Date(state.activeTimer.startedAt).getTime()) / 1000);
+    }
+    return { date, sessions: daySessions, seconds };
+  });
+  const maxDay = Math.max(...weekDays.map(item => item.seconds), 1);
+  document.getElementById('weekActualGrid').innerHTML = weekDays.map(item => `
+    <div class="week-actual-day" title="${isoDate(item.date)} · ${formatDuration(item.seconds, true)}">
+      <div class="week-actual-bar-wrap"><div class="week-actual-bar" style="height:${Math.max(3, item.seconds / maxDay * 90)}%"></div></div>
+      <div class="week-actual-min">${formatDuration(item.seconds, true)}</div>
+      <div class="week-task-dots">${item.sessions.slice(0, 12).map(() => '<i></i>').join('')}</div>
+      <div class="week-actual-label">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][item.date.getDay()]}</div>
+    </div>`).join('');
+  const lineSvg = document.getElementById('weekActualLine');
+  const points = weekDays.map((item, index) => {
+    const x = 50 + index * 100;
+    const y = 60 - (item.seconds / maxDay * 48);
+    return { x, y };
+  });
+  lineSvg.innerHTML = `
+    <line x1="50" y1="60" x2="650" y2="60" stroke="var(--hairline)" stroke-width="1"/>
+    <polyline points="${points.map(point => `${point.x},${point.y}`).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    ${points.map(point => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="var(--paper)" stroke="var(--accent)" stroke-width="3"/>`).join('')}
+  `;
+}
+
 function normalizeUsername(username) {
   return username.trim().toLowerCase();
 }
@@ -3404,6 +3815,8 @@ document.getElementById('logoutButton').addEventListener('click', async () => {
   state = createInitialState();
   applyCheckedState();
   syncUserInterface();
+  updateTimerInterface();
+  renderActualTimeDashboard();
   document.getElementById('loginUsername').value = '';
   document.getElementById('loginPassword').value = '';
   document.getElementById('authNote').textContent = '';
@@ -3423,6 +3836,8 @@ document.getElementById('heatmapNext').addEventListener('click', () => {
     renderHeatmap();
   }
 });
+
+document.getElementById('activeTimerStop').addEventListener('click', () => stopTaskTimer(true));
 
 document.addEventListener('change', async (e) => {
   if (e.target.matches('.task input[type="checkbox"]')) {
@@ -3471,6 +3886,12 @@ document.addEventListener('input', (e) => {
 });
 
 document.addEventListener('click', async (e) => {
+  const timerButton = e.target.closest('.timer-btn');
+  if (timerButton) {
+    await startTaskTimer(timerButton);
+    e.preventDefault();
+    return;
+  }
   // Counter
   if (e.target.matches('.counter-btn')) {
     const wnum = e.target.dataset.cw;
@@ -3709,17 +4130,22 @@ function renderHeatmap() {
   // Compute level thresholds based on this month's max
   const monthActivity = [];
   for (let d = 1; d <= daysInMonth; d++) {
-    const k = isoDate(new Date(year, month, d));
-    monthActivity.push((log[k] || {}).checks || 0);
+    const date = new Date(year, month, d);
+    const k = isoDate(date);
+    const actual = sessionsForDate(date).reduce((sum, session) => sum + sessionSeconds(session), 0);
+    monthActivity.push(Math.max((log[k] || {}).checks || 0, actual > 0 ? 1 : 0));
   }
   // Active days
   const activeDays = monthActivity.filter(c => c > 0).length;
-  const totalChecks = monthActivity.reduce((a, b) => a + b, 0);
+  let totalChecks = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    totalChecks += (log[isoDate(new Date(year, month, d))] || {}).checks || 0;
+  }
   const totalMins = (() => {
     let m = 0;
     for (let d = 1; d <= daysInMonth; d++) {
-      const k = isoDate(new Date(year, month, d));
-      m += (log[k] || {}).mins || 0;
+      const date = new Date(year, month, d);
+      m += sessionsForDate(date).reduce((sum, session) => sum + sessionSeconds(session), 0) / 60;
     }
     return m;
   })();
@@ -3741,18 +4167,19 @@ function renderHeatmap() {
     const date = new Date(year, month, d);
     const k = isoDate(date);
     const count = (log[k] || {}).checks || 0;
-    const mins = (log[k] || {}).mins || 0;
+    const actualSeconds = sessionsForDate(date).reduce((sum, session) => sum + sessionSeconds(session), 0);
+    const mins = Math.round(actualSeconds / 60);
     let level = 0;
-    if (count >= 1) level = 1;
-    if (count >= 4) level = 2;
-    if (count >= 8) level = 3;
-    if (count >= 12) level = 4;
+    if (actualSeconds > 0) level = 1;
+    if (mins >= 15) level = 2;
+    if (mins >= 30) level = 3;
+    if (mins >= 60) level = 4;
 
     const classes = ['hm-cell', 'l' + level];
     if (date.toDateString() === today.toDateString()) classes.push('today');
     if (date > today) classes.push('future');
 
-    const tip = count > 0 ? `${k}: ${count} 个动作 · ${mins} 分钟` : `${k}: 没动`;
+    const tip = count > 0 || actualSeconds > 0 ? `${k}: ${count} 个完成 · 实际 ${formatDuration(actualSeconds, true)}` : `${k}: 没动`;
     html += `<div class="${classes.join(' ')}" title="${tip}">${d}</div>`;
   }
 
@@ -3765,7 +4192,7 @@ function renderHeatmap() {
   } else {
     let streakBit = '';
     if (longestStreak >= 3) streakBit = ` · 最长连续 <strong>${longestStreak}</strong> 天`;
-    summary = `本月 <strong>${activeDays}</strong> 天有动作 · 累计 <strong>${totalChecks}</strong> 次勾选 · <strong>${totalMins}</strong> 分钟${streakBit}`;
+    summary = `本月 <strong>${activeDays}</strong> 天有动作 · 累计 <strong>${totalChecks}</strong> 次完成 · 实际 <strong>${Math.round(totalMins)}</strong> 分钟${streakBit}`;
   }
   document.getElementById('heatmapSummary').innerHTML = summary;
 }
@@ -3775,7 +4202,8 @@ function computeStreak(year, month, daysInMonth) {
   let longest = 0, current = 0;
   for (let d = 1; d <= daysInMonth; d++) {
     const k = isoDate(new Date(year, month, d));
-    const has = ((log[k] || {}).checks || 0) > 0;
+    const hasSession = sessionsForDate(new Date(year, month, d)).length > 0;
+    const has = ((log[k] || {}).checks || 0) > 0 || hasSession;
     if (has) {
       current++;
       if (current > longest) longest = current;
@@ -3901,6 +4329,23 @@ function pvDayReflections(week, day) {
   return html;
 }
 
+function programDaySessions(weekNum, dayNum) {
+  return (state.sessions || []).filter(session => Number(session.week) === weekNum && Number(session.day) === dayNum);
+}
+
+function pvDaySessions(weekNum, dayNum) {
+  const sessions = programDaySessions(weekNum, dayNum);
+  if (!sessions.length) return '';
+  const total = sessions.reduce((sum, session) => sum + sessionSeconds(session), 0);
+  let html = `<div class="pv-section"><h3>实际计时 · ${formatDuration(total, true)}</h3>`;
+  sessions.forEach(session => {
+    const start = new Date(session.startedAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    html += `<div class="pv-stats-row"><span>${escapeHtml(session.title)}<br><small>${start}</small></span><strong>${formatDuration(sessionSeconds(session), true)}</strong></div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
@@ -3931,6 +4376,7 @@ function buildDayPrintHTML(weekNum, dayNum, date) {
     </div>
 
     ${pvDaySections(week, day)}
+    ${pvDaySessions(weekNum, dayNum)}
     ${pvDayReflections(week, day)}
 
     <div class="pv-footer">Generated ${date} · A Listening Diary</div>
@@ -3958,6 +4404,20 @@ function buildWeekPrintHTML(weekNum, date) {
     </div>`;
   }
   daysHtml += `</div>`;
+
+  const actualDays = [1,2,3,4,5,6,7].map(dayNum => dayStats(weekNum, dayNum).actualSeconds);
+  const maxActualDay = Math.max(...actualDays, 1);
+  const linePoints = actualDays.map((seconds, index) => `${20 + index * 93},${64 - seconds / maxActualDay * 48}`).join(' ');
+  let actualWeekHtml = `<div class="pv-section"><h3>本周实际时长 · 柱状与趋势</h3>
+    <svg viewBox="0 0 600 72" style="width:100%;height:72px;display:block">
+      <line x1="20" y1="64" x2="578" y2="64" stroke="#C8BDA7" stroke-width="1"/>
+      <polyline points="${linePoints}" fill="none" stroke="#2C4A3E" stroke-width="2"/>
+      ${actualDays.map((seconds, index) => `<rect x="${10 + index * 93}" y="${64 - seconds / maxActualDay * 48}" width="20" height="${seconds / maxActualDay * 48}" fill="#2C4A3E" opacity=".3"/><circle cx="${20 + index * 93}" cy="${64 - seconds / maxActualDay * 48}" r="3" fill="#2C4A3E"/>`).join('')}
+    </svg>`;
+  actualDays.forEach((seconds, index) => {
+    actualWeekHtml += `<div class="pv-day-row"><span class="pv-day-roman">${romanize(index + 1)}</span><span class="pv-day-title">Day ${romanize(index + 1)}</span><div class="pv-day-bar-cell"><div class="pv-day-bar-fill" style="transform:scaleX(${seconds / maxActualDay})"></div></div><span class="pv-day-stat">${formatDuration(seconds, true)}</span></div>`;
+  });
+  actualWeekHtml += `</div>`;
 
   // By track
   let trackHtml = `<div class="pv-section"><h3>各 track 完成度</h3>`;
@@ -3995,6 +4455,7 @@ function buildWeekPrintHTML(weekNum, date) {
         · ${day.title} <span style="font-style:italic;color:#8B7E68;font-size:11px;margin-left:6px">${dStats.done}/${dStats.total} · ${dStats.mins} min</span>
       </div>
       ${pvDaySections(week, day)}
+      ${pvDaySessions(weekNum, day.num)}
       ${pvDayReflections(week, day)}
     </div>`;
   });
@@ -4014,6 +4475,7 @@ function buildWeekPrintHTML(weekNum, date) {
     </div>
 
     ${daysHtml}
+    ${actualWeekHtml}
     ${trackHtml}
     ${analysisHtml}
     ${detailsHtml}
@@ -4111,6 +4573,21 @@ function buildMonthPrintHTML(date) {
   });
   if (taskNotesHtml) taskNotesHtml += `</div>`;
 
+  let actualTimeHtml = '';
+  const actualTime = collectActualTime([1,2,3,4]);
+  if (actualTime.length) {
+    actualTimeHtml = `<div class="pv-section"><h3>实际时间配比</h3>`;
+    const maxSeconds = actualTime[0].seconds || 1;
+    actualTime.forEach(item => {
+      actualTimeHtml += `<div class="pv-track-row">
+        <span class="pv-track-name">${escapeHtml(item.title)}</span>
+        <div class="pv-day-bar-cell"><div class="pv-day-bar-fill" style="transform:scaleX(${item.seconds / maxSeconds})"></div></div>
+        <span class="pv-track-count">${formatDuration(item.seconds, true)}</span>
+      </div>`;
+    });
+    actualTimeHtml += `</div>`;
+  }
+
   // Collect all reflections across the month
   let reflHtml = '';
   const anyRefls = [1,2,3,4].some(wn => Object.values(state.weeks[wn].reflections || {}).some(v => v && v.trim()));
@@ -4151,6 +4628,7 @@ function buildMonthPrintHTML(date) {
     ${weeksHtml}
     ${trackHtml}
     ${analysisHtml}
+    ${actualTimeHtml}
     ${taskNotesHtml}
     ${reflHtml}
 
@@ -4182,6 +4660,15 @@ function collectTaskNotes(weekNums) {
     });
   });
   return items;
+}
+
+function collectActualTime(weekNums) {
+  const grouped = {};
+  (state.sessions || []).filter(session => weekNums.includes(Number(session.week))).forEach(session => {
+    if (!grouped[session.taskId]) grouped[session.taskId] = { title: session.title, seconds: 0 };
+    grouped[session.taskId].seconds += sessionSeconds(session);
+  });
+  return Object.values(grouped).sort((a, b) => b.seconds - a.seconds);
 }
 
 function buildReportText(scope, params) {
@@ -4222,6 +4709,11 @@ function buildReportText(scope, params) {
         body += `\n\nWeek ${romanize(item.wn)} · Day ${romanize(item.day.num)} · ${item.day.title}\n${item.task}\nNote：${item.note}`;
       });
     }
+    const actualTime = collectActualTime([1,2,3,4]);
+    if (actualTime.length) {
+      body += '\n\n— 实际时间配比 —';
+      actualTime.forEach(item => { body += `\n${item.title}：${formatDuration(item.seconds, true)}`; });
+    }
 
   } else if (scope === 'week') {
     const wn = params;
@@ -4254,6 +4746,11 @@ function buildReportText(scope, params) {
       taskNotes.forEach(item => {
         body += `\n\nDay ${romanize(item.day.num)} · ${item.day.title}\n${item.task}\nNote：${item.note}`;
       });
+    }
+    const actualTime = collectActualTime([wn]);
+    if (actualTime.length) {
+      body += '\n\n— 本周实际时间 —';
+      actualTime.forEach(item => { body += `\n${item.title}：${formatDuration(item.seconds, true)}`; });
     }
 
   } else if (scope === 'day') {
@@ -4295,6 +4792,14 @@ function buildReportText(scope, params) {
           body += `\n${r.label}\n${state.weeks[wn].reflections[r.id]}`;
         });
       }
+    }
+    const timed = programDaySessions(wn, dn);
+    if (timed.length) {
+      body += `\n\n— 实际计时 · ${formatDuration(timed.reduce((sum, session) => sum + sessionSeconds(session), 0), true)} —`;
+      timed.forEach(session => {
+        const start = new Date(session.startedAt).toLocaleString('zh-CN');
+        body += `\n${session.title}：${formatDuration(sessionSeconds(session), true)}（${start}）`;
+      });
     }
   }
   return { title, body };
@@ -4413,6 +4918,8 @@ async function importPrompt() {
     if (!parsed.weeks) throw new Error('not the right shape');
     if (!confirm('用粘贴的数据替换当前的勾选、反思和计数？此动作不可撤销。')) return;
     state = Object.assign(state, parsed);
+    state.sessions = Array.isArray(state.sessions) ? state.sessions : [];
+    state.activeTimer = state.activeTimer || null;
     // Make sure each week has the right shape
     for (let w = 1; w <= 4; w++) {
       if (!state.weeks[w]) state.weeks[w] = emptyWeekState();
@@ -4442,6 +4949,8 @@ async function resetMonth() {
   for (let w = 1; w <= 4; w++) state.weeks[w] = emptyWeekState();
   state.activeWeek = 1;
   state.actionLog = {};
+  state.sessions = [];
+  state.activeTimer = null;
   // keep profile name — that's identity, not progress
   await saveState();
   document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
