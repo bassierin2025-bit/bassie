@@ -562,6 +562,7 @@ body {
 }
 
 .index-nav a:hover { color: var(--accent); border-color: var(--hairline); }
+.index-nav a.active { color: var(--paper); background: var(--accent); border-color: var(--accent); }
 .index-nav a.complete { color: var(--accent); font-weight: 500; }
 .index-nav a.complete::after {
   content: '·';
@@ -571,7 +572,8 @@ body {
 }
 
 /* Day */
-.day { margin-bottom: 56px; scroll-margin-top: 16px; }
+.day { display: none; margin-bottom: 56px; scroll-margin-top: 16px; }
+.day.active-day { display: block; }
 
 .day-header {
   display: flex;
@@ -1490,6 +1492,38 @@ body {
   color: #2C4A3E;
   font-size: 15px;
 }
+.pv-day-summary {
+  display: grid; grid-template-columns: 180px 1fr; gap: 20px; align-items: center;
+  margin-bottom: 22px; padding: 16px; border: 1px solid #C8BDA7; background: #F5EFE3;
+}
+.pv-day-pie { width: 170px; height: 170px; display: block; }
+.pv-pie-legend { display: grid; gap: 7px; }
+.pv-pie-item {
+  display: grid; grid-template-columns: 10px 1fr auto; gap: 8px; align-items: center;
+  color: #4A4036; font-size: 10.5px;
+}
+.pv-pie-swatch { width: 10px; height: 10px; }
+.pv-pie-task { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pv-pie-total { margin-bottom: 9px; color: #2C4A3E; font: italic 500 18px 'Fraunces', serif; }
+
+.calendar-modal {
+  position: fixed; inset: 0; z-index: 1200; display: none; place-items: center;
+  padding: 20px; background: rgba(28,24,19,.58);
+}
+.calendar-modal.show { display: grid; }
+.calendar-card {
+  width: min(100%, 480px); padding: 24px; border: 1px solid var(--hairline);
+  background: var(--paper); box-shadow: 0 20px 60px rgba(28,24,19,.25);
+}
+.calendar-card h2 { font: 500 23px 'Fraunces', serif; margin-bottom: 7px; }
+.calendar-card p { color: var(--ink-soft); font-size: 13px; margin-bottom: 16px; }
+.calendar-options { display: grid; gap: 9px; }
+.calendar-option {
+  padding: 12px 14px; border: 1px solid var(--hairline); background: transparent;
+  color: var(--ink); text-align: left; font: 600 12px 'Inter', sans-serif; cursor: pointer;
+}
+.calendar-option.primary { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.calendar-close { margin-top: 14px; width: 100%; padding: 9px; border: 0; background: transparent; color: var(--margin); cursor: pointer; }
 .pv-section {
   margin-bottom: 22px;
   page-break-inside: avoid;
@@ -1727,7 +1761,7 @@ body {
 
 @media print {
   @page { size: A4; margin: 14mm 14mm; }
-  body { background: white !important; padding: 0 !important; }
+  body { background: white !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body > .container { display: none !important; }
   body > .float-progress { display: none !important; }
   body > #textModal { display: none !important; }
@@ -1777,6 +1811,41 @@ body {
   margin-bottom: 22px; padding: 10px 12px; border: 1px solid var(--hairline);
   background: rgba(255,255,255,.22); font: 12px 'Inter', sans-serif; color: var(--margin);
 }
+.app-nav {
+  position: sticky; top: 8px; z-index: 25;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 22px; border: 1px solid var(--hairline);
+  background: rgba(245,239,227,.94); backdrop-filter: blur(14px);
+}
+.app-nav-btn {
+  padding: 11px 6px; border: 0; border-right: 1px solid var(--hairline);
+  background: transparent; color: var(--margin);
+  font: 600 10px 'Inter', sans-serif; letter-spacing: .08em; cursor: pointer;
+}
+.app-nav-btn:last-child { border-right: 0; }
+.app-nav-btn.active { background: var(--accent); color: var(--paper); }
+body[data-app-view="tasks"] .cover,
+body[data-app-view="tasks"] .month-dash,
+body[data-app-view="tasks"] .data-panel,
+body[data-app-view="tasks"] .colophon { display: none; }
+body[data-app-view="tasks"] .week-intro,
+body[data-app-view="tasks"] .week-counters,
+body[data-app-view="tasks"] .week-mini-dash { display: none; }
+body:not([data-app-view="tasks"]) #weekTabs,
+body:not([data-app-view="tasks"]) #weekViews { display: none; }
+body[data-app-view="time"] .cover,
+body[data-app-view="reports"] .cover { display: none; }
+body[data-app-view="time"] .month-hero,
+body[data-app-view="time"] .dash-section:not(.time-panel),
+body[data-app-view="time"] .time-pill,
+body[data-app-view="time"] .data-panel,
+body[data-app-view="time"] .colophon { display: none; }
+body[data-app-view="reports"] .month-hero,
+body[data-app-view="reports"] .dash-section:not(.report-panel),
+body[data-app-view="reports"] .time-pill { display: none; }
+body[data-app-view="overview"] .time-panel,
+body[data-app-view="overview"] .report-panel,
+body[data-app-view="overview"] .data-panel { display: none; }
 .current-user strong { color: var(--accent); font-weight: 600; }
 .logout-button {
   padding: 7px 10px; border: 1px solid var(--hairline); background: transparent;
@@ -2018,10 +2087,12 @@ body {
   .today-chart-grid { grid-template-columns: 1fr; }
   .time-pie { width: 130px; }
   .active-timer { top: 60px; }
+  .app-nav { top: 60px; }
+  .pv-day-summary { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-<body>
+<body data-app-view="overview">
 <section class="auth-screen" id="authScreen" aria-labelledby="authTitle">
   <div class="auth-card">
     <div class="auth-mark">L</div>
@@ -2042,6 +2113,12 @@ body {
   <span class="current-user">当前用户：<strong id="currentUsername">—</strong></span>
   <button class="logout-button" type="button" id="logoutButton">退出 / 切换用户</button>
 </div>
+<nav class="app-nav" id="appNav">
+  <button class="app-nav-btn active" type="button" data-app-view="overview">总览</button>
+  <button class="app-nav-btn" type="button" data-app-view="tasks">今天任务</button>
+  <button class="app-nav-btn" type="button" data-app-view="time">学习时长</button>
+  <button class="app-nav-btn" type="button" data-app-view="reports">报告</button>
+</nav>
 <div class="active-timer" id="activeTimerBar">
   <span class="active-timer-title" id="activeTimerTitle">正在计时</span>
   <span class="active-timer-clock" id="activeTimerClock">00:00:00</span>
@@ -2063,7 +2140,7 @@ body {
     <div class="hero-label">tasks completed this month</div>
   </div>
 
-  <div class="dash-section">
+  <div class="dash-section time-panel">
     <h4 class="dash-section-title">每日热力图 · this month</h4>
     <div class="heatmap-block">
       <div class="month-nav">
@@ -2090,7 +2167,7 @@ body {
     </div>
   </div>
 
-  <div class="dash-section">
+  <div class="dash-section time-panel">
     <h4 class="dash-section-title">今日真实投入 · actual time</h4>
     <div class="actual-dashboard">
       <div class="today-total">今天累计 <strong id="todayActualTotal">0 min</strong></div>
@@ -2105,12 +2182,12 @@ body {
     </div>
   </div>
 
-  <div class="dash-section">
+  <div class="dash-section overview-panel">
     <h4 class="dash-section-title">Four Weeks</h4>
     <div class="week-cards" id="weekCards"></div>
   </div>
 
-  <div class="dash-section">
+  <div class="dash-section time-panel">
     <h4 class="dash-section-title">Trend</h4>
     <div class="charts-grid">
       <div class="chart-box">
@@ -2128,12 +2205,12 @@ body {
     </div>
   </div>
 
-  <div class="dash-section">
+  <div class="dash-section overview-panel">
     <h4 class="dash-section-title">By track · across the month</h4>
     <div id="trackStats"></div>
   </div>
 
-  <div class="dash-section">
+  <div class="dash-section overview-panel">
     <h4 class="dash-section-title">Month-wide count</h4>
     <div class="month-counters">
       <div class="month-counter">
@@ -2154,7 +2231,7 @@ body {
     </div>
   </div>
 
-  <div class="dash-section">
+  <div class="dash-section report-panel">
     <h4 class="dash-section-title">月度小结 · auto-generated</h4>
     <div class="analysis-box" id="monthAnalysisBox">
       <div class="a-empty">勾几个再回来,这里会出现具体的进度小结、最强/最弱的 track、一条针对性建议。</div>
@@ -2241,6 +2318,19 @@ body {
       <button class="share-btn" onclick="closeTextModal()">关闭</button>
     </div>
     <div class="data-msg" id="modalMsg"></div>
+  </div>
+</div>
+
+<div class="calendar-modal" id="calendarModal" onclick="if(event.target.id==='calendarModal')closeCalendarModal()">
+  <div class="calendar-card">
+    <h2>记录到日历</h2>
+    <p id="calendarModalSummary">请选择你实际使用的日历。Google 和 Outlook 会直接打开新事件页面；系统日历文件适合 Apple Calendar 等本机日历。</p>
+    <div class="calendar-options">
+      <button class="calendar-option primary" type="button" id="calendarGoogle">Google Calendar</button>
+      <button class="calendar-option" type="button" id="calendarOutlook">Outlook Calendar 网页版</button>
+      <button class="calendar-option" type="button" id="calendarIcs">下载 .ics（Apple / 系统日历）</button>
+    </div>
+    <button class="calendar-close" type="button" onclick="closeCalendarModal()">暂不添加</button>
   </div>
 </div>
 
@@ -2889,6 +2979,8 @@ let heatmapCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
 function createInitialState(username = '') {
   const fresh = {
     activeWeek: 1,
+    activeDays: { 1: 1, 2: 1, 3: 1, 4: 1 },
+    appView: 'overview',
     weeks: {},
     profile: { name: username },
     actionLog: {},
@@ -2950,6 +3042,8 @@ async function loadState() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed.activeWeek) state.activeWeek = parsed.activeWeek;
+      state.activeDays = Object.assign({ 1: 1, 2: 1, 3: 1, 4: 1 }, parsed.activeDays || {});
+      state.appView = ['overview','tasks','time','reports'].includes(parsed.appView) ? parsed.appView : 'overview';
       state.profile = Object.assign({ name: currentUser }, parsed.profile || {}, { name: currentUser });
       if (parsed.actionLog) state.actionLog = parsed.actionLog;
       state.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
@@ -3086,7 +3180,7 @@ function renderWeekContent(week) {
   const nav = document.createElement('nav');
   nav.className = 'index-nav';
   nav.innerHTML = [1,2,3,4,5,6,7].map(n =>
-    `<a href="#day-${week.num}-${n}" data-day-link="${week.num}-${n}">${romanize(n)}</a>`
+    `<a href="#" data-day-link="${week.num}-${n}" data-day-select="${week.num}-${n}">${romanize(n)}</a>`
   ).join('');
   root.appendChild(nav);
 
@@ -3230,6 +3324,29 @@ function showActiveWeek() {
     b.classList.toggle('active', parseInt(b.dataset.tabWeek) === state.activeWeek);
   });
   document.getElementById('floatWeek').textContent = 'W' + state.activeWeek;
+  showActiveDay(state.activeWeek, Number(state.activeDays[state.activeWeek]) || 1);
+}
+
+function showActiveDay(weekNum, dayNum) {
+  state.activeDays[weekNum] = dayNum;
+  document.querySelectorAll(`.week-view[data-week-num="${weekNum}"] .day`).forEach(day => {
+    day.classList.toggle('active-day', day.dataset.weekDay === `${weekNum}-${dayNum}`);
+  });
+  document.querySelectorAll(`[data-day-select^="${weekNum}-"]`).forEach(link => {
+    link.classList.toggle('active', link.dataset.daySelect === `${weekNum}-${dayNum}`);
+  });
+}
+
+function setAppView(view, persist = true) {
+  const safeView = ['overview','tasks','time','reports'].includes(view) ? view : 'overview';
+  state.appView = safeView;
+  document.body.dataset.appView = safeView;
+  document.querySelectorAll('.app-nav-btn').forEach(button => {
+    button.classList.toggle('active', button.dataset.appView === safeView);
+  });
+  if (safeView === 'tasks') showActiveWeek();
+  if (persist && currentUser) saveState();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ═════════════ COMPUTE & UPDATE ═════════════
@@ -3608,11 +3725,11 @@ async function stopTaskTimer(addToCalendar = true) {
   const dateKey = isoDate(startedAt);
   if (!state.actionLog[dateKey]) state.actionLog[dateKey] = { checks: 0, mins: 0, actualSeconds: 0 };
   state.actionLog[dateKey].actualSeconds = Math.max(0, Number(state.actionLog[dateKey].actualSeconds) || 0) + durationSeconds;
-  if (addToCalendar) shareCalendarSession(session);
   await saveState();
   updateTimerInterface();
   updateAll();
-  showMsg(`已记录 ${formatDuration(durationSeconds, true)}，日历事件已生成。`);
+  if (addToCalendar) openCalendarModal(session);
+  showMsg(`已记录 ${formatDuration(durationSeconds, true)}。`);
 }
 
 function escapeIcs(text) {
@@ -3623,12 +3740,53 @@ function icsUtc(dateValue) {
   return new Date(dateValue).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
 }
 
-async function shareCalendarSession(session) {
-  const description = [
+function calendarDescription(session) {
+  return [
     `Listening Diary · Week ${romanize(session.week)} · Day ${romanize(session.day)}`,
     session.note ? `Note: ${session.note}` : '',
     `实际时长: ${formatDuration(session.durationSeconds, true)}`
   ].filter(Boolean).join('\n');
+}
+
+let pendingCalendarSession = null;
+
+function openCalendarModal(session) {
+  pendingCalendarSession = session;
+  document.getElementById('calendarModalSummary').textContent =
+    `${session.title} · ${formatDuration(session.durationSeconds, true)}。请选择要写入的日历。`;
+  document.getElementById('calendarModal').classList.add('show');
+}
+
+function closeCalendarModal() {
+  document.getElementById('calendarModal').classList.remove('show');
+}
+
+function openGoogleCalendar(session) {
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: session.title,
+    dates: `${icsUtc(session.startedAt)}/${icsUtc(session.endedAt)}`,
+    details: calendarDescription(session)
+  });
+  window.open(`https://calendar.google.com/calendar/render?${params}`, '_blank', 'noopener');
+  closeCalendarModal();
+}
+
+function openOutlookCalendar(session) {
+  const params = new URLSearchParams({
+    path: '/calendar/action/compose',
+    rru: 'addevent',
+    subject: session.title,
+    startdt: new Date(session.startedAt).toISOString(),
+    enddt: new Date(session.endedAt).toISOString(),
+    body: calendarDescription(session)
+  });
+  window.open(`https://outlook.live.com/calendar/0/deeplink/compose?${params}`, '_blank', 'noopener');
+  closeCalendarModal();
+}
+
+function downloadCalendarSession(session) {
+  const description = calendarDescription(session);
   const ics = [
     'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Listening Diary//Task Timer//ZH',
     'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
@@ -3638,14 +3796,6 @@ async function shareCalendarSession(session) {
     'END:VEVENT', 'END:VCALENDAR'
   ].join('\r\n');
   const file = new File([ics], `Listening-${session.id}.ics`, { type: 'text/calendar' });
-  try {
-    if (navigator.share && navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ title: session.title, files: [file] });
-      return;
-    }
-  } catch (error) {
-    if (error.name === 'AbortError') return;
-  }
   const url = URL.createObjectURL(file);
   const link = document.createElement('a');
   link.href = url;
@@ -3654,7 +3804,12 @@ async function shareCalendarSession(session) {
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+  closeCalendarModal();
 }
+
+document.getElementById('calendarGoogle').addEventListener('click', () => pendingCalendarSession && openGoogleCalendar(pendingCalendarSession));
+document.getElementById('calendarOutlook').addEventListener('click', () => pendingCalendarSession && openOutlookCalendar(pendingCalendarSession));
+document.getElementById('calendarIcs').addEventListener('click', () => pendingCalendarSession && downloadCalendarSession(pendingCalendarSession));
 
 function sessionsForDate(date) {
   const key = isoDate(date);
@@ -3749,6 +3904,7 @@ async function enterAccount(username, userId) {
   await loadState();
   applyCheckedState();
   syncUserInterface();
+  setAppView(state.appView, false);
   showActiveWeek();
   updateAll();
   window.scrollTo({ top: 0 });
@@ -3886,6 +4042,19 @@ document.addEventListener('input', (e) => {
 });
 
 document.addEventListener('click', async (e) => {
+  const appViewButton = e.target.closest('.app-nav-btn');
+  if (appViewButton) {
+    setAppView(appViewButton.dataset.appView);
+    return;
+  }
+  const daySelect = e.target.closest('[data-day-select]');
+  if (daySelect) {
+    const [weekNum, dayNum] = daySelect.dataset.daySelect.split('-').map(Number);
+    showActiveDay(weekNum, dayNum);
+    saveState();
+    e.preventDefault();
+    return;
+  }
   const timerButton = e.target.closest('.timer-btn');
   if (timerButton) {
     await startTaskTimer(timerButton);
@@ -3921,6 +4090,7 @@ document.addEventListener('click', async (e) => {
     const card = e.target.closest('[data-card-week]');
     const w = parseInt(card.dataset.cardWeek);
     state.activeWeek = w;
+    setAppView('tasks', false);
     showActiveWeek();
     saveState();
     document.getElementById('weekTabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -4350,6 +4520,45 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
 
+function pieSlicePath(cx, cy, radius, startAngle, endAngle) {
+  const point = angle => {
+    const radians = (angle - 90) * Math.PI / 180;
+    return { x: cx + radius * Math.cos(radians), y: cy + radius * Math.sin(radians) };
+  };
+  const start = point(endAngle);
+  const end = point(startAngle);
+  const largeArc = endAngle - startAngle <= 180 ? 0 : 1;
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
+}
+
+function buildDayPieHTML(weekNum, dayNum, stats) {
+  const grouped = {};
+  programDaySessions(weekNum, dayNum).forEach(session => {
+    if (!grouped[session.taskId]) grouped[session.taskId] = { title: session.title, seconds: 0 };
+    grouped[session.taskId].seconds += sessionSeconds(session);
+  });
+  const entries = Object.values(grouped).sort((a, b) => b.seconds - a.seconds);
+  const total = entries.reduce((sum, entry) => sum + entry.seconds, 0);
+  const colors = ['#2C4A3E','#B5432E','#8B7E68','#4A6B5D','#C28B52','#756A90','#397A89','#9A5661'];
+  let angle = 0;
+  const slices = entries.length === 1
+    ? `<circle cx="90" cy="90" r="78" fill="${colors[0]}"/>`
+    : entries.map((entry, index) => {
+    const next = angle + entry.seconds / total * 360;
+    const path = pieSlicePath(90, 90, 78, angle, next);
+    angle = next;
+    return `<path d="${path}" fill="${colors[index % colors.length]}"/>`;
+  }).join('');
+  const svg = entries.length
+    ? `<svg class="pv-day-pie" viewBox="0 0 180 180">${slices}<circle cx="90" cy="90" r="34" fill="#F5EFE3"/><text x="90" y="86" text-anchor="middle" font-family="Fraunces,serif" font-size="16" fill="#2C4A3E">${formatDuration(total, true)}</text><text x="90" y="104" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" fill="#8B7E68">ACTUAL</text></svg>`
+    : `<svg class="pv-day-pie" viewBox="0 0 180 180"><circle cx="90" cy="90" r="76" fill="#ECE3D0"/><circle cx="90" cy="90" r="34" fill="#F5EFE3"/><text x="90" y="94" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#8B7E68">暂无计时</text></svg>`;
+  const legend = entries.length
+    ? entries.map((entry, index) => `<div class="pv-pie-item"><span class="pv-pie-swatch" style="background:${colors[index % colors.length]}"></span><span class="pv-pie-task">${escapeHtml(entry.title)}</span><strong>${formatDuration(entry.seconds, true)}</strong></div>`).join('')
+    : '<div class="pv-section-note">完成任务计时后，这里会显示真实时间分配。</div>';
+  const pct = stats.total > 0 ? Math.round(stats.done / stats.total * 100) : 0;
+  return `<div class="pv-day-summary">${svg}<div class="pv-pie-legend"><div class="pv-pie-total">实际投入 ${formatDuration(total, true)}</div><div class="pv-section-note">完成度 ${stats.done}/${stats.total} · ${pct}%</div>${legend}</div></div>`;
+}
+
 function buildDayPrintHTML(weekNum, dayNum, date) {
   const week = MONTH_DATA.weeks[weekNum - 1];
   const day = week.days.find(d => d.num === dayNum);
@@ -4369,11 +4578,7 @@ function buildDayPrintHTML(weekNum, dayNum, date) {
       <p class="pv-subtitle">${day.thesis}</p>
     </div>
 
-    <div class="pv-stats">
-      <div class="pv-stats-row"><span>完成度</span><strong>${stats.done} / ${stats.total} · ${pct}%</strong></div>
-      <div class="pv-stats-row"><span>时间投入</span><strong>${stats.mins} min</strong></div>
-      ${topTrack ? `<div class="pv-stats-row"><span>主线</span><strong>${TRACKS_META[topTrack].name}</strong></div>` : ''}
-    </div>
+    ${buildDayPieHTML(weekNum, dayNum, stats)}
 
     ${pvDaySections(week, day)}
     ${pvDaySessions(weekNum, dayNum)}
@@ -4918,6 +5123,8 @@ async function importPrompt() {
     if (!parsed.weeks) throw new Error('not the right shape');
     if (!confirm('用粘贴的数据替换当前的勾选、反思和计数？此动作不可撤销。')) return;
     state = Object.assign(state, parsed);
+    state.activeDays = Object.assign({ 1: 1, 2: 1, 3: 1, 4: 1 }, state.activeDays || {});
+    state.appView = ['overview','tasks','time','reports'].includes(state.appView) ? state.appView : 'overview';
     state.sessions = Array.isArray(state.sessions) ? state.sessions : [];
     state.activeTimer = state.activeTimer || null;
     // Make sure each week has the right shape
@@ -4988,6 +5195,7 @@ async function init() {
   }
   applyCheckedState();
   syncUserInterface();
+  setAppView(state.appView, false);
   showActiveWeek();
   updateAll();
   if (!currentUser) {
