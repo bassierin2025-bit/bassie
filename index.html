@@ -26,6 +26,7 @@
   --accent: #2C4A3E;
   --accent-soft: #4A6B5D;
   --accent-faint: rgba(44, 74, 62, 0.08);
+  --accent-contrast: #FFFFFF;
   --check: #B5432E;
   --check-bg: rgba(181, 67, 46, 0.06);
 }
@@ -1881,6 +1882,159 @@ body {
 .theme-dot[data-theme-choice="lavender"] { background: #66507C; }
 .theme-dot[data-theme-choice="sunset"] { background: #A8523B; }
 .theme-dot[data-theme-choice="midnight"] { background: #394B82; }
+.custom-color-label {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px;
+  padding: 0 9px; border: 1px solid var(--hairline); border-radius: 9px;
+  background: #fff; color: var(--ink-soft); cursor: pointer;
+}
+.custom-color-label input {
+  width: 18px; height: 18px; padding: 0; border: 0; border-radius: 50%;
+  overflow: hidden; background: transparent; cursor: pointer;
+}
+.custom-color-label input::-webkit-color-swatch-wrapper { padding: 0; }
+.custom-color-label input::-webkit-color-swatch { border: 0; border-radius: 50%; }
+.custom-color-label.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-faint); }
+.eyedropper-btn {
+  height: 30px; padding: 0 10px; border: 1px solid var(--hairline);
+  border-radius: 9px; background: #fff; color: var(--ink-soft);
+  font: 600 10px 'Inter', sans-serif; cursor: pointer;
+}
+.eyedropper-btn:hover, .custom-color-label:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Refined app surface */
+body {
+  --app-bg: #F3F4F6;
+  --surface: #FFFFFF;
+  --surface-subtle: #F8F9FA;
+  --surface-hover: #F4F6F8;
+  --line: #E1E4E8;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .04), 0 7px 22px rgba(15, 23, 42, .045);
+  --shadow-md: 0 18px 50px rgba(15, 23, 42, .08);
+  background: var(--app-bg);
+  background-image: none;
+  padding-top: 26px;
+}
+.container { max-width: 900px; }
+.app-userbar {
+  margin-bottom: 12px; padding: 11px 14px; border-color: var(--line);
+  border-radius: 13px; background: rgba(255,255,255,.92);
+  box-shadow: var(--shadow-sm); backdrop-filter: blur(18px);
+}
+.app-nav {
+  border-color: var(--line); border-radius: 14px; overflow: hidden;
+  background: rgba(255,255,255,.94); box-shadow: var(--shadow-sm);
+}
+.app-nav-btn { padding: 13px 8px; border-right-color: var(--line); letter-spacing: .04em; }
+.app-nav-btn.active { background: var(--accent); color: var(--accent-contrast); }
+.theme-picker {
+  min-height: 44px; margin: -10px 0 22px; padding: 7px 8px 7px 12px;
+  border: 1px solid var(--line); border-radius: 13px; background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.theme-picker > span:first-child { margin-right: auto; font-weight: 600; letter-spacing: .08em; }
+.theme-dot { width: 20px; height: 20px; border-color: #fff; }
+.theme-dot.active { box-shadow: 0 0 0 2px var(--accent); }
+.cover, .month-dash, .data-panel, .week-view.active {
+  border: 1px solid var(--line); border-radius: 18px;
+  background: var(--surface); box-shadow: var(--shadow-sm);
+}
+.cover { padding: 52px 34px 46px; margin-bottom: 20px; }
+.month-dash { padding: 32px; margin-bottom: 22px; }
+.data-panel { overflow: hidden; }
+.week-tabs {
+  border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  margin-bottom: 18px; background: #fff; box-shadow: var(--shadow-sm);
+}
+.wt-btn { border-right-color: var(--line); }
+.wt-btn.active { background: var(--accent-faint); box-shadow: inset 0 -3px 0 var(--accent); }
+.week-view.active { padding: 32px; }
+.day { margin-bottom: 0; }
+.day-header {
+  align-items: center; margin-bottom: 22px; padding: 0 0 20px;
+  border-bottom-color: var(--line);
+}
+.day-number {
+  width: 58px; height: 58px; display: grid; place-items: center;
+  border-radius: 16px; background: var(--accent-faint); font-size: 32px;
+}
+.day-progress {
+  padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--surface-subtle); font-family: 'Inter', sans-serif;
+  font-style: normal; font-size: 11px;
+}
+.section {
+  margin-bottom: 16px; padding: 17px 18px 14px;
+  border: 1px solid var(--line); border-radius: 14px; background: #fff;
+}
+.section-title {
+  margin-bottom: 9px; font-family: 'Inter', sans-serif; font-size: 10px;
+  font-weight: 700; letter-spacing: .14em;
+}
+.section-title::before {
+  width: 7px; height: 7px; border-radius: 2px; background: var(--accent);
+}
+.task-block {
+  margin: 0; padding: 8px 9px; border-radius: 10px;
+  border: 1px solid transparent; transition: background .16s, border-color .16s;
+}
+.task-block + .task-block { border-top-color: var(--line); border-radius: 0; }
+.task-block:hover { background: var(--surface-hover); border-color: var(--line); border-radius: 10px; }
+.task { gap: 11px; padding: 3px 0; }
+.task label, .custom-title-input { font-size: 15px; line-height: 1.5; }
+.task input[type="checkbox"] {
+  width: 19px; height: 19px; margin-top: 3px; border: 1.5px solid #AEB4BC;
+  border-radius: 6px; background: #fff;
+}
+.task input[type="checkbox"]:checked {
+  border-color: var(--accent); background: var(--accent);
+}
+.task input[type="checkbox"]:checked::before {
+  width: 8px; height: 4px; border: solid #fff; border-width: 0 0 2px 2px;
+  background: transparent; transform: translate(-50%, -62%) rotate(-45deg);
+}
+.task input[type="checkbox"]:checked::after { display: none; }
+.task input[type="checkbox"]:checked + label,
+.task input[type="checkbox"]:checked + .custom-title-input {
+  color: #8A9099; text-decoration: line-through; text-decoration-thickness: 1px;
+}
+.task-actions { margin-left: 30px; gap: 7px; }
+.timer-btn {
+  padding: 5px 9px; border-color: var(--line); border-radius: 7px;
+  background: #fff; letter-spacing: .02em;
+}
+.timer-btn:hover { border-color: var(--accent); background: var(--accent-faint); }
+.task-note {
+  width: calc(100% - 30px); margin-left: 30px; padding: 7px 9px;
+  border: 1px solid transparent; border-radius: 8px; background: transparent;
+  font-style: normal;
+}
+.task-note:focus { border-color: var(--line); background: #fff; box-shadow: 0 0 0 3px var(--accent-faint); }
+.custom-section {
+  margin: 16px 0; padding: 17px 18px 14px;
+  border: 1px solid var(--line); border-radius: 14px; background: #fff;
+}
+.custom-task-form {
+  margin: 4px 0 10px; padding: 8px; border: 1px dashed #C9CED5;
+  border-radius: 11px; background: #fff;
+}
+.custom-task-input {
+  padding: 7px 8px; border-bottom: 0; font-family: 'Inter', sans-serif; font-size: 13px;
+}
+.custom-title-input { padding: 0; border-bottom: 0; font-family: 'Source Serif 4', serif; }
+.custom-add-btn {
+  padding: 8px 13px; border-radius: 8px; border: 0; color: var(--accent-contrast);
+}
+.custom-empty { padding: 5px 8px; font-family: 'Inter', sans-serif; font-size: 11px; font-style: normal; }
+.custom-delete-btn { margin-left: auto; padding: 4px 6px; border-radius: 6px; }
+.custom-delete-btn:hover { background: #FFF1F0; }
+.heatmap-block, .chart-box, .analysis-box, .today-time-panel {
+  border-color: var(--line); border-radius: 14px; background: #fff;
+}
+.auth-screen { background: var(--app-bg); }
+.auth-card { border-color: var(--line); border-radius: 22px; background: #fff; box-shadow: var(--shadow-md); }
+.auth-input { border-color: var(--line); border-radius: 10px; background: #fff; }
+.auth-button { border-radius: 10px; color: var(--accent-contrast); }
+.logout-button, .month-nav-button { border-color: var(--line); border-radius: 8px; background: #fff; }
 body[data-app-view="tasks"] .cover,
 body[data-app-view="tasks"] .month-dash,
 body[data-app-view="tasks"] .data-panel,
@@ -2103,7 +2257,7 @@ body[data-app-view="overview"] .data-panel { display: none; }
 
 /* Mobile */
 @media (max-width: 600px) {
-  body { padding: 32px 16px 90px; font-size: 16px; }
+  body { padding: 16px 12px 90px; font-size: 16px; }
   .container { padding: 0 2px; }
   .cover-title { font-size: 32px; }
   .hero-num { font-size: 56px; }
@@ -2146,6 +2300,14 @@ body[data-app-view="overview"] .data-panel { display: none; }
   .active-timer { top: 60px; }
   .app-nav { top: 60px; }
   .pv-day-summary { grid-template-columns: 1fr; }
+  .theme-picker { flex-wrap: wrap; justify-content: flex-start; padding: 9px; }
+  .theme-picker > span:first-child { width: 100%; }
+  .custom-color-label { margin-left: auto; }
+  .cover { padding: 38px 20px 34px; }
+  .month-dash, .week-view.active { padding: 20px 14px; }
+  .section, .custom-section { padding: 14px 11px 11px; }
+  .day-number { width: 48px; height: 48px; border-radius: 13px; font-size: 27px; }
+  .day-progress { padding: 6px 8px; }
 }
 </style>
 </head>
@@ -2177,12 +2339,17 @@ body[data-app-view="overview"] .data-panel { display: none; }
   <button class="app-nav-btn" type="button" data-app-view="reports">报告</button>
 </nav>
 <div class="theme-picker" aria-label="配色主题">
-  <span>配色</span>
+  <span>界面配色</span>
   <button class="theme-dot active" type="button" data-theme-choice="forest" title="森林"></button>
   <button class="theme-dot" type="button" data-theme-choice="ocean" title="海蓝"></button>
   <button class="theme-dot" type="button" data-theme-choice="lavender" title="薰衣草"></button>
   <button class="theme-dot" type="button" data-theme-choice="sunset" title="暖霞"></button>
   <button class="theme-dot" type="button" data-theme-choice="midnight" title="夜蓝"></button>
+  <label class="custom-color-label" title="打开系统取色器">
+    <input id="customAccentColor" type="color" value="#2C4A3E" aria-label="自定义主题色">
+    <span>自定义</span>
+  </label>
+  <button class="eyedropper-btn" id="eyedropperButton" type="button" title="从屏幕上吸取颜色">吸色</button>
 </div>
 <div class="active-timer" id="activeTimerBar">
   <span class="active-timer-title" id="activeTimerTitle">正在计时</span>
@@ -3053,7 +3220,8 @@ function createInitialState(username = '') {
     sessions: [],
     activeTimer: null,
     customTasks: [],
-    theme: 'forest'
+    theme: 'forest',
+    customAccent: '#2C4A3E'
   };
   for (let w = 1; w <= 4; w++) fresh.weeks[w] = emptyWeekState();
   return fresh;
@@ -3117,7 +3285,8 @@ async function loadState() {
       state.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
       state.activeTimer = parsed.activeTimer || null;
       state.customTasks = Array.isArray(parsed.customTasks) ? parsed.customTasks : [];
-      state.theme = ['forest','ocean','lavender','sunset','midnight'].includes(parsed.theme) ? parsed.theme : 'forest';
+      state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(parsed.theme) ? parsed.theme : 'forest';
+      state.customAccent = /^#[0-9a-f]{6}$/i.test(parsed.customAccent || '') ? parsed.customAccent : '#2C4A3E';
       if (parsed.weeks) {
         for (let w = 1; w <= 4; w++) {
           if (parsed.weeks[w]) {
@@ -3460,17 +3629,49 @@ function setAppView(view, persist = true) {
 }
 
 function setTheme(theme, persist = true) {
-  const safeTheme = ['forest','ocean','lavender','sunset','midnight'].includes(theme) ? theme : 'forest';
+  const safeTheme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(theme) ? theme : 'forest';
   state.theme = safeTheme;
   document.body.dataset.theme = safeTheme;
   document.querySelectorAll('[data-theme-choice]').forEach(button => {
     button.classList.toggle('active', button.dataset.themeChoice === safeTheme);
   });
+  document.querySelector('.custom-color-label')?.classList.toggle('active', safeTheme === 'custom');
   const themeColors = {
     forest: '#2C4A3E', ocean: '#176B72', lavender: '#66507C', sunset: '#A8523B', midnight: '#394B82'
   };
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[safeTheme]);
+  const accent = safeTheme === 'custom' ? state.customAccent : themeColors[safeTheme];
+  const colorInput = document.getElementById('customAccentColor');
+  if (colorInput) colorInput.value = state.customAccent;
+  const accentRgb = hexToRgb(accent);
+  const luminance = (accentRgb.r * 299 + accentRgb.g * 587 + accentRgb.b * 114) / 1000;
+  document.body.style.setProperty('--accent-contrast', luminance > 170 ? '#1B1D20' : '#FFFFFF');
+  if (safeTheme === 'custom') {
+    document.body.style.setProperty('--accent', accent);
+    document.body.style.setProperty('--accent-soft', mixHex(accent, '#FFFFFF', .24));
+    document.body.style.setProperty('--accent-faint', `rgba(${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}, .09)`);
+  } else {
+    document.body.style.removeProperty('--accent');
+    document.body.style.removeProperty('--accent-soft');
+    document.body.style.removeProperty('--accent-faint');
+  }
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', accent);
   if (persist && currentUser) saveState();
+}
+
+function hexToRgb(hex) {
+  const value = hex.replace('#', '');
+  return {
+    r: parseInt(value.slice(0, 2), 16),
+    g: parseInt(value.slice(2, 4), 16),
+    b: parseInt(value.slice(4, 6), 16)
+  };
+}
+
+function mixHex(from, to, amount) {
+  const a = hexToRgb(from);
+  const b = hexToRgb(to);
+  const channel = key => Math.round(a[key] + (b[key] - a[key]) * amount).toString(16).padStart(2, '0');
+  return `#${channel('r')}${channel('g')}${channel('b')}`;
 }
 
 // ═════════════ COMPUTE & UPDATE ═════════════
@@ -4167,6 +4368,11 @@ document.addEventListener('change', async (e) => {
 });
 
 document.addEventListener('input', (e) => {
+  if (e.target.id === 'customAccentColor') {
+    state.customAccent = e.target.value.toUpperCase();
+    setTheme('custom');
+    return;
+  }
   if (e.target.matches('textarea.reflection-input')) {
     const wnum = e.target.dataset.week;
     state.weeks[wnum].reflections[e.target.id] = e.target.value;
@@ -4218,6 +4424,21 @@ document.addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('click', async (e) => {
+  const eyedropperButton = e.target.closest('#eyedropperButton');
+  if (eyedropperButton) {
+    if (!window.EyeDropper) {
+      document.getElementById('customAccentColor').click();
+      return;
+    }
+    try {
+      const result = await new EyeDropper().open();
+      state.customAccent = result.sRGBHex.toUpperCase();
+      setTheme('custom');
+    } catch (error) {
+      // The picker was cancelled.
+    }
+    return;
+  }
   const themeButton = e.target.closest('[data-theme-choice]');
   if (themeButton) {
     setTheme(themeButton.dataset.themeChoice);
@@ -5345,7 +5566,8 @@ async function importPrompt() {
     state.sessions = Array.isArray(state.sessions) ? state.sessions : [];
     state.activeTimer = state.activeTimer || null;
     state.customTasks = Array.isArray(state.customTasks) ? state.customTasks : [];
-    state.theme = ['forest','ocean','lavender','sunset','midnight'].includes(state.theme) ? state.theme : 'forest';
+    state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(state.theme) ? state.theme : 'forest';
+    state.customAccent = /^#[0-9a-f]{6}$/i.test(state.customAccent || '') ? state.customAccent : '#2C4A3E';
     // Make sure each week has the right shape
     for (let w = 1; w <= 4; w++) {
       if (!state.weeks[w]) state.weeks[w] = emptyWeekState();
