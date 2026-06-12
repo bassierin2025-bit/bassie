@@ -29,6 +29,30 @@
   --check: #B5432E;
   --check-bg: rgba(181, 67, 46, 0.06);
 }
+body[data-theme="ocean"] {
+  --paper: #EEF4F3; --paper-warm: #DFEAE8; --paper-deep: #CFDFDC;
+  --ink: #142323; --ink-soft: #405554; --margin: #708987; --hairline: #B4CBC7;
+  --accent: #176B72; --accent-soft: #378B91; --accent-faint: rgba(23,107,114,.09);
+  --check: #D06C45; --check-bg: rgba(208,108,69,.07);
+}
+body[data-theme="lavender"] {
+  --paper: #F4F0F7; --paper-warm: #E9E1EF; --paper-deep: #DCD0E5;
+  --ink: #241D29; --ink-soft: #574B60; --margin: #887892; --hairline: #C9BBD2;
+  --accent: #66507C; --accent-soft: #846B98; --accent-faint: rgba(102,80,124,.09);
+  --check: #B85E70; --check-bg: rgba(184,94,112,.07);
+}
+body[data-theme="sunset"] {
+  --paper: #FAF1E8; --paper-warm: #F2E1D1; --paper-deep: #E8D1BD;
+  --ink: #2A1D18; --ink-soft: #614A3F; --margin: #94786A; --hairline: #D5BEAE;
+  --accent: #A8523B; --accent-soft: #C06D51; --accent-faint: rgba(168,82,59,.09);
+  --check: #456F68; --check-bg: rgba(69,111,104,.07);
+}
+body[data-theme="midnight"] {
+  --paper: #EDEEF3; --paper-warm: #DFE1E9; --paper-deep: #CED1DD;
+  --ink: #171A25; --ink-soft: #454A5D; --margin: #747A91; --hairline: #B9BDCC;
+  --accent: #394B82; --accent-soft: #58699C; --accent-faint: rgba(57,75,130,.09);
+  --check: #A75C76; --check-bg: rgba(167,92,118,.07);
+}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -726,6 +750,25 @@ body {
   border-left-color: var(--accent);
   background: rgba(255,255,255,.18);
 }
+.custom-section {
+  margin: 26px 0; padding: 16px;
+  border: 1px dashed var(--accent-soft); background: var(--accent-faint);
+}
+.custom-task-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 14px; }
+.custom-task-input, .custom-title-input {
+  width: 100%; border: 0; border-bottom: 1px solid var(--hairline);
+  background: transparent; color: var(--ink); font: 15px 'Source Serif 4', serif; outline: none;
+}
+.custom-task-input { padding: 9px 4px; }
+.custom-title-input { padding: 2px 0 5px; }
+.custom-task-input:focus, .custom-title-input:focus { border-bottom-color: var(--accent); }
+.custom-add-btn {
+  padding: 8px 12px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--paper); font: 600 11px 'Inter', sans-serif; cursor: pointer;
+}
+.custom-empty { color: var(--margin); font-size: 13px; font-style: italic; }
+.custom-delete-btn { border: 0; background: transparent; color: var(--margin); font: 10px 'Inter', sans-serif; cursor: pointer; }
+.custom-delete-btn:hover { color: var(--check); }
 .task-actions {
   display: flex;
   align-items: center;
@@ -1824,6 +1867,20 @@ body {
 }
 .app-nav-btn:last-child { border-right: 0; }
 .app-nav-btn.active { background: var(--accent); color: var(--paper); }
+.theme-picker {
+  display: flex; align-items: center; justify-content: flex-end; gap: 7px;
+  margin: -12px 0 20px; color: var(--margin); font: 10px 'Inter', sans-serif;
+}
+.theme-dot {
+  width: 22px; height: 22px; border: 2px solid var(--paper);
+  border-radius: 50%; cursor: pointer; box-shadow: 0 0 0 1px var(--hairline);
+}
+.theme-dot.active { box-shadow: 0 0 0 2px var(--ink); }
+.theme-dot[data-theme-choice="forest"] { background: #2C4A3E; }
+.theme-dot[data-theme-choice="ocean"] { background: #176B72; }
+.theme-dot[data-theme-choice="lavender"] { background: #66507C; }
+.theme-dot[data-theme-choice="sunset"] { background: #A8523B; }
+.theme-dot[data-theme-choice="midnight"] { background: #394B82; }
 body[data-app-view="tasks"] .cover,
 body[data-app-view="tasks"] .month-dash,
 body[data-app-view="tasks"] .data-panel,
@@ -2119,6 +2176,14 @@ body[data-app-view="overview"] .data-panel { display: none; }
   <button class="app-nav-btn" type="button" data-app-view="time">学习时长</button>
   <button class="app-nav-btn" type="button" data-app-view="reports">报告</button>
 </nav>
+<div class="theme-picker" aria-label="配色主题">
+  <span>配色</span>
+  <button class="theme-dot active" type="button" data-theme-choice="forest" title="森林"></button>
+  <button class="theme-dot" type="button" data-theme-choice="ocean" title="海蓝"></button>
+  <button class="theme-dot" type="button" data-theme-choice="lavender" title="薰衣草"></button>
+  <button class="theme-dot" type="button" data-theme-choice="sunset" title="暖霞"></button>
+  <button class="theme-dot" type="button" data-theme-choice="midnight" title="夜蓝"></button>
+</div>
 <div class="active-timer" id="activeTimerBar">
   <span class="active-timer-title" id="activeTimerTitle">正在计时</span>
   <span class="active-timer-clock" id="activeTimerClock">00:00:00</span>
@@ -2961,7 +3026,8 @@ const TRACKS_META = {
   relisten: { name: "复听", en: "re-listen" },
   soak: { name: "泡", en: "soak" },
   review: { name: "复盘", en: "review" },
-  minimum: { name: "最低版本", en: "low-state" }
+  minimum: { name: "最低版本", en: "low-state" },
+  custom: { name: "自定义", en: "personal" }
 };
 
 // ═════════════ STATE ═════════════
@@ -2985,7 +3051,9 @@ function createInitialState(username = '') {
     profile: { name: username },
     actionLog: {},
     sessions: [],
-    activeTimer: null
+    activeTimer: null,
+    customTasks: [],
+    theme: 'forest'
   };
   for (let w = 1; w <= 4; w++) fresh.weeks[w] = emptyWeekState();
   return fresh;
@@ -3048,6 +3116,8 @@ async function loadState() {
       if (parsed.actionLog) state.actionLog = parsed.actionLog;
       state.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
       state.activeTimer = parsed.activeTimer || null;
+      state.customTasks = Array.isArray(parsed.customTasks) ? parsed.customTasks : [];
+      state.theme = ['forest','ocean','lavender','sunset','midnight'].includes(parsed.theme) ? parsed.theme : 'forest';
       if (parsed.weeks) {
         for (let w = 1; w <= 4; w++) {
           if (parsed.weeks[w]) {
@@ -3087,6 +3157,26 @@ async function saveState() {
 
 function taskId(weekNum, dayNum, sectionIdx, taskIdx, isLow) {
   return `w${weekNum}-d${dayNum}-${isLow ? 'low' : 's' + sectionIdx}-${taskIdx}`;
+}
+
+function customTasksForDay(weekNum, dayNum) {
+  return (state.customTasks || []).filter(task => Number(task.week) === weekNum && Number(task.day) === dayNum && !task.archived);
+}
+
+function customTaskHTML(task) {
+  const id = task.id;
+  return `<div class="task-block custom-task-block" data-custom-id="${id}">
+    <div class="task" data-track="custom" data-mins="0" data-week="${task.week}">
+      <input type="checkbox" id="${id}">
+      <input class="custom-title-input" data-custom-title="${id}" value="${escapeHtml(task.title)}" aria-label="自定义任务标题">
+    </div>
+    <div class="task-actions">
+      <button type="button" class="timer-btn" data-timer-task="${id}" data-week="${task.week}" data-day="${task.day}" data-task-title="${escapeHtml(task.title)}">开始计时</button>
+      <span class="task-actual-time" data-task-time="${id}">实际 0 min</span>
+      <button type="button" class="custom-delete-btn" data-custom-delete="${id}">删除</button>
+    </div>
+    <textarea id="${id}-note" class="task-note" data-week="${task.week}" data-task-id="${id}" rows="1" placeholder="Note · 心得、感受或下一步…"></textarea>
+  </div>`;
 }
 
 function renderWeekContent(week) {
@@ -3247,6 +3337,18 @@ function renderWeekContent(week) {
       </div>`;
     }
 
+    const personalTasks = customTasksForDay(week.num, day.num);
+    const customHtml = `<div class="custom-section">
+      <h3 class="section-title">我的自定义任务 · Personal</h3>
+      <form class="custom-task-form" data-custom-form="${week.num}-${day.num}">
+        <input class="custom-task-input" name="customTitle" maxlength="160" placeholder="添加今天想做的其他任务…" required>
+        <button class="custom-add-btn" type="submit">＋ 添加</button>
+      </form>
+      <div data-custom-list="${week.num}-${day.num}">
+        ${personalTasks.length ? personalTasks.map(customTaskHTML).join('') : '<p class="custom-empty">今天还没有自定义任务。</p>'}
+      </div>
+    </div>`;
+
     // Day-level export
     const exportRow = `<div class="day-export-row">
       <button class="day-export-btn" onclick="exportPDF('day', [${week.num}, ${day.num}])">↓ 导出 Day ${romanize(day.num)} PDF</button>
@@ -3266,6 +3368,7 @@ function renderWeekContent(week) {
       </header>
       ${sectionsHtml}
       ${lowHtml}
+      ${customHtml}
       ${reflHtml}
       ${exportRow}
     `;
@@ -3295,6 +3398,13 @@ function renderAllWeeks() {
   const container = document.getElementById('weekViews');
   container.innerHTML = '';
   MONTH_DATA.weeks.forEach(w => container.appendChild(renderWeekContent(w)));
+}
+
+function refreshTaskViews() {
+  renderAllWeeks();
+  applyCheckedState();
+  showActiveWeek();
+  updateAll();
 }
 
 function applyCheckedState() {
@@ -3347,6 +3457,20 @@ function setAppView(view, persist = true) {
   if (safeView === 'tasks') showActiveWeek();
   if (persist && currentUser) saveState();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setTheme(theme, persist = true) {
+  const safeTheme = ['forest','ocean','lavender','sunset','midnight'].includes(theme) ? theme : 'forest';
+  state.theme = safeTheme;
+  document.body.dataset.theme = safeTheme;
+  document.querySelectorAll('[data-theme-choice]').forEach(button => {
+    button.classList.toggle('active', button.dataset.themeChoice === safeTheme);
+  });
+  const themeColors = {
+    forest: '#2C4A3E', ocean: '#176B72', lavender: '#66507C', sunset: '#A8523B', midnight: '#394B82'
+  };
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[safeTheme]);
+  if (persist && currentUser) saveState();
 }
 
 // ═════════════ COMPUTE & UPDATE ═════════════
@@ -3420,6 +3544,15 @@ function weekStats(weekNum) {
         }
       });
     }
+    customTasksForDay(weekNum, day.num).forEach(task => {
+      total++;
+      if (!byTrack.custom) byTrack.custom = [0, 0];
+      byTrack.custom[1]++;
+      if (state.weeks[weekNum].checks[task.id]) {
+        done++;
+        byTrack.custom[0]++;
+      }
+    });
   });
 
   const actualSeconds = actualSecondsForWeek(weekNum);
@@ -3458,6 +3591,15 @@ function dayStats(weekNum, dayNum) {
       }
     });
   }
+  customTasksForDay(weekNum, dayNum).forEach(task => {
+    total++;
+    if (!byTrack.custom) byTrack.custom = [0, 0];
+    byTrack.custom[1]++;
+    if (state.weeks[weekNum].checks[task.id]) {
+      done++;
+      byTrack.custom[0]++;
+    }
+  });
   const actualSeconds = actualSecondsForDay(weekNum, dayNum);
   return { total, done, mins: Math.round(actualSeconds / 60), actualSeconds, estimatedMins, byTrack };
 }
@@ -3563,7 +3705,7 @@ function renderTrackStats(ws) {
       agg[t][1] += w.byTrack[t][1];
     }
   });
-  const order = ['deep', 'output', 'relisten', 'soak', 'review', 'minimum'];
+  const order = ['deep', 'output', 'relisten', 'soak', 'review', 'minimum', 'custom'];
   const html = order.filter(k => agg[k]).map(k => {
     const [d, t] = agg[k];
     const pct = t > 0 ? d / t * 100 : 0;
@@ -3902,8 +4044,10 @@ async function enterAccount(username, userId) {
   cloudUserId = userId;
   heatmapCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   await loadState();
+  renderAllWeeks();
   applyCheckedState();
   syncUserInterface();
+  setTheme(state.theme, false);
   setAppView(state.appView, false);
   showActiveWeek();
   updateAll();
@@ -3969,8 +4113,10 @@ document.getElementById('logoutButton').addEventListener('click', async () => {
   currentUser = '';
   cloudUserId = '';
   state = createInitialState();
+  renderAllWeeks();
   applyCheckedState();
   syncUserInterface();
+  setTheme(state.theme, false);
   updateTimerInterface();
   renderActualTimeDashboard();
   document.getElementById('loginUsername').value = '';
@@ -4034,6 +4180,16 @@ document.addEventListener('input', (e) => {
     clearTimeout(window._taskNoteTimer);
     window._taskNoteTimer = setTimeout(saveState, 600);
   }
+  if (e.target.matches('[data-custom-title]')) {
+    const task = state.customTasks.find(item => item.id === e.target.dataset.customTitle);
+    if (task) {
+      task.title = e.target.value;
+      const timerButton = document.querySelector(`[data-timer-task="${task.id}"]`);
+      if (timerButton) timerButton.dataset.taskTitle = e.target.value;
+      clearTimeout(window._customTitleTimer);
+      window._customTitleTimer = setTimeout(saveState, 600);
+    }
+  }
   if (e.target.id === 'profileName') {
     state.profile.name = e.target.value.trim();
     clearTimeout(window._profileTimer);
@@ -4041,7 +4197,43 @@ document.addEventListener('input', (e) => {
   }
 });
 
+document.addEventListener('submit', async (e) => {
+  const form = e.target.closest('[data-custom-form]');
+  if (!form) return;
+  e.preventDefault();
+  const [week, day] = form.dataset.customForm.split('-').map(Number);
+  const input = form.querySelector('[name="customTitle"]');
+  const title = input.value.trim();
+  if (!title) return;
+  state.customTasks.push({
+    id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    title,
+    week,
+    day,
+    createdAt: new Date().toISOString(),
+    archived: false
+  });
+  await saveState();
+  refreshTaskViews();
+});
+
 document.addEventListener('click', async (e) => {
+  const themeButton = e.target.closest('[data-theme-choice]');
+  if (themeButton) {
+    setTheme(themeButton.dataset.themeChoice);
+    return;
+  }
+  const deleteButton = e.target.closest('[data-custom-delete]');
+  if (deleteButton) {
+    const task = state.customTasks.find(item => item.id === deleteButton.dataset.customDelete);
+    if (task && confirm(`归档自定义任务“${task.title}”？过去的计时记录会保留。`)) {
+      task.archived = true;
+      task.archivedAt = new Date().toISOString();
+      await saveState();
+      refreshTaskViews();
+    }
+    return;
+  }
   const appViewButton = e.target.closest('.app-nav-btn');
   if (appViewButton) {
     setAppView(appViewButton.dataset.appView);
@@ -4481,6 +4673,14 @@ function pvDaySections(week, day) {
     });
     html += `</div>`;
   }
+  const personalTasks = customTasksForDay(week.num, day.num);
+  if (personalTasks.length) {
+    html += `<div class="pv-section"><h3>我的自定义任务</h3>`;
+    personalTasks.forEach(task => {
+      html += pvTask(task.title, !!state.weeks[week.num].checks[task.id], state.weeks[week.num].notes[task.id] || '');
+    });
+    html += `</div>`;
+  }
   return html;
 }
 
@@ -4723,7 +4923,7 @@ function buildMonthPrintHTML(date) {
     }
   });
   let trackHtml = `<div class="pv-section"><h3>各 track 累计</h3>`;
-  ['deep','output','relisten','soak','review','minimum'].filter(k => agg[k]).forEach(k => {
+  ['deep','output','relisten','soak','review','minimum','custom'].filter(k => agg[k]).forEach(k => {
     const [d, t] = agg[k];
     const tpct = t > 0 ? Math.round(d/t*100) : 0;
     const meta = TRACKS_META[k];
@@ -4766,6 +4966,10 @@ function buildMonthPrintHTML(date) {
           if (note && note.trim()) entries.push({ task: task.text, note });
         });
       }
+      customTasksForDay(wn, day.num).forEach(task => {
+        const note = state.weeks[wn].notes[task.id];
+        if (note && note.trim()) entries.push({ task: task.title, note });
+      });
       if (!entries.length) return;
       if (!taskNotesHtml) taskNotesHtml = `<div class="pv-section"><h3>任务 Notes</h3>`;
       taskNotesHtml += `<div style="margin-top:10px"><div style="font-family:'Fraunces',serif;font-style:italic;color:#2C4A3E;font-size:11.5px;margin-bottom:4px">Week ${romanize(wn)} · Day ${romanize(day.num)} · ${day.title}</div>`;
@@ -4862,6 +5066,10 @@ function collectTaskNotes(weekNums) {
           if (note && note.trim()) items.push({ wn, day, task: task.text, note: note.trim() });
         });
       }
+      customTasksForDay(wn, day.num).forEach(task => {
+        const note = state.weeks[wn].notes[task.id];
+        if (note && note.trim()) items.push({ wn, day, task: task.title, note: note.trim() });
+      });
     });
   });
   return items;
@@ -4901,7 +5109,7 @@ function buildReportText(scope, params) {
         agg[t][1] += w.byTrack[t][1];
       }
     });
-    ['deep','output','relisten','soak','review','minimum'].forEach(k => {
+    ['deep','output','relisten','soak','review','minimum','custom'].forEach(k => {
       if (!agg[k]) return;
       const [d, t] = agg[k];
       const pct = t > 0 ? Math.round(d/t*100) : 0;
@@ -4986,6 +5194,15 @@ function buildReportText(scope, params) {
         const done = !!state.weeks[wn].checks[id];
         body += `\n${done ? '✓' : '○'} ${task.text}`;
         const note = state.weeks[wn].notes[id];
+        if (note && note.trim()) body += `\n  Note：${note.trim()}`;
+      });
+    }
+    const personalTasks = customTasksForDay(wn, dn);
+    if (personalTasks.length) {
+      body += `\n\n[我的自定义任务]`;
+      personalTasks.forEach(task => {
+        body += `\n${state.weeks[wn].checks[task.id] ? '✓' : '○'} ${task.title}`;
+        const note = state.weeks[wn].notes[task.id];
         if (note && note.trim()) body += `\n  Note：${note.trim()}`;
       });
     }
@@ -5127,6 +5344,8 @@ async function importPrompt() {
     state.appView = ['overview','tasks','time','reports'].includes(state.appView) ? state.appView : 'overview';
     state.sessions = Array.isArray(state.sessions) ? state.sessions : [];
     state.activeTimer = state.activeTimer || null;
+    state.customTasks = Array.isArray(state.customTasks) ? state.customTasks : [];
+    state.theme = ['forest','ocean','lavender','sunset','midnight'].includes(state.theme) ? state.theme : 'forest';
     // Make sure each week has the right shape
     for (let w = 1; w <= 4; w++) {
       if (!state.weeks[w]) state.weeks[w] = emptyWeekState();
@@ -5134,7 +5353,9 @@ async function importPrompt() {
       state.weeks[w].counters = Object.assign({ phrases: 0, memos: 0, stumbles: 0 }, state.weeks[w].counters || {});
     }
     await saveState();
+    renderAllWeeks();
     applyCheckedState();
+    setTheme(state.theme, false);
     [1,2,3,4].forEach(w => {
       ['phrases','memos','stumbles'].forEach(k => {
         const el = document.getElementById(`cnt-${w}-${k}`);
@@ -5158,6 +5379,7 @@ async function resetMonth() {
   state.actionLog = {};
   state.sessions = [];
   state.activeTimer = null;
+  state.customTasks = [];
   // keep profile name — that's identity, not progress
   await saveState();
   document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -5193,8 +5415,10 @@ async function init() {
       }
     }
   }
+  renderAllWeeks();
   applyCheckedState();
   syncUserInterface();
+  setTheme(state.theme, false);
   setAppView(state.appView, false);
   showActiveWeek();
   updateAll();
