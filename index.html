@@ -2519,6 +2519,157 @@ body[data-app-view="overview"] .data-panel { display: none; }
   .day-number { width: 48px; height: 48px; border-radius: 13px; font-size: 27px; }
   .day-progress { padding: 6px 8px; }
 }
+/* Compact application shell */
+body { padding-top: 22px; }
+.container { max-width: 1180px; padding-left: 22px; padding-right: 22px; }
+.main-menu-toggle {
+  position: fixed; top: 20px; left: 20px; z-index: 106;
+  width: 44px; height: 44px; display: grid; place-content: center; gap: 4px;
+  border: 1px solid var(--line); border-radius: 13px; background: #fff;
+  box-shadow: var(--shadow-sm); cursor: pointer;
+}
+.main-menu-toggle span {
+  width: 18px; height: 2px; border-radius: 2px; background: var(--ink);
+}
+.main-drawer {
+  position: fixed; inset: 0 auto 0 0; z-index: 130;
+  width: min(330px, calc(100vw - 32px)); padding: 18px 16px 28px;
+  overflow-y: auto; background: #fff; border-right: 1px solid var(--line);
+  box-shadow: 24px 0 60px rgba(15,23,42,.14);
+  transform: translateX(-105%); transition: transform .24s ease;
+}
+.main-drawer.open { transform: translateX(0); }
+.main-drawer-scrim {
+  position: fixed; inset: 0; z-index: 125; display: none;
+  background: rgba(17,19,24,.24); backdrop-filter: blur(2px);
+}
+.main-drawer-scrim.show { display: block; }
+.drawer-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; padding: 3px 2px 12px; border-bottom: 1px solid var(--line);
+}
+.drawer-head strong { display: block; margin-top: 3px; color: var(--ink); font: 600 20px 'Fraunces', serif; }
+.drawer-close {
+  width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 10px;
+  background: #fff; color: var(--ink); font-size: 21px; cursor: pointer;
+}
+.main-drawer .app-userbar { position: static; display: grid; margin: 0 0 10px; }
+.main-drawer .logout-button { width: 100%; margin-top: 4px; }
+.main-drawer .app-nav {
+  position: static; grid-template-columns: 1fr; margin: 0 0 10px; overflow: visible;
+}
+.main-drawer .app-nav-btn {
+  display: flex; align-items: center; min-height: 43px; padding: 10px 13px;
+  border: 0; border-bottom: 1px solid var(--line); text-align: left; font-size: 12px;
+}
+.main-drawer .app-nav-btn:last-child { border-bottom: 0; }
+.main-drawer .app-nav-btn.active {
+  border-radius: 10px; box-shadow: inset 3px 0 0 var(--accent); background: var(--accent-faint);
+}
+.main-drawer .theme-picker {
+  display: flex; flex-wrap: wrap; justify-content: flex-start; margin: 0 0 10px; padding: 11px;
+}
+.main-drawer .theme-picker > span:first-child { width: 100%; margin-bottom: 6px; }
+.drawer-section {
+  margin-top: 10px; padding: 12px; border: 1px solid var(--line);
+  border-radius: 14px; background: var(--surface-subtle);
+}
+.drawer-section-title {
+  margin-bottom: 8px; color: var(--margin);
+  font: 700 10px 'Inter', sans-serif; letter-spacing: .12em; text-transform: uppercase;
+}
+.main-drawer .week-tabs {
+  display: grid; grid-template-columns: 1fr 1fr; margin: 0; border: 0;
+  border-radius: 10px; box-shadow: none;
+}
+body:not([data-app-view="tasks"]) .main-drawer #weekTabs { display: grid; }
+.main-drawer .wt-btn { min-width: 0; padding: 9px 4px; border: 1px solid var(--line); }
+.main-drawer .wt-btn.active { border-color: var(--accent); border-radius: 8px; box-shadow: inset 0 -2px 0 var(--accent); }
+.main-drawer .learning-system {
+  position: static; width: auto; padding: 0; border: 0; overflow: visible;
+  box-shadow: none; transform: none; background: transparent;
+}
+.main-drawer .system-head { margin-bottom: 10px; }
+.main-drawer .system-head h2 { font-size: 17px; }
+.main-drawer .system-head p { display: none; }
+.main-drawer .system-rule { font-size: 10px; }
+.main-drawer .planner-close { display: none; }
+.main-drawer .part-card { padding: 10px; }
+.main-drawer .part-card-toggle strong { font-size: 13px; }
+.main-drawer .part-card-toggle span { font-size: 8px; }
+.planner-toggle, .planner-scrim { display: none !important; }
+
+.home-part-overview {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;
+  min-height: calc(100vh - 78px); align-content: center; padding: 44px 0 32px;
+}
+.home-part-card {
+  --part-color: var(--accent-strong);
+  min-width: 0; min-height: 390px; display: flex; flex-direction: column;
+  padding: 24px; border: 1px solid var(--line); border-radius: 24px;
+  background: #fff; box-shadow: var(--shadow-sm);
+}
+.home-part-number { color: var(--part-color); font: italic 30px 'Fraunces', serif; }
+.home-part-label {
+  margin-top: 5px; color: var(--part-color);
+  font: 700 9px 'Inter', sans-serif; letter-spacing: .15em; text-transform: uppercase;
+}
+.home-part-card h2 { margin-top: 18px; color: var(--ink); font: 600 25px/1.15 'Fraunces', serif; }
+.home-part-goal {
+  min-height: 72px; margin-top: 9px; color: var(--ink-soft);
+  font: 13px/1.65 'Source Serif 4', serif;
+}
+.home-part-meta {
+  display: flex; justify-content: space-between; gap: 8px; margin-top: 18px;
+  padding-top: 14px; border-top: 1px solid var(--line); color: var(--margin);
+  font: 700 10px 'Inter', sans-serif;
+}
+.home-part-card .mini-heatmap { margin-top: 14px; }
+.home-part-card .part-insight { margin-top: 16px; font-size: 10.5px; }
+.home-part-actions { display: flex; gap: 7px; margin-top: auto; padding-top: 18px; }
+.home-part-action {
+  flex: 1; padding: 9px; border: 1px solid var(--line); border-radius: 9px;
+  background: #fff; color: var(--ink); font: 700 10px 'Inter', sans-serif; cursor: pointer;
+}
+.home-part-action.primary { border-color: var(--part-color); background: color-mix(in srgb, var(--part-color) 8%, white); }
+body[data-app-view="overview"] .cover,
+body[data-app-view="overview"] .month-dash,
+body[data-app-view="overview"] .data-panel,
+body[data-app-view="overview"] .colophon { display: none; }
+body:not([data-app-view="overview"]) .home-part-overview { display: none; }
+
+body[data-app-view="tasks"] .container { max-width: 1120px; }
+body[data-app-view="tasks"] .week-view.active { padding: 20px; }
+body[data-app-view="tasks"] .index-nav {
+  max-width: 560px; margin: 0 auto 16px; padding: 5px;
+  border: 1px solid var(--line); border-radius: 13px; background: #fff;
+}
+body[data-app-view="tasks"] .day.active-day {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
+}
+body[data-app-view="tasks"] .day-header,
+body[data-app-view="tasks"] .custom-section,
+body[data-app-view="tasks"] .day-export-row { grid-column: 1 / -1; }
+body[data-app-view="tasks"] .day-header { margin-bottom: 2px; padding-bottom: 14px; }
+body[data-app-view="tasks"] .section,
+body[data-app-view="tasks"] .low-state,
+body[data-app-view="tasks"] .custom-section { margin: 0; padding: 13px; }
+body[data-app-view="tasks"] .task-block { padding: 6px 7px; }
+body[data-app-view="tasks"] .task label,
+body[data-app-view="tasks"] .custom-title-input { font-size: 14px; line-height: 1.4; }
+body[data-app-view="tasks"] .task-note { min-height: 34px; font-size: 12px; }
+
+@media (max-width: 850px) {
+  .container { padding-left: 14px; padding-right: 14px; }
+  .main-menu-toggle { top: 12px; left: 12px; }
+  .home-part-overview { grid-template-columns: 1fr; min-height: 0; padding: 68px 0 24px; }
+  .home-part-card { min-height: 330px; }
+  body[data-app-view="tasks"] .week-view.active { padding: 14px; }
+  body[data-app-view="tasks"] .day.active-day { grid-template-columns: 1fr; }
+  body[data-app-view="tasks"] .day-header,
+  body[data-app-view="tasks"] .custom-section,
+  body[data-app-view="tasks"] .day-export-row { grid-column: auto; }
+}
 </style>
 </head>
 <body data-app-view="overview">
@@ -2538,6 +2689,18 @@ body[data-app-view="overview"] .data-panel { display: none; }
 </section>
 
 <div class="container">
+<button class="main-menu-toggle" id="mainMenuToggle" type="button" aria-label="打开导航" aria-expanded="false">
+  <span></span><span></span><span></span>
+</button>
+<div class="main-drawer-scrim" id="mainDrawerScrim"></div>
+<aside class="main-drawer" id="mainDrawer" aria-label="应用导航">
+  <div class="drawer-head">
+    <div>
+      <div class="part-kicker">Listening diary</div>
+      <strong>学习控制台</strong>
+    </div>
+    <button class="drawer-close" id="mainDrawerClose" type="button" aria-label="关闭导航">×</button>
+  </div>
 <div class="app-userbar">
   <span class="current-user">当前用户：<strong id="currentUsername">—</strong></span>
   <button class="logout-button" type="button" id="logoutButton">退出 / 切换用户</button>
@@ -2561,11 +2724,21 @@ body[data-app-view="overview"] .data-panel { display: none; }
   </label>
   <button class="eyedropper-btn" id="eyedropperButton" type="button" title="从屏幕上吸取颜色">吸色</button>
 </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">周计划</div>
+    <div id="drawerWeekSlot"></div>
+  </div>
+  <div class="drawer-section drawer-planner-section">
+    <div id="drawerPlannerSlot"></div>
+  </div>
+</aside>
 <div class="active-timer" id="activeTimerBar">
   <span class="active-timer-title" id="activeTimerTitle">正在计时</span>
   <span class="active-timer-clock" id="activeTimerClock">00:00:00</span>
   <button class="active-timer-stop" type="button" id="activeTimerStop">结束 + 日历</button>
 </div>
+
+<section class="home-part-overview" id="homePartOverview" aria-label="三部分学习总览"></section>
 
 <header class="cover">
   <div class="eyebrow">A Listening Diary · Month One</div>
@@ -3688,6 +3861,33 @@ function partInsight(part) {
   return `<strong>近 28 天：${formatDuration(seconds, true)} · ${activeDays} 天 · ${checks} 次完成</strong><br>${advice}`;
 }
 
+function renderHomePartOverview() {
+  const root = document.getElementById('homePartOverview');
+  if (!root) return;
+  const palette = themePalette(5);
+  const partColors = { sherlock: palette[0], ielts: palette[1], shorts: palette[2] };
+  root.innerHTML = Object.keys(PART_META).map((part, index) => {
+    const meta = PART_META[part];
+    const plan = state.partPlans[part];
+    return `<article class="home-part-card" style="--part-color:${partColors[part]}">
+      <div class="home-part-number">${romanize(index + 1)}</div>
+      <div class="home-part-label">${meta.label} · ${meta.ratio}</div>
+      <h2>${escapeHtml(plan.name)}</h2>
+      <p class="home-part-goal">${escapeHtml(plan.goal)}</p>
+      <div class="home-part-meta">
+        <span>${plan.tasks.length} 个任务模板</span>
+        <span>近 28 天</span>
+      </div>
+      <div class="mini-heatmap">${renderMiniHeatmap(part)}</div>
+      <div class="part-insight">${partInsight(part)}</div>
+      <div class="home-part-actions">
+        <button class="home-part-action primary" type="button" data-open-part="${part}">打开任务库</button>
+        <button class="home-part-action" type="button" data-home-view="tasks">进入今日任务</button>
+      </div>
+    </article>`;
+  }).join('');
+}
+
 function renderPartSystem() {
   const grid = document.getElementById('partGrid');
   if (!grid) return;
@@ -3725,12 +3925,27 @@ function renderPartSystem() {
       </div>
     </section>`;
   }).join('');
+  renderHomePartOverview();
+}
+
+function setupMainDrawer() {
+  const plannerSlot = document.getElementById('drawerPlannerSlot');
+  const weekSlot = document.getElementById('drawerWeekSlot');
+  const planner = document.getElementById('learningSystem');
+  const weekTabs = document.getElementById('weekTabs');
+  if (plannerSlot && planner && planner.parentElement !== plannerSlot) plannerSlot.appendChild(planner);
+  if (weekSlot && weekTabs && weekTabs.parentElement !== weekSlot) weekSlot.appendChild(weekTabs);
+}
+
+function setMainDrawerOpen(open) {
+  document.getElementById('mainDrawer')?.classList.toggle('open', open);
+  document.getElementById('mainDrawerScrim')?.classList.toggle('show', open);
+  document.getElementById('mainMenuToggle')?.setAttribute('aria-expanded', String(open));
 }
 
 function setPlannerOpen(open) {
-  document.getElementById('learningSystem')?.classList.toggle('open', open);
-  document.getElementById('plannerScrim')?.classList.toggle('show', open);
-  document.getElementById('plannerToggle')?.setAttribute('aria-expanded', String(open));
+  if (open) setMainDrawerOpen(true);
+  else setMainDrawerOpen(false);
 }
 
 function findPlanTask(part, taskId) {
@@ -4045,6 +4260,7 @@ function setAppView(view, persist = true) {
   });
   if (safeView === 'tasks') showActiveWeek();
   if (persist && currentUser) saveState();
+  setMainDrawerOpen(false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -4817,6 +5033,9 @@ document.getElementById('activeTimerStop').addEventListener('click', () => stopT
 document.getElementById('plannerToggle').addEventListener('click', () => setPlannerOpen(true));
 document.getElementById('plannerClose').addEventListener('click', () => setPlannerOpen(false));
 document.getElementById('plannerScrim').addEventListener('click', () => setPlannerOpen(false));
+document.getElementById('mainMenuToggle').addEventListener('click', () => setMainDrawerOpen(true));
+document.getElementById('mainDrawerClose').addEventListener('click', () => setMainDrawerOpen(false));
+document.getElementById('mainDrawerScrim').addEventListener('click', () => setMainDrawerOpen(false));
 
 document.addEventListener('change', async (e) => {
   if (e.target.matches('.task input[type="checkbox"]')) {
@@ -4944,6 +5163,18 @@ document.addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('click', async (e) => {
+  const openPartButton = e.target.closest('[data-open-part]');
+  if (openPartButton) {
+    openPlanPart = openPartButton.dataset.openPart;
+    renderPartSystem();
+    setMainDrawerOpen(true);
+    return;
+  }
+  const homeViewButton = e.target.closest('[data-home-view]');
+  if (homeViewButton) {
+    setAppView(homeViewButton.dataset.homeView);
+    return;
+  }
   const partToggle = e.target.closest('[data-toggle-part]');
   if (partToggle) {
     const part = partToggle.dataset.togglePart;
@@ -5053,6 +5284,7 @@ document.addEventListener('click', async (e) => {
     const btn = e.target.closest('.wt-btn');
     const w = parseInt(btn.dataset.tabWeek);
     state.activeWeek = w;
+    setAppView('tasks', false);
     showActiveWeek();
     saveState();
     return;
@@ -6209,6 +6441,7 @@ async function resetMonth() {
 async function init() {
   renderWeekTabs();
   renderAllWeeks();
+  setupMainDrawer();
   if (supabaseClient) {
     const { data } = await supabaseClient.auth.getSession();
     const sessionUser = data.session && data.session.user;
