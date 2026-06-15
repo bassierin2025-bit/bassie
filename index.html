@@ -852,6 +852,16 @@ body {
   color: var(--accent);
   font: 500 28px 'Fraunces', serif;
 }
+.part-time-summary {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;
+  margin: 0 0 12px;
+}
+.part-time-chip {
+  padding: 8px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface-subtle); text-align: center;
+}
+.part-time-chip strong { display: block; color: var(--ink); font: 700 13px 'Inter', sans-serif; }
+.part-time-chip span { color: var(--margin); font: 9px 'Inter', sans-serif; }
 .today-chart-grid {
   display: grid;
   grid-template-columns: 150px 1fr;
@@ -2050,6 +2060,7 @@ body {
   border: 1px solid var(--line); border-radius: 14px; background: #fff;
 }
 .custom-task-form {
+  grid-template-columns: minmax(0, 1fr) auto auto;
   margin: 4px 0 10px; padding: 8px; border: 1px dashed #C9CED5;
   border-radius: 11px; background: #fff;
 }
@@ -2080,6 +2091,157 @@ body {
 .pv-print-actions button,
 .auth-mark {
   color: #111318 !important;
+}
+
+/* Three-part learning system */
+.learning-system {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 120;
+  width: min(440px, calc(100vw - 28px)); padding: 20px;
+  border-left: 1px solid var(--line); background: var(--surface);
+  box-shadow: -24px 0 60px rgba(15,23,42,.14);
+  overflow-y: auto; transform: translateX(105%);
+  transition: transform .24s ease;
+}
+.learning-system.open { transform: translateX(0); }
+.planner-scrim {
+  position: fixed; inset: 0; z-index: 110; display: none;
+  background: rgba(17,19,24,.25); backdrop-filter: blur(2px);
+}
+.planner-scrim.show { display: block; }
+.planner-toggle {
+  position: fixed; right: 18px; top: 50%; z-index: 105;
+  transform: translateY(-50%); padding: 11px 9px;
+  border: 1px solid var(--line); border-radius: 12px 0 0 12px;
+  background: #fff; color: var(--ink); box-shadow: var(--shadow-md);
+  font: 700 11px/1.35 'Inter', sans-serif; cursor: pointer;
+  writing-mode: vertical-rl; letter-spacing: .08em;
+}
+.planner-toggle:hover { border-color: var(--accent-strong); }
+.planner-close {
+  flex: 0 0 auto; width: 32px; height: 32px; border: 1px solid var(--line);
+  border-radius: 9px; background: #fff; color: var(--ink); cursor: pointer;
+}
+.system-head {
+  display: flex; justify-content: space-between; gap: 12px; align-items: start;
+  margin-bottom: 16px;
+}
+.system-head h2 { font: 600 20px 'Fraunces', serif; color: var(--ink); }
+.system-head p { margin-top: 5px; color: var(--margin); font-size: 11.5px; line-height: 1.5; }
+.system-rule {
+  margin: -4px 0 12px; padding: 9px 10px; border-radius: 10px;
+  background: var(--surface-subtle); color: var(--ink-soft);
+  font: 11px/1.5 'Inter', sans-serif;
+}
+.part-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.part-card {
+  min-width: 0; padding: 13px; border: 1px solid var(--line);
+  border-radius: 14px; background: #fff;
+}
+.part-card-toggle {
+  width: 100%; display: flex; align-items: center; gap: 9px;
+  border: 0; background: transparent; color: var(--ink); text-align: left; cursor: pointer;
+}
+.part-card-toggle::after { content: '＋'; margin-left: auto; color: var(--part-color); font-weight: 700; }
+.part-card.expanded .part-card-toggle::after { content: '−'; }
+.part-card-toggle strong { font: 600 15px 'Fraunces', serif; }
+.part-card-toggle span { color: var(--part-color); font: 700 9px 'Inter', sans-serif; }
+.part-card-body { display: none; padding-top: 10px; }
+.part-card.expanded .part-card-body { display: block; }
+.part-card[data-part="sherlock"] { --part-color: var(--accent-strong); }
+.part-card[data-part="ielts"] { --part-color: #476A92; }
+.part-card[data-part="shorts"] { --part-color: #9A5A45; }
+.part-kicker {
+  color: var(--part-color); font: 700 10px 'Inter', sans-serif;
+  letter-spacing: .14em; text-transform: uppercase;
+}
+.part-name, .part-goal {
+  width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink);
+}
+.part-name { margin: 3px 0; font: 600 17px 'Fraunces', serif; }
+.part-goal { min-height: 36px; resize: vertical; color: var(--ink-soft); font: 11.5px/1.45 'Source Serif 4', serif; }
+.part-balance {
+  display: inline-block; margin: 7px 0 12px; padding: 4px 8px;
+  border-radius: 999px; background: var(--surface-subtle);
+  color: var(--part-color); font: 700 10px 'Inter', sans-serif;
+}
+.part-task-list { display: grid; gap: 7px; }
+.plan-task {
+  padding: 8px; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--surface-subtle);
+}
+.plan-task-title, .plan-task-detail {
+  width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink);
+}
+.plan-task-title { font: 600 12px/1.4 'Inter', sans-serif; }
+.plan-task-detail { margin-top: 2px; color: var(--margin); font: 10.5px/1.4 'Source Serif 4', serif; }
+.plan-task-actions { display: flex; gap: 5px; margin-top: 7px; align-items: center; }
+.plan-action {
+  padding: 5px 7px; border: 1px solid var(--line); border-radius: 7px;
+  background: #fff; color: var(--ink-soft); font: 600 9px 'Inter', sans-serif; cursor: pointer;
+}
+.plan-action.dispatch { margin-right: auto; border-color: var(--part-color); color: var(--ink); }
+.plan-action:hover { border-color: var(--part-color); }
+.part-add-form {
+  display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 9px;
+  padding-top: 9px; border-top: 1px dashed var(--line);
+}
+.part-add-form input {
+  min-width: 0; padding: 7px 8px; border: 1px solid var(--line);
+  border-radius: 8px; background: #fff; color: var(--ink);
+}
+.part-add-form button {
+  padding: 7px 9px; border: 1px solid var(--part-color); border-radius: 8px;
+  background: #fff; color: var(--ink); font-weight: 700; cursor: pointer;
+}
+.part-insight {
+  margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line);
+  color: var(--ink-soft); font: 11px/1.5 'Inter', sans-serif;
+}
+.part-insight strong { color: var(--part-color); }
+.mini-heatmap {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-top: 9px;
+}
+.mini-hm {
+  aspect-ratio: 1; border-radius: 3px; background: var(--surface-subtle);
+  border: 1px solid var(--line);
+}
+.mini-hm.l1 { background: color-mix(in srgb, var(--part-color) 22%, white); }
+.mini-hm.l2 { background: color-mix(in srgb, var(--part-color) 43%, white); }
+.mini-hm.l3 { background: color-mix(in srgb, var(--part-color) 68%, white); }
+.mini-hm.l4 { background: var(--part-color); }
+.custom-part-select {
+  padding: 7px; border: 1px solid var(--line); border-radius: 8px;
+  background: #fff; color: var(--ink); font: 600 11px 'Inter', sans-serif;
+}
+.task-part-badge {
+  margin-left: 5px; color: var(--margin); font: 700 9px 'Inter', sans-serif;
+  text-transform: uppercase;
+}
+@media (max-width: 820px) {
+  .learning-system { width: min(94vw, 420px); padding: 16px 13px; }
+  .planner-toggle { right: 0; top: auto; bottom: 88px; transform: none; }
+  .custom-task-form { grid-template-columns: 1fr auto; }
+  .custom-task-form .custom-task-input { grid-column: 1 / -1; }
+}
+
+body[data-app-view="time"] .month-dash {
+  display: grid; grid-template-columns: minmax(280px, .85fr) minmax(420px, 1.35fr);
+  gap: 14px; align-items: start; padding: 18px;
+}
+body[data-app-view="time"] .month-dash > .dash-eyebrow { grid-column: 1 / -1; margin-bottom: 0; }
+body[data-app-view="time"] .dash-section { margin: 0; }
+body[data-app-view="time"] .heatmap-panel { grid-column: 1; }
+body[data-app-view="time"] .actual-panel { grid-column: 2; }
+body[data-app-view="time"] .trend-panel { grid-column: 1 / -1; }
+body[data-app-view="time"] .actual-dashboard { padding: 13px; }
+body[data-app-view="time"] .today-chart-grid { grid-template-columns: 118px 1fr; gap: 12px; }
+body[data-app-view="time"] .time-pie { width: 112px; }
+body[data-app-view="time"] .week-actual-grid { height: 98px; margin-top: 10px; }
+body[data-app-view="time"] .week-actual-line { height: 58px; margin-top: 10px; }
+body[data-app-view="time"] .heatmap-block { padding: 12px 10px; }
+@media (max-width: 820px) {
+  body[data-app-view="time"] .month-dash { display: block; padding: 14px; }
+  body[data-app-view="time"] .dash-section { margin-bottom: 14px; }
 }
 .logout-button, .month-nav-button { border-color: var(--line); border-radius: 8px; background: #fff; }
 body[data-app-view="tasks"] .cover,
@@ -2343,6 +2505,7 @@ body[data-app-view="overview"] .data-panel { display: none; }
   .auth-card { padding: 32px 22px; }
   .app-userbar { position: sticky; top: 8px; z-index: 20; backdrop-filter: blur(12px); }
   .today-chart-grid { grid-template-columns: 1fr; }
+  .part-time-summary { grid-template-columns: 1fr 1fr 1fr; }
   .time-pie { width: 130px; }
   .active-timer { top: 60px; }
   .app-nav { top: 60px; }
@@ -2419,7 +2582,7 @@ body[data-app-view="overview"] .data-panel { display: none; }
     <div class="hero-label">tasks completed this month</div>
   </div>
 
-  <div class="dash-section time-panel">
+  <div class="dash-section time-panel heatmap-panel">
     <h4 class="dash-section-title">每日热力图 · this month</h4>
     <div class="heatmap-block">
       <div class="month-nav">
@@ -2446,10 +2609,11 @@ body[data-app-view="overview"] .data-panel { display: none; }
     </div>
   </div>
 
-  <div class="dash-section time-panel">
+  <div class="dash-section time-panel actual-panel">
     <h4 class="dash-section-title">今日真实投入 · actual time</h4>
     <div class="actual-dashboard">
       <div class="today-total">今天累计 <strong id="todayActualTotal">0 min</strong></div>
+      <div class="part-time-summary" id="partTimeSummary"></div>
       <div class="today-chart-grid">
         <div class="time-pie" id="todayTimePie" aria-label="今日任务时间配比"></div>
         <div class="time-bars" id="todayTimeBars">
@@ -2466,7 +2630,7 @@ body[data-app-view="overview"] .data-panel { display: none; }
     <div class="week-cards" id="weekCards"></div>
   </div>
 
-  <div class="dash-section time-panel">
+  <div class="dash-section time-panel trend-panel">
     <h4 class="dash-section-title">Trend</h4>
     <div class="charts-grid">
       <div class="chart-box">
@@ -2527,6 +2691,21 @@ body[data-app-view="overview"] .data-panel { display: none; }
 </section>
 
 <!-- ═════════════ WEEK TABS ═════════════ -->
+<section class="learning-system" id="learningSystem">
+  <div class="system-head">
+    <div>
+      <div class="part-kicker">Three-part system</div>
+      <h2>三条输入线，汇入同一种英语能力</h2>
+      <p>任务库只负责规划。点“安排到今天”后，任务才会进入当前 Day、计时与统计。</p>
+    </div>
+    <button class="planner-close" id="plannerClose" type="button" aria-label="关闭三线计划">×</button>
+  </div>
+  <div class="system-rule"><strong>默认调度：</strong>长片 3 次深练 · IELTS 2 次校准 · 短片 2 次轻练。忙碌日只选一条主线，短片不挤占深练。</div>
+  <div class="part-grid" id="partGrid"></div>
+</section>
+<div class="planner-scrim" id="plannerScrim"></div>
+<button class="planner-toggle" id="plannerToggle" type="button">三线计划</button>
+
 <nav class="week-tabs" id="weekTabs"></nav>
 
 <!-- ═════════════ WEEK VIEWS ═════════════ -->
@@ -3244,6 +3423,47 @@ const TRACKS_META = {
   custom: { name: "自定义", en: "personal" }
 };
 
+const PART_META = {
+  sherlock: { label: 'Part 1', fallbackName: '影视长片 · Voice & Depth', ratio: '50%', color: 'var(--accent-strong)' },
+  ielts: { label: 'Part 2', fallbackName: 'IELTS · Score & Structure', ratio: '30%', color: '#476A92' },
+  shorts: { label: 'Part 3', fallbackName: '兴趣短片 · Fresh & Flexible', ratio: '20%', color: '#9A5A45' }
+};
+
+function defaultPartPlans() {
+  return {
+    sherlock: {
+      name: '影视长片 · Voice & Depth',
+      goal: '建立稳定的英音听觉、个人发音审美、语块库，并把精听转化为自然交流。',
+      tasks: [
+        { id: 'sp-1', title: '精听与听写', detail: '30–90 秒片段：裸听、听写、对脚本、定位连读和弱读。' },
+        { id: 'sp-2', title: '声音模仿', detail: '分块跟读、整句 shadowing、录音对比，只修一个最明显的点。' },
+        { id: 'sp-3', title: '表达迁移', detail: '挑 1–3 个语块换场景造句，并在工作或 small talk 中主动使用。' },
+        { id: 'sp-4', title: '长听力耐力', detail: '连续听较长内容，练习不因一个生词丢掉后续信息。' }
+      ]
+    },
+    ielts: {
+      name: 'IELTS · Score & Structure',
+      goal: '保持考试能力不过期，同时补齐学术场景听力、限时组织和清晰输出。',
+      tasks: [
+        { id: 'ip-1', title: '听力错因训练', detail: '完成一个 section；只复盘同义替换、定位丢失、拼写和注意力断点。' },
+        { id: 'ip-2', title: '口语限时回答', detail: 'Part 2 计时 1+2 分钟，录音后只改结构、停顿和一个发音问题。' },
+        { id: 'ip-3', title: '学术表达积累', detail: '从阅读或范文提取 3 个可复用逻辑句型，不背整段模板。' },
+        { id: 'ip-4', title: '周度模拟与校准', detail: '每周一次小模考，记录分数、题型弱点和下周唯一修正目标。' }
+      ]
+    },
+    shorts: {
+      name: '兴趣短片 · Fresh & Flexible',
+      goal: '用低负担材料保持新鲜感，捕捉真实口语和喜欢的声音，但不让碎片输入冲散主线。',
+      tasks: [
+        { id: 'vp-1', title: '快速筛选', detail: '只收藏真正想重复听的片段；当天最多选 1 条进入学习。' },
+        { id: 'vp-2', title: '一分钟拆解', detail: '听懂语境，记 1 个语块、1 个语音点，不做完整听写。' },
+        { id: 'vp-3', title: '轻量模仿', detail: '跟读 3–5 遍并录一版，保留喜欢的节奏、态度或音色。' },
+        { id: 'vp-4', title: '升降级判断', detail: '值得长期学的移入 Part 1；只新鲜但不实用的看过即止。' }
+      ]
+    }
+  };
+}
+
 // ═════════════ STATE ═════════════
 const STORAGE_PREFIX = 'listening-diary-user-v2:';
 const SESSION_KEY = 'listening-diary-current-user';
@@ -3267,6 +3487,8 @@ function createInitialState(username = '') {
     sessions: [],
     activeTimer: null,
     customTasks: [],
+    partPlans: defaultPartPlans(),
+    partActionLog: {},
     theme: 'forest',
     customAccent: '#2C4A3E'
   };
@@ -3275,6 +3497,7 @@ function createInitialState(username = '') {
 }
 
 let state = createInitialState(currentUser);
+let openPlanPart = 'sherlock';
 
 function emptyWeekState() {
   return {
@@ -3329,9 +3552,24 @@ async function loadState() {
       state.appView = ['overview','tasks','time','reports'].includes(parsed.appView) ? parsed.appView : 'overview';
       state.profile = Object.assign({ name: currentUser }, parsed.profile || {}, { name: currentUser });
       if (parsed.actionLog) state.actionLog = parsed.actionLog;
-      state.sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
-      state.activeTimer = parsed.activeTimer || null;
-      state.customTasks = Array.isArray(parsed.customTasks) ? parsed.customTasks : [];
+      state.sessions = Array.isArray(parsed.sessions)
+        ? parsed.sessions.map(session => Object.assign({ part: 'sherlock' }, session))
+        : [];
+      state.activeTimer = parsed.activeTimer ? Object.assign({ part: 'sherlock' }, parsed.activeTimer) : null;
+      state.customTasks = Array.isArray(parsed.customTasks)
+        ? parsed.customTasks.map(task => Object.assign({ part: 'sherlock' }, task))
+        : [];
+      const defaults = defaultPartPlans();
+      state.partPlans = {};
+      Object.keys(PART_META).forEach(part => {
+        const saved = parsed.partPlans && parsed.partPlans[part];
+        state.partPlans[part] = {
+          name: saved?.name || defaults[part].name,
+          goal: saved?.goal || defaults[part].goal,
+          tasks: Array.isArray(saved?.tasks) ? saved.tasks : defaults[part].tasks
+        };
+      });
+      state.partActionLog = parsed.partActionLog && typeof parsed.partActionLog === 'object' ? parsed.partActionLog : {};
       state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(parsed.theme) ? parsed.theme : 'forest';
       state.customAccent = /^#[0-9a-f]{6}$/i.test(parsed.customAccent || '') ? parsed.customAccent : '#2C4A3E';
       if (parsed.weeks) {
@@ -3381,18 +3619,147 @@ function customTasksForDay(weekNum, dayNum) {
 
 function customTaskHTML(task) {
   const id = task.id;
+  const part = PART_META[task.part] ? task.part : 'sherlock';
   return `<div class="task-block custom-task-block" data-custom-id="${id}">
-    <div class="task" data-track="custom" data-mins="0" data-week="${task.week}">
+    <div class="task" data-track="custom" data-part="${part}" data-mins="0" data-week="${task.week}">
       <input type="checkbox" id="${id}">
       <input class="custom-title-input" data-custom-title="${id}" value="${escapeHtml(task.title)}" aria-label="自定义任务标题">
+      <span class="task-part-badge">${PART_META[part].label}</span>
     </div>
     <div class="task-actions">
-      <button type="button" class="timer-btn" data-timer-task="${id}" data-week="${task.week}" data-day="${task.day}" data-task-title="${escapeHtml(task.title)}">开始计时</button>
+      <button type="button" class="timer-btn" data-timer-task="${id}" data-part="${part}" data-week="${task.week}" data-day="${task.day}" data-task-title="${escapeHtml(task.title)}">开始计时</button>
       <span class="task-actual-time" data-task-time="${id}">实际 0 min</span>
       <button type="button" class="custom-delete-btn" data-custom-delete="${id}">删除</button>
     </div>
     <textarea id="${id}-note" class="task-note" data-week="${task.week}" data-task-id="${id}" rows="1" placeholder="Note · 心得、感受或下一步…"></textarea>
   </div>`;
+}
+
+function partSessionsForDate(date, part) {
+  return sessionsForDate(date).filter(session => (session.part || 'sherlock') === part);
+}
+
+function partActivityForDate(date, part) {
+  const key = isoDate(date);
+  const categorized = state.partActionLog?.[key]?.[part] || 0;
+  const seconds = partSessionsForDate(date, part).reduce((sum, session) => sum + sessionSeconds(session), 0);
+  if (categorized || seconds) return { checks: categorized, seconds };
+  if (part === 'sherlock' && !state.partActionLog?.[key]) {
+    return { checks: state.actionLog?.[key]?.checks || 0, seconds };
+  }
+  return { checks: 0, seconds: 0 };
+}
+
+function renderMiniHeatmap(part) {
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(today.getDate() - 27);
+  let html = '';
+  for (let i = 0; i < 28; i++) {
+    const date = new Date(start);
+    date.setDate(start.getDate() + i);
+    const activity = partActivityForDate(date, part);
+    const mins = Math.round(activity.seconds / 60);
+    let level = activity.checks || activity.seconds ? 1 : 0;
+    if (mins >= 15 || activity.checks >= 2) level = 2;
+    if (mins >= 30 || activity.checks >= 4) level = 3;
+    if (mins >= 60 || activity.checks >= 6) level = 4;
+    html += `<span class="mini-hm l${level}" title="${isoDate(date)} · ${activity.checks} tasks · ${formatDuration(activity.seconds, true)}"></span>`;
+  }
+  return html;
+}
+
+function partInsight(part) {
+  const today = new Date();
+  let seconds = 0, activeDays = 0, checks = 0;
+  for (let i = 0; i < 28; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    const activity = partActivityForDate(date, part);
+    seconds += activity.seconds;
+    checks += activity.checks;
+    if (activity.seconds || activity.checks) activeDays++;
+  }
+  const advice = part === 'sherlock'
+    ? '主线要慢：一周深做 2–3 次，比每天换片更有效。'
+    : part === 'ielts'
+      ? '考试线要稳：每周至少一次计时反馈，避免只输入不校准。'
+      : '短片线要轻：每天最多深学一条，优秀材料再升级到 Part 1。';
+  return `<strong>近 28 天：${formatDuration(seconds, true)} · ${activeDays} 天 · ${checks} 次完成</strong><br>${advice}`;
+}
+
+function renderPartSystem() {
+  const grid = document.getElementById('partGrid');
+  if (!grid) return;
+  const palette = themePalette(5);
+  const partColors = { sherlock: palette[0], ielts: palette[1], shorts: palette[2] };
+  grid.innerHTML = Object.keys(PART_META).map(part => {
+    const meta = PART_META[part];
+    const plan = state.partPlans[part];
+    const insight = partInsight(part);
+    return `<section class="part-card ${openPlanPart === part ? 'expanded' : ''}" data-part="${part}" style="--part-color:${partColors[part]}">
+      <button class="part-card-toggle" type="button" data-toggle-part="${part}">
+        <span>${meta.label} · ${meta.ratio}</span><strong>${escapeHtml(plan.name)}</strong>
+      </button>
+      <div class="part-card-body">
+        <input class="part-name" data-part-name="${part}" value="${escapeHtml(plan.name)}" aria-label="${meta.label} 名称">
+        <textarea class="part-goal" data-part-goal="${part}" rows="2" aria-label="${meta.label} 目标">${escapeHtml(plan.goal)}</textarea>
+        <div class="part-task-list">
+        ${plan.tasks.map((task, index) => `<article class="plan-task" data-plan-task="${part}:${task.id}">
+          <input class="plan-task-title" data-plan-title="${part}:${task.id}" value="${escapeHtml(task.title)}">
+          <input class="plan-task-detail" data-plan-detail="${part}:${task.id}" value="${escapeHtml(task.detail || '')}">
+          <div class="plan-task-actions">
+            <button class="plan-action dispatch" type="button" data-dispatch-task="${part}:${task.id}">安排到今天</button>
+            <button class="plan-action" type="button" data-move-plan="${part}:${task.id}:-1" ${index === 0 ? 'disabled' : ''}>↑</button>
+            <button class="plan-action" type="button" data-move-plan="${part}:${task.id}:1" ${index === plan.tasks.length - 1 ? 'disabled' : ''}>↓</button>
+            <button class="plan-action" type="button" data-delete-plan="${part}:${task.id}">删除</button>
+          </div>
+        </article>`).join('')}
+        </div>
+        <form class="part-add-form" data-part-add="${part}">
+          <input name="partTaskTitle" maxlength="120" placeholder="添加可复用任务…" required>
+          <button type="submit">＋</button>
+        </form>
+        <div class="mini-heatmap">${renderMiniHeatmap(part)}</div>
+        <div class="part-insight">${insight}</div>
+      </div>
+    </section>`;
+  }).join('');
+}
+
+function setPlannerOpen(open) {
+  document.getElementById('learningSystem')?.classList.toggle('open', open);
+  document.getElementById('plannerScrim')?.classList.toggle('show', open);
+  document.getElementById('plannerToggle')?.setAttribute('aria-expanded', String(open));
+}
+
+function findPlanTask(part, taskId) {
+  return state.partPlans?.[part]?.tasks?.find(task => task.id === taskId);
+}
+
+function selectedDayTarget() {
+  return {
+    week: Number(state.activeWeek) || 1,
+    day: Number(state.activeDays?.[state.activeWeek]) || 1
+  };
+}
+
+async function dispatchPlanTask(part, task) {
+  const target = selectedDayTarget();
+  state.customTasks.push({
+    id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    title: task.title,
+    part,
+    week: target.week,
+    day: target.day,
+    createdAt: new Date().toISOString(),
+    sourcePlanTaskId: task.id,
+    archived: false
+  });
+  await saveState();
+  refreshTaskViews();
+  renderPartSystem();
+  showMsg(`已安排到 Week ${romanize(target.week)} · Day ${romanize(target.day)}`);
 }
 
 function renderWeekContent(week) {
@@ -3506,12 +3873,12 @@ function renderWeekContent(week) {
         ${section.tasks.map((task, tIdx) => {
           const id = taskId(week.num, day.num, sIdx, tIdx, false);
           return `<div class="task-block">
-            <div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
+            <div class="task" data-track="${task.track}" data-part="sherlock" data-mins="${task.mins}" data-week="${week.num}">
               <input type="checkbox" id="${id}">
               <label for="${id}">${task.text}</label>
             </div>
             <div class="task-actions">
-              <button type="button" class="timer-btn" data-timer-task="${id}" data-week="${week.num}" data-day="${day.num}" data-task-title="${escapeHtml(task.text)}">开始计时</button>
+              <button type="button" class="timer-btn" data-timer-task="${id}" data-part="sherlock" data-week="${week.num}" data-day="${day.num}" data-task-title="${escapeHtml(task.text)}">开始计时</button>
               <span class="task-actual-time" data-task-time="${id}">实际 0 min</span>
             </div>
             <textarea id="${id}-note" class="task-note" data-week="${week.num}" data-task-id="${id}" rows="1" placeholder="Note · 当时的感受、卡点或灵感…"></textarea>
@@ -3528,12 +3895,12 @@ function renderWeekContent(week) {
         ${day.lowState.tasks.map((task, tIdx) => {
           const id = taskId(week.num, day.num, 0, tIdx, true);
           return `<div class="task-block">
-            <div class="task" data-track="${task.track}" data-mins="${task.mins}" data-week="${week.num}">
+            <div class="task" data-track="${task.track}" data-part="sherlock" data-mins="${task.mins}" data-week="${week.num}">
               <input type="checkbox" id="${id}">
               <label for="${id}">${task.text}</label>
             </div>
             <div class="task-actions">
-              <button type="button" class="timer-btn" data-timer-task="${id}" data-week="${week.num}" data-day="${day.num}" data-task-title="${escapeHtml(task.text)}">开始计时</button>
+              <button type="button" class="timer-btn" data-timer-task="${id}" data-part="sherlock" data-week="${week.num}" data-day="${day.num}" data-task-title="${escapeHtml(task.text)}">开始计时</button>
               <span class="task-actual-time" data-task-time="${id}">实际 0 min</span>
             </div>
             <textarea id="${id}-note" class="task-note" data-week="${week.num}" data-task-id="${id}" rows="1" placeholder="Note · 当时的感受、卡点或灵感…"></textarea>
@@ -3558,6 +3925,11 @@ function renderWeekContent(week) {
       <h3 class="section-title">我的自定义任务 · Personal</h3>
       <form class="custom-task-form" data-custom-form="${week.num}-${day.num}">
         <input class="custom-task-input" name="customTitle" maxlength="160" placeholder="添加今天想做的其他任务…" required>
+        <select class="custom-part-select" name="customPart" aria-label="任务所属部分">
+          <option value="sherlock">Part 1 · 长片</option>
+          <option value="ielts">Part 2 · IELTS</option>
+          <option value="shorts">Part 3 · 短片</option>
+        </select>
         <button class="custom-add-btn" type="submit">＋ 添加</button>
       </form>
       <div data-custom-list="${week.num}-${day.num}">
@@ -3621,6 +3993,7 @@ function refreshTaskViews() {
   applyCheckedState();
   showActiveWeek();
   updateAll();
+  renderPartSystem();
 }
 
 function applyCheckedState() {
@@ -3735,6 +4108,7 @@ function refreshThemeCharts() {
   if (typeof renderActualTimeDashboard === 'function' && document.getElementById('todayTimePie')) {
     renderActualTimeDashboard();
   }
+  if (typeof renderPartSystem === 'function') renderPartSystem();
 }
 
 function hexToRgb(hex) {
@@ -3970,6 +4344,7 @@ function updateAll() {
   renderHeatmap();
   renderActualTimeDashboard();
   updateTimerInterface();
+  renderPartSystem();
 
   // Analysis text
   renderMonthAnalysis(ws);
@@ -4115,6 +4490,7 @@ async function startTaskTimer(button) {
   state.activeTimer = {
     taskId: button.dataset.timerTask,
     title: button.dataset.taskTitle,
+    part: PART_META[button.dataset.part] ? button.dataset.part : 'sherlock',
     week: Number(button.dataset.week),
     day: Number(button.dataset.day),
     startedAt: new Date().toISOString()
@@ -4135,6 +4511,7 @@ async function stopTaskTimer(addToCalendar = true) {
     id: `${active.taskId}-${endedAt.getTime()}`,
     taskId: active.taskId,
     title: active.title,
+    part: PART_META[active.part] ? active.part : 'sherlock',
     week: active.week,
     day: active.day,
     startedAt: startedAt.toISOString(),
@@ -4253,6 +4630,23 @@ function renderActualTimeDashboard() {
   const entries = Object.values(byTask).sort((a, b) => b.seconds - a.seconds);
   const total = entries.reduce((sum, entry) => sum + entry.seconds, 0);
   document.getElementById('todayActualTotal').textContent = formatDuration(total, true);
+  const weekStart = startOfWeek(today);
+  const weekParts = { sherlock: 0, ielts: 0, shorts: 0 };
+  (state.sessions || []).forEach(session => {
+    const started = new Date(session.startedAt);
+    if (started >= weekStart && started <= today) {
+      weekParts[PART_META[session.part] ? session.part : 'sherlock'] += sessionSeconds(session);
+    }
+  });
+  if (state.activeTimer && new Date(state.activeTimer.startedAt) >= weekStart) {
+    const part = PART_META[state.activeTimer.part] ? state.activeTimer.part : 'sherlock';
+    weekParts[part] += Math.max(0, (Date.now() - new Date(state.activeTimer.startedAt).getTime()) / 1000);
+  }
+  const weekTotal = Object.values(weekParts).reduce((sum, seconds) => sum + seconds, 0);
+  document.getElementById('partTimeSummary').innerHTML = Object.keys(PART_META).map(part => {
+    const pct = weekTotal ? Math.round(weekParts[part] / weekTotal * 100) : 0;
+    return `<div class="part-time-chip"><strong>${formatDuration(weekParts[part], true)}</strong><span>${PART_META[part].label} · ${pct}%</span></div>`;
+  }).join('');
   const colors = themePalette(8);
   let cursor = 0;
   const segments = entries.map((entry, index) => {
@@ -4420,6 +4814,9 @@ document.getElementById('heatmapNext').addEventListener('click', () => {
 });
 
 document.getElementById('activeTimerStop').addEventListener('click', () => stopTaskTimer(true));
+document.getElementById('plannerToggle').addEventListener('click', () => setPlannerOpen(true));
+document.getElementById('plannerClose').addEventListener('click', () => setPlannerOpen(false));
+document.getElementById('plannerScrim').addEventListener('click', () => setPlannerOpen(false));
 
 document.addEventListener('change', async (e) => {
   if (e.target.matches('.task input[type="checkbox"]')) {
@@ -4433,7 +4830,7 @@ document.addEventListener('change', async (e) => {
     // Log action by today's calendar date (only on transitions)
     if (wasChecked !== isChecked) {
       const mins = parseInt(taskDiv.dataset.mins) || 0;
-      logAction(isChecked ? 1 : -1, isChecked ? mins : -mins);
+      logAction(isChecked ? 1 : -1, isChecked ? mins : -mins, taskDiv.dataset.part || 'sherlock');
     }
 
     await saveState();
@@ -4450,6 +4847,30 @@ document.addEventListener('input', (e) => {
   if (e.target.id === 'customAccentColor') {
     state.customAccent = e.target.value.toUpperCase();
     setTheme('custom');
+    return;
+  }
+  if (e.target.matches('[data-part-name]')) {
+    state.partPlans[e.target.dataset.partName].name = e.target.value;
+    clearTimeout(window._partPlanTimer);
+    window._partPlanTimer = setTimeout(saveState, 500);
+    return;
+  }
+  if (e.target.matches('[data-part-goal]')) {
+    state.partPlans[e.target.dataset.partGoal].goal = e.target.value;
+    clearTimeout(window._partPlanTimer);
+    window._partPlanTimer = setTimeout(saveState, 500);
+    return;
+  }
+  if (e.target.matches('[data-plan-title], [data-plan-detail]')) {
+    const key = e.target.dataset.planTitle || e.target.dataset.planDetail;
+    const [part, taskId] = key.split(':');
+    const task = findPlanTask(part, taskId);
+    if (task) {
+      if (e.target.dataset.planTitle) task.title = e.target.value;
+      else task.detail = e.target.value;
+      clearTimeout(window._partPlanTimer);
+      window._partPlanTimer = setTimeout(saveState, 500);
+    }
     return;
   }
   if (e.target.matches('textarea.reflection-input')) {
@@ -4483,6 +4904,22 @@ document.addEventListener('input', (e) => {
 });
 
 document.addEventListener('submit', async (e) => {
+  const partForm = e.target.closest('[data-part-add]');
+  if (partForm) {
+    e.preventDefault();
+    const part = partForm.dataset.partAdd;
+    const input = partForm.querySelector('[name="partTaskTitle"]');
+    const title = input.value.trim();
+    if (!title || !state.partPlans[part]) return;
+    state.partPlans[part].tasks.push({
+      id: `plan-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      title,
+      detail: '点击文字即可继续补充具体做法。'
+    });
+    await saveState();
+    renderPartSystem();
+    return;
+  }
   const form = e.target.closest('[data-custom-form]');
   if (!form) return;
   e.preventDefault();
@@ -4490,9 +4927,13 @@ document.addEventListener('submit', async (e) => {
   const input = form.querySelector('[name="customTitle"]');
   const title = input.value.trim();
   if (!title) return;
+  const part = PART_META[form.querySelector('[name="customPart"]')?.value]
+    ? form.querySelector('[name="customPart"]').value
+    : 'sherlock';
   state.customTasks.push({
     id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     title,
+    part,
     week,
     day,
     createdAt: new Date().toISOString(),
@@ -4503,6 +4944,45 @@ document.addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('click', async (e) => {
+  const partToggle = e.target.closest('[data-toggle-part]');
+  if (partToggle) {
+    const part = partToggle.dataset.togglePart;
+    openPlanPart = openPlanPart === part ? '' : part;
+    renderPartSystem();
+    return;
+  }
+  const dispatchButton = e.target.closest('[data-dispatch-task]');
+  if (dispatchButton) {
+    const [part, taskId] = dispatchButton.dataset.dispatchTask.split(':');
+    const task = findPlanTask(part, taskId);
+    if (task) await dispatchPlanTask(part, task);
+    return;
+  }
+  const moveButton = e.target.closest('[data-move-plan]');
+  if (moveButton) {
+    const [part, taskId, deltaRaw] = moveButton.dataset.movePlan.split(':');
+    const tasks = state.partPlans?.[part]?.tasks;
+    const index = tasks?.findIndex(task => task.id === taskId) ?? -1;
+    const next = index + Number(deltaRaw);
+    if (index >= 0 && next >= 0 && next < tasks.length) {
+      [tasks[index], tasks[next]] = [tasks[next], tasks[index]];
+      await saveState();
+      renderPartSystem();
+    }
+    return;
+  }
+  const deletePlanButton = e.target.closest('[data-delete-plan]');
+  if (deletePlanButton) {
+    const [part, taskId] = deletePlanButton.dataset.deletePlan.split(':');
+    const tasks = state.partPlans?.[part]?.tasks;
+    const task = findPlanTask(part, taskId);
+    if (tasks && task && confirm(`删除任务模板“${task.title}”？已经安排到每天的任务不会受影响。`)) {
+      state.partPlans[part].tasks = tasks.filter(item => item.id !== taskId);
+      await saveState();
+      renderPartSystem();
+    }
+    return;
+  }
   const eyedropperButton = e.target.closest('#eyedropperButton');
   if (eyedropperButton) {
     if (!window.EyeDropper) {
@@ -4766,12 +5246,23 @@ function isoDate(d) {
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
-function logAction(deltaChecks, deltaMins) {
+function startOfWeek(date) {
+  const start = new Date(date);
+  const day = start.getDay();
+  start.setDate(start.getDate() - ((day + 6) % 7));
+  start.setHours(0, 0, 0, 0);
+  return start;
+}
+
+function logAction(deltaChecks, deltaMins, part = 'sherlock') {
   const key = isoDate(new Date());
   if (!state.actionLog) state.actionLog = {};
   if (!state.actionLog[key]) state.actionLog[key] = { checks: 0, mins: 0 };
   state.actionLog[key].checks = Math.max(0, state.actionLog[key].checks + deltaChecks);
   state.actionLog[key].mins = Math.max(0, state.actionLog[key].mins + deltaMins);
+  if (!state.partActionLog) state.partActionLog = {};
+  if (!state.partActionLog[key]) state.partActionLog[key] = {};
+  state.partActionLog[key][part] = Math.max(0, (Number(state.partActionLog[key][part]) || 0) + deltaChecks);
 }
 
 function renderHeatmap() {
@@ -5643,9 +6134,21 @@ async function importPrompt() {
     state = Object.assign(state, parsed);
     state.activeDays = Object.assign({ 1: 1, 2: 1, 3: 1, 4: 1 }, state.activeDays || {});
     state.appView = ['overview','tasks','time','reports'].includes(state.appView) ? state.appView : 'overview';
-    state.sessions = Array.isArray(state.sessions) ? state.sessions : [];
-    state.activeTimer = state.activeTimer || null;
-    state.customTasks = Array.isArray(state.customTasks) ? state.customTasks : [];
+    state.sessions = Array.isArray(state.sessions) ? state.sessions.map(session => Object.assign({ part: 'sherlock' }, session)) : [];
+    state.activeTimer = state.activeTimer ? Object.assign({ part: 'sherlock' }, state.activeTimer) : null;
+    state.customTasks = Array.isArray(state.customTasks) ? state.customTasks.map(task => Object.assign({ part: 'sherlock' }, task)) : [];
+    const planDefaults = defaultPartPlans();
+    const importedPlans = state.partPlans || {};
+    state.partPlans = {};
+    Object.keys(PART_META).forEach(part => {
+      const saved = importedPlans[part];
+      state.partPlans[part] = {
+        name: saved?.name || planDefaults[part].name,
+        goal: saved?.goal || planDefaults[part].goal,
+        tasks: Array.isArray(saved?.tasks) ? saved.tasks : planDefaults[part].tasks
+      };
+    });
+    state.partActionLog = state.partActionLog && typeof state.partActionLog === 'object' ? state.partActionLog : {};
     state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(state.theme) ? state.theme : 'forest';
     state.customAccent = /^#[0-9a-f]{6}$/i.test(state.customAccent || '') ? state.customAccent : '#2C4A3E';
     // Make sure each week has the right shape
@@ -5679,6 +6182,7 @@ async function resetMonth() {
   for (let w = 1; w <= 4; w++) state.weeks[w] = emptyWeekState();
   state.activeWeek = 1;
   state.actionLog = {};
+  state.partActionLog = {};
   state.sessions = [];
   state.activeTimer = null;
   state.customTasks = [];
