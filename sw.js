@@ -1,4 +1,4 @@
-const CACHE_NAME = 'listening-diary-v13';
+const CACHE_NAME = 'listening-diary-v14';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './supabase-config.js'];
 
 self.addEventListener('install', event => {

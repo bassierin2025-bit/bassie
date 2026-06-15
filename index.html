@@ -2670,6 +2670,187 @@ body[data-app-view="tasks"] .task-note { min-height: 34px; font-size: 12px; }
   body[data-app-view="tasks"] .custom-section,
   body[data-app-view="tasks"] .day-export-row { grid-column: auto; }
 }
+
+/* Google Calendar / Tasks application shell */
+html, body, button, input, textarea, select { font-family: Arial, 'Noto Sans SC', 'Microsoft YaHei', sans-serif !important; }
+body * { font-style: normal !important; }
+body {
+  --g-blue: #0b57d0;
+  --g-blue-soft: #c2e7ff;
+  --g-bg: #f8fafd;
+  --g-text: #1f1f1f;
+  --g-muted: #5f6368;
+  --g-border: #e0e3e7;
+  padding: 64px 0 32px; background: var(--g-bg); color: var(--g-text);
+}
+.container {
+  width: auto; max-width: none; margin: 0; padding: 18px 24px 30px 280px;
+  transition: padding-left .2s ease;
+}
+body:not(.drawer-open) .container { padding-left: 24px; }
+.google-topbar {
+  position: fixed; inset: 0 0 auto 0; z-index: 115; height: 64px;
+  display: grid; grid-template-columns: 245px 1fr auto; align-items: center;
+  padding: 0 18px 0 72px; border-bottom: 1px solid var(--g-border); background: #fff;
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; color: var(--g-muted); font-size: 20px; }
+.topbar-logo, .calendar-logo {
+  width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px;
+  background: linear-gradient(145deg, #8ab4f8, #1a73e8); color: #fff; font-size: 20px; font-weight: 700;
+}
+.topbar-title { color: var(--g-text); font-size: 18px; font-weight: 500; }
+.topbar-actions { display: flex; align-items: center; gap: 5px; }
+.topbar-actions button {
+  width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent;
+  color: var(--g-muted); font-size: 18px; cursor: pointer;
+}
+.topbar-actions button:hover { background: #f1f3f4; }
+.topbar-actions .topbar-avatar { background: var(--accent); color: #fff; font-size: 14px; }
+.main-menu-toggle {
+  top: 10px; left: 14px; z-index: 140; border: 0; border-radius: 50%;
+  background: transparent; box-shadow: none;
+}
+.main-menu-toggle:hover { background: #f1f3f4; }
+.main-drawer {
+  top: 64px; z-index: 110; width: 256px; padding: 18px 12px 22px;
+  border: 0; box-shadow: none; background: var(--g-bg); transform: translateX(-100%);
+}
+.main-drawer.open { transform: translateX(0); }
+.main-drawer-scrim { z-index: 109; background: rgba(60,64,67,.3); }
+.drawer-head { display: none; }
+.google-create-button {
+  height: 56px; display: flex; align-items: center; gap: 12px; margin: 0 4px 18px;
+  padding: 0 22px; border: 0; border-radius: 16px; background: #fff; color: var(--g-text);
+  box-shadow: 0 1px 2px rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.google-create-button span { color: var(--g-blue); font-size: 28px; font-weight: 400; }
+.main-drawer .app-nav {
+  display: grid; gap: 2px; margin: 0 0 18px; border: 0; border-radius: 0;
+  background: transparent; box-shadow: none;
+}
+.main-drawer .app-nav-btn {
+  min-height: 40px; padding: 0 16px; border: 0; border-radius: 0 20px 20px 0;
+  color: var(--g-text); background: transparent; font-size: 14px; font-weight: 500; letter-spacing: 0;
+}
+.main-drawer .app-nav-btn.active {
+  border-radius: 0 20px 20px 0; background: var(--g-blue-soft); color: #001d35;
+  box-shadow: none; font-weight: 700;
+}
+.main-drawer .app-userbar {
+  position: absolute; left: 12px; right: 12px; bottom: 14px; margin: 0; padding: 10px 12px;
+  border: 0; border-radius: 12px; background: #eef1f5; box-shadow: none; font-size: 11px;
+}
+.main-drawer .logout-button { padding: 5px 8px; border: 0; background: transparent; text-align: left; }
+.drawer-section { margin: 0 0 16px; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.drawer-section-title {
+  margin: 0 0 5px; padding: 0 16px; color: var(--g-text);
+  font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none;
+}
+.sidebar-list-item, .new-list-button {
+  width: 100%; min-height: 38px; display: grid; grid-template-columns: 18px 1fr auto;
+  align-items: center; gap: 8px; padding: 0 16px; border: 0; border-radius: 0 18px 18px 0;
+  background: transparent; color: var(--g-text); text-align: left; font-size: 13px; cursor: pointer;
+}
+.sidebar-list-item:hover, .new-list-button:hover { background: #e9eef6; }
+.sidebar-list-item small { color: var(--g-muted); }
+.sidebar-list-dot { width: 12px; height: 12px; border-radius: 3px; }
+.new-list-button { grid-template-columns: 18px 1fr; color: var(--g-muted); }
+.main-drawer .week-tabs { gap: 2px; background: transparent; }
+.main-drawer .wt-btn {
+  padding: 7px 4px; border: 0; border-radius: 12px; background: transparent; box-shadow: none;
+}
+.main-drawer .wt-btn.active { border: 0; background: var(--g-blue-soft); box-shadow: none; }
+.drawer-settings { margin: 6px 8px 88px; color: var(--g-muted); font-size: 13px; }
+.drawer-settings summary { padding: 8px; cursor: pointer; }
+.main-drawer .theme-picker {
+  margin: 4px 0; padding: 8px; border: 0; box-shadow: none; background: transparent;
+}
+.learning-system { display: none !important; }
+
+.home-part-overview {
+  min-height: calc(100vh - 112px); display: grid; grid-auto-flow: column;
+  grid-template-columns: repeat(3, minmax(285px, 1fr)); grid-auto-columns: minmax(285px, 1fr);
+  align-content: start; gap: 14px; padding: 0 0 10px; overflow-x: auto; overscroll-behavior-inline: contain;
+}
+.home-part-card, .add-board-card {
+  min-width: 0; min-height: 520px; padding: 0; overflow: hidden;
+  border: 1px solid var(--g-border); border-radius: 16px; background: #fff; box-shadow: none;
+}
+.board-card-head {
+  display: flex; align-items: start; justify-content: space-between; gap: 8px; padding: 18px 18px 8px;
+}
+.home-part-label { margin: 0 0 3px; color: var(--g-muted); font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.board-part-name {
+  width: 100%; border: 0; outline: 0; background: transparent; color: var(--g-text);
+  font-size: 19px; font-weight: 500;
+}
+.board-card-actions { display: flex; gap: 2px; }
+.board-card-actions button, .board-task-delete {
+  width: 30px; height: 30px; border: 0; border-radius: 50%; background: transparent;
+  color: var(--g-muted); font-size: 18px; cursor: pointer;
+}
+.board-card-actions button:hover, .board-task-delete:hover { background: #f1f3f4; }
+.board-card-actions button:disabled { opacity: .25; cursor: default; }
+.board-part-goal {
+  width: calc(100% - 36px); min-height: 48px; margin: 0 18px 8px; padding: 0;
+  border: 0; outline: 0; resize: none; background: transparent; color: var(--g-muted);
+  font-size: 12px; line-height: 1.45;
+}
+.board-quick-add {
+  display: grid; grid-template-columns: 34px 1fr; align-items: center; margin: 0 12px 8px;
+  padding: 5px 7px; border-radius: 20px;
+}
+.board-quick-add:hover, .board-quick-add:focus-within { background: #f1f3f4; }
+.board-quick-add button { border: 0; background: transparent; color: var(--g-blue); font-size: 25px; cursor: pointer; }
+.board-quick-add input { min-width: 0; border: 0; outline: 0; background: transparent; color: var(--g-blue); font-size: 14px; font-weight: 600; }
+.board-task-list { padding: 0 8px 12px; }
+.board-task {
+  display: grid; grid-template-columns: 32px minmax(0, 1fr) 30px; gap: 5px; align-items: start;
+  padding: 11px 6px; border-top: 1px solid #edf0f2;
+}
+.board-task:hover { background: #f8fafd; }
+.board-task-check {
+  width: 22px; height: 22px; margin: 2px auto 0; border: 2px solid var(--g-muted);
+  border-radius: 50%; background: #fff; color: transparent; cursor: pointer;
+}
+.board-task-check:hover { border-color: var(--g-blue); color: var(--g-blue); }
+.board-task-copy input {
+  width: 100%; display: block; border: 0; outline: 0; background: transparent; color: var(--g-text);
+  font-size: 14px; line-height: 1.35;
+}
+.board-task-copy input + input { margin-top: 3px; color: var(--g-muted); font-size: 11px; }
+.board-card-foot {
+  display: flex; justify-content: space-between; align-items: center; margin-top: auto;
+  padding: 12px 18px; border-top: 1px solid var(--g-border); color: var(--g-muted); font-size: 11px;
+}
+.board-card-foot button { border: 0; background: transparent; color: var(--g-blue); font-size: 12px; font-weight: 600; cursor: pointer; }
+.part-time-summary { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); }
+.add-board-card {
+  min-height: 220px; display: grid; place-content: center; gap: 5px; border-style: dashed;
+  color: var(--g-muted); text-align: center; cursor: pointer;
+}
+.add-board-card:hover { border-color: var(--g-blue); background: #f4f8ff; color: var(--g-blue); }
+.add-board-card span { font-size: 32px; font-weight: 400; }
+.add-board-card strong { font-size: 15px; }
+.add-board-card small { font-size: 11px; font-weight: 400; }
+
+.cover-title, .home-part-number, .colophon-mark { font-style: normal !important; }
+body[data-app-view="tasks"] .week-view.active,
+.month-dash, .data-panel, .cover { border-radius: 16px; box-shadow: none; }
+
+@media (min-width: 901px) {
+  .main-drawer-scrim { display: none !important; }
+}
+@media (max-width: 900px) {
+  .google-topbar { grid-template-columns: 1fr auto; padding-left: 64px; }
+  .topbar-brand { display: none; }
+  .topbar-title { font-size: 16px; }
+  .container, body:not(.drawer-open) .container { padding: 14px 12px 24px; }
+  .main-drawer { width: min(280px, calc(100vw - 32px)); background: #fff; box-shadow: 8px 0 30px rgba(60,64,67,.2); }
+  .home-part-overview { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; overflow-x: visible; }
+  .home-part-card { min-height: 430px; }
+}
 </style>
 </head>
 <body data-app-view="overview">
@@ -2695,12 +2876,10 @@ body[data-app-view="tasks"] .task-note { min-height: 34px; font-size: 12px; }
 <div class="main-drawer-scrim" id="mainDrawerScrim"></div>
 <aside class="main-drawer" id="mainDrawer" aria-label="应用导航">
   <div class="drawer-head">
-    <div>
-      <div class="part-kicker">Listening diary</div>
-      <strong>学习控制台</strong>
-    </div>
-    <button class="drawer-close" id="mainDrawerClose" type="button" aria-label="关闭导航">×</button>
+    <span class="calendar-logo">L</span>
+    <strong>Listening Tasks</strong>
   </div>
+  <button class="google-create-button" id="createTaskButton" type="button"><span>＋</span>创建</button>
 <div class="app-userbar">
   <span class="current-user">当前用户：<strong id="currentUsername">—</strong></span>
   <button class="logout-button" type="button" id="logoutButton">退出 / 切换用户</button>
@@ -2711,27 +2890,42 @@ body[data-app-view="tasks"] .task-note { min-height: 34px; font-size: 12px; }
   <button class="app-nav-btn" type="button" data-app-view="time">学习时长</button>
   <button class="app-nav-btn" type="button" data-app-view="reports">报告</button>
 </nav>
-<div class="theme-picker" aria-label="配色主题">
-  <span>界面配色</span>
-  <button class="theme-dot active" type="button" data-theme-choice="forest" title="森林"></button>
-  <button class="theme-dot" type="button" data-theme-choice="ocean" title="海蓝"></button>
-  <button class="theme-dot" type="button" data-theme-choice="lavender" title="薰衣草"></button>
-  <button class="theme-dot" type="button" data-theme-choice="sunset" title="暖霞"></button>
-  <button class="theme-dot" type="button" data-theme-choice="midnight" title="夜蓝"></button>
-  <label class="custom-color-label" title="打开系统取色器">
-    <input id="customAccentColor" type="color" value="#2C4A3E" aria-label="自定义主题色">
-    <span>自定义</span>
-  </label>
-  <button class="eyedropper-btn" id="eyedropperButton" type="button" title="从屏幕上吸取颜色">吸色</button>
-</div>
+  <div class="drawer-section task-list-section">
+    <div class="drawer-section-title">任务列表</div>
+    <div id="partSidebarList"></div>
+    <button class="new-list-button" id="newListButton" type="button">＋ 新建任务列表</button>
+  </div>
   <div class="drawer-section">
     <div class="drawer-section-title">周计划</div>
     <div id="drawerWeekSlot"></div>
   </div>
-  <div class="drawer-section drawer-planner-section">
-    <div id="drawerPlannerSlot"></div>
-  </div>
+  <details class="drawer-settings">
+    <summary>外观与账户</summary>
+    <div class="theme-picker" aria-label="配色主题">
+      <span>界面配色</span>
+      <button class="theme-dot active" type="button" data-theme-choice="forest" title="森林"></button>
+      <button class="theme-dot" type="button" data-theme-choice="ocean" title="海蓝"></button>
+      <button class="theme-dot" type="button" data-theme-choice="lavender" title="薰衣草"></button>
+      <button class="theme-dot" type="button" data-theme-choice="sunset" title="暖霞"></button>
+      <button class="theme-dot" type="button" data-theme-choice="midnight" title="夜蓝"></button>
+      <label class="custom-color-label" title="打开系统取色器">
+        <input id="customAccentColor" type="color" value="#2C4A3E" aria-label="自定义主题色">
+        <span>自定义</span>
+      </label>
+      <button class="eyedropper-btn" id="eyedropperButton" type="button" title="从屏幕上吸取颜色">吸色</button>
+    </div>
+  </details>
 </aside>
+<header class="google-topbar">
+  <div class="topbar-brand"><span class="topbar-logo">L</span><strong>Listening Tasks</strong></div>
+  <div class="topbar-title" id="topbarTitle">任务总览</div>
+  <div class="topbar-actions">
+    <button type="button" data-app-view="overview" title="任务板">▦</button>
+    <button type="button" data-app-view="time" title="学习时长">◷</button>
+    <button type="button" data-app-view="reports" title="报告">▤</button>
+    <button class="topbar-avatar" type="button" id="topbarAvatar" title="打开导航">L</button>
+  </div>
+</header>
 <div class="active-timer" id="activeTimerBar">
   <span class="active-timer-title" id="activeTimerTitle">正在计时</span>
   <span class="active-timer-clock" id="activeTimerClock">00:00:00</span>
@@ -3602,6 +3796,31 @@ const PART_META = {
   shorts: { label: 'Part 3', fallbackName: '兴趣短片 · Fresh & Flexible', ratio: '20%', color: '#9A5A45' }
 };
 
+function defaultPartMeta() {
+  return JSON.parse(JSON.stringify(PART_META));
+}
+
+function partKeys() {
+  const plans = state?.partPlans || {};
+  const order = Array.isArray(state?.partOrder) ? state.partOrder : [];
+  return [...order, ...Object.keys(plans)].filter((part, index, all) => plans[part] && all.indexOf(part) === index);
+}
+
+function getPartMeta(part, index = 0) {
+  const saved = state?.partMeta?.[part];
+  const fallback = PART_META[part];
+  return saved || fallback || {
+    label: `Part ${index + 1}`,
+    fallbackName: state?.partPlans?.[part]?.name || '新任务列表',
+    ratio: '自定义',
+    color: themePalette(8)[index % 8]
+  };
+}
+
+function isKnownPart(part) {
+  return !!state?.partPlans?.[part];
+}
+
 function defaultPartPlans() {
   return {
     sherlock: {
@@ -3661,6 +3880,8 @@ function createInitialState(username = '') {
     activeTimer: null,
     customTasks: [],
     partPlans: defaultPartPlans(),
+    partMeta: defaultPartMeta(),
+    partOrder: ['sherlock', 'ielts', 'shorts'],
     partActionLog: {},
     theme: 'forest',
     customAccent: '#2C4A3E'
@@ -3733,15 +3954,21 @@ async function loadState() {
         ? parsed.customTasks.map(task => Object.assign({ part: 'sherlock' }, task))
         : [];
       const defaults = defaultPartPlans();
+      const savedPlans = parsed.partPlans && typeof parsed.partPlans === 'object' ? parsed.partPlans : {};
       state.partPlans = {};
-      Object.keys(PART_META).forEach(part => {
+      const savedOrder = Array.isArray(parsed.partOrder) ? parsed.partOrder : [];
+      const allParts = [...savedOrder, ...Object.keys(savedPlans), ...Object.keys(defaults)]
+        .filter((part, index, all) => all.indexOf(part) === index);
+      allParts.forEach(part => {
         const saved = parsed.partPlans && parsed.partPlans[part];
         state.partPlans[part] = {
-          name: saved?.name || defaults[part].name,
-          goal: saved?.goal || defaults[part].goal,
-          tasks: Array.isArray(saved?.tasks) ? saved.tasks : defaults[part].tasks
+          name: saved?.name || defaults[part]?.name || '新任务列表',
+          goal: saved?.goal || defaults[part]?.goal || '点击编辑这一分类的学习目标。',
+          tasks: Array.isArray(saved?.tasks) ? saved.tasks : (defaults[part]?.tasks || [])
         };
       });
+      state.partMeta = Object.assign(defaultPartMeta(), parsed.partMeta || {});
+      state.partOrder = allParts;
       state.partActionLog = parsed.partActionLog && typeof parsed.partActionLog === 'object' ? parsed.partActionLog : {};
       state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(parsed.theme) ? parsed.theme : 'forest';
       state.customAccent = /^#[0-9a-f]{6}$/i.test(parsed.customAccent || '') ? parsed.customAccent : '#2C4A3E';
@@ -3790,14 +4017,22 @@ function customTasksForDay(weekNum, dayNum) {
   return (state.customTasks || []).filter(task => Number(task.week) === weekNum && Number(task.day) === dayNum && !task.archived);
 }
 
+function partOptionsHTML(selected = '') {
+  return partKeys().map((part, index) => {
+    const meta = getPartMeta(part, index);
+    return `<option value="${part}" ${selected === part ? 'selected' : ''}>${escapeHtml(meta.label)} · ${escapeHtml(state.partPlans[part].name)}</option>`;
+  }).join('');
+}
+
 function customTaskHTML(task) {
   const id = task.id;
-  const part = PART_META[task.part] ? task.part : 'sherlock';
+  const part = isKnownPart(task.part) ? task.part : 'sherlock';
+  const meta = getPartMeta(part, partKeys().indexOf(part));
   return `<div class="task-block custom-task-block" data-custom-id="${id}">
     <div class="task" data-track="custom" data-part="${part}" data-mins="0" data-week="${task.week}">
       <input type="checkbox" id="${id}">
       <input class="custom-title-input" data-custom-title="${id}" value="${escapeHtml(task.title)}" aria-label="自定义任务标题">
-      <span class="task-part-badge">${PART_META[part].label}</span>
+      <span class="task-part-badge">${escapeHtml(meta.label)}</span>
     </div>
     <div class="task-actions">
       <button type="button" class="timer-btn" data-timer-task="${id}" data-part="${part}" data-week="${task.week}" data-day="${task.day}" data-task-title="${escapeHtml(task.title)}">开始计时</button>
@@ -3857,47 +4092,68 @@ function partInsight(part) {
     ? '主线要慢：一周深做 2–3 次，比每天换片更有效。'
     : part === 'ielts'
       ? '考试线要稳：每周至少一次计时反馈，避免只输入不校准。'
-      : '短片线要轻：每天最多深学一条，优秀材料再升级到 Part 1。';
+      : part === 'shorts'
+        ? '短片线要轻：每天最多深学一条，优秀材料再升级到 Part 1。'
+        : '保持可执行：每次只安排一个明确动作，再根据真实计时调整。';
   return `<strong>近 28 天：${formatDuration(seconds, true)} · ${activeDays} 天 · ${checks} 次完成</strong><br>${advice}`;
 }
 
 function renderHomePartOverview() {
   const root = document.getElementById('homePartOverview');
   if (!root) return;
-  const palette = themePalette(5);
-  const partColors = { sherlock: palette[0], ielts: palette[1], shorts: palette[2] };
-  root.innerHTML = Object.keys(PART_META).map((part, index) => {
-    const meta = PART_META[part];
+  const palette = themePalette(8);
+  const keys = partKeys();
+  root.innerHTML = keys.map((part, index) => {
+    const meta = getPartMeta(part, index);
     const plan = state.partPlans[part];
-    return `<article class="home-part-card" style="--part-color:${partColors[part]}">
-      <div class="home-part-number">${romanize(index + 1)}</div>
-      <div class="home-part-label">${meta.label} · ${meta.ratio}</div>
-      <h2>${escapeHtml(plan.name)}</h2>
-      <p class="home-part-goal">${escapeHtml(plan.goal)}</p>
-      <div class="home-part-meta">
-        <span>${plan.tasks.length} 个任务模板</span>
-        <span>近 28 天</span>
+    const color = meta.color || palette[index % palette.length];
+    return `<article class="home-part-card" data-board-part="${part}" style="--part-color:${color}">
+      <header class="board-card-head">
+        <div>
+          <div class="home-part-label">${escapeHtml(meta.label)}</div>
+          <input class="board-part-name" data-part-name="${part}" value="${escapeHtml(plan.name)}" aria-label="分类名称">
+        </div>
+        <div class="board-card-actions">
+          <button type="button" data-move-part="${part}:-1" ${index === 0 ? 'disabled' : ''} title="向左移动">‹</button>
+          <button type="button" data-move-part="${part}:1" ${index === keys.length - 1 ? 'disabled' : ''} title="向右移动">›</button>
+        </div>
+      </header>
+      <textarea class="board-part-goal" data-part-goal="${part}" rows="2" aria-label="分类目标">${escapeHtml(plan.goal)}</textarea>
+      <form class="board-quick-add" data-part-add="${part}">
+        <button type="submit" aria-label="添加任务">＋</button>
+        <input name="partTaskTitle" maxlength="120" placeholder="添加任务" required>
+      </form>
+      <div class="board-task-list">
+        ${plan.tasks.map(task => `<article class="board-task" data-plan-task="${part}:${task.id}">
+          <button class="board-task-check" type="button" data-dispatch-task="${part}:${task.id}" title="安排到今天">✓</button>
+          <div class="board-task-copy">
+            <input data-plan-title="${part}:${task.id}" value="${escapeHtml(task.title)}" aria-label="任务标题">
+            <input data-plan-detail="${part}:${task.id}" value="${escapeHtml(task.detail || '')}" aria-label="任务说明">
+          </div>
+          <button class="board-task-delete" type="button" data-delete-plan="${part}:${task.id}" title="删除">⋮</button>
+        </article>`).join('')}
       </div>
-      <div class="mini-heatmap">${renderMiniHeatmap(part)}</div>
-      <div class="part-insight">${partInsight(part)}</div>
-      <div class="home-part-actions">
-        <button class="home-part-action primary" type="button" data-open-part="${part}">打开任务库</button>
-        <button class="home-part-action" type="button" data-home-view="tasks">进入今日任务</button>
-      </div>
+      <footer class="board-card-foot">
+        <span>${plan.tasks.length} 个任务</span>
+        <button type="button" data-home-view="tasks">查看今日安排</button>
+      </footer>
     </article>`;
   }).join('');
+  root.insertAdjacentHTML('beforeend', `<button class="add-board-card" id="addBoardCard" type="button">
+    <span>＋</span><strong>新建任务列表</strong><small>添加新的 Part 或学习分类</small>
+  </button>`);
+  renderPartSidebar();
 }
 
 function renderPartSystem() {
   const grid = document.getElementById('partGrid');
   if (!grid) return;
-  const palette = themePalette(5);
-  const partColors = { sherlock: palette[0], ielts: palette[1], shorts: palette[2] };
-  grid.innerHTML = Object.keys(PART_META).map(part => {
-    const meta = PART_META[part];
+  const palette = themePalette(8);
+  grid.innerHTML = partKeys().map((part, index) => {
+    const meta = getPartMeta(part, index);
     const plan = state.partPlans[part];
     const insight = partInsight(part);
-    return `<section class="part-card ${openPlanPart === part ? 'expanded' : ''}" data-part="${part}" style="--part-color:${partColors[part]}">
+    return `<section class="part-card ${openPlanPart === part ? 'expanded' : ''}" data-part="${part}" style="--part-color:${meta.color || palette[index % palette.length]}">
       <button class="part-card-toggle" type="button" data-toggle-part="${part}">
         <span>${meta.label} · ${meta.ratio}</span><strong>${escapeHtml(plan.name)}</strong>
       </button>
@@ -3928,18 +4184,30 @@ function renderPartSystem() {
   renderHomePartOverview();
 }
 
+function renderPartSidebar() {
+  const root = document.getElementById('partSidebarList');
+  if (!root) return;
+  root.innerHTML = partKeys().map((part, index) => {
+    const meta = getPartMeta(part, index);
+    return `<button class="sidebar-list-item" type="button" data-focus-part="${part}">
+      <span class="sidebar-list-dot" style="background:${meta.color || themePalette(8)[index % 8]}"></span>
+      <span>${escapeHtml(state.partPlans[part].name)}</span>
+      <small>${state.partPlans[part].tasks.length}</small>
+    </button>`;
+  }).join('');
+}
+
 function setupMainDrawer() {
-  const plannerSlot = document.getElementById('drawerPlannerSlot');
   const weekSlot = document.getElementById('drawerWeekSlot');
-  const planner = document.getElementById('learningSystem');
   const weekTabs = document.getElementById('weekTabs');
-  if (plannerSlot && planner && planner.parentElement !== plannerSlot) plannerSlot.appendChild(planner);
   if (weekSlot && weekTabs && weekTabs.parentElement !== weekSlot) weekSlot.appendChild(weekTabs);
+  renderPartSidebar();
 }
 
 function setMainDrawerOpen(open) {
   document.getElementById('mainDrawer')?.classList.toggle('open', open);
-  document.getElementById('mainDrawerScrim')?.classList.toggle('show', open);
+  document.body.classList.toggle('drawer-open', open);
+  document.getElementById('mainDrawerScrim')?.classList.toggle('show', open && window.innerWidth <= 900);
   document.getElementById('mainMenuToggle')?.setAttribute('aria-expanded', String(open));
 }
 
@@ -4140,11 +4408,7 @@ function renderWeekContent(week) {
       <h3 class="section-title">我的自定义任务 · Personal</h3>
       <form class="custom-task-form" data-custom-form="${week.num}-${day.num}">
         <input class="custom-task-input" name="customTitle" maxlength="160" placeholder="添加今天想做的其他任务…" required>
-        <select class="custom-part-select" name="customPart" aria-label="任务所属部分">
-          <option value="sherlock">Part 1 · 长片</option>
-          <option value="ielts">Part 2 · IELTS</option>
-          <option value="shorts">Part 3 · 短片</option>
-        </select>
+        <select class="custom-part-select" name="customPart" aria-label="任务所属部分">${partOptionsHTML()}</select>
         <button class="custom-add-btn" type="submit">＋ 添加</button>
       </form>
       <div data-custom-list="${week.num}-${day.num}">
@@ -4258,9 +4522,12 @@ function setAppView(view, persist = true) {
   document.querySelectorAll('.app-nav-btn').forEach(button => {
     button.classList.toggle('active', button.dataset.appView === safeView);
   });
+  const titles = { overview: '任务总览', tasks: '今天任务', time: '学习时长', reports: '学习报告' };
+  const topbarTitle = document.getElementById('topbarTitle');
+  if (topbarTitle) topbarTitle.textContent = titles[safeView];
   if (safeView === 'tasks') showActiveWeek();
   if (persist && currentUser) saveState();
-  setMainDrawerOpen(false);
+  if (window.innerWidth <= 900) setMainDrawerOpen(false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -4706,7 +4973,7 @@ async function startTaskTimer(button) {
   state.activeTimer = {
     taskId: button.dataset.timerTask,
     title: button.dataset.taskTitle,
-    part: PART_META[button.dataset.part] ? button.dataset.part : 'sherlock',
+    part: isKnownPart(button.dataset.part) ? button.dataset.part : 'sherlock',
     week: Number(button.dataset.week),
     day: Number(button.dataset.day),
     startedAt: new Date().toISOString()
@@ -4727,7 +4994,7 @@ async function stopTaskTimer(addToCalendar = true) {
     id: `${active.taskId}-${endedAt.getTime()}`,
     taskId: active.taskId,
     title: active.title,
-    part: PART_META[active.part] ? active.part : 'sherlock',
+    part: isKnownPart(active.part) ? active.part : 'sherlock',
     week: active.week,
     day: active.day,
     startedAt: startedAt.toISOString(),
@@ -4847,21 +5114,21 @@ function renderActualTimeDashboard() {
   const total = entries.reduce((sum, entry) => sum + entry.seconds, 0);
   document.getElementById('todayActualTotal').textContent = formatDuration(total, true);
   const weekStart = startOfWeek(today);
-  const weekParts = { sherlock: 0, ielts: 0, shorts: 0 };
+  const weekParts = Object.fromEntries(partKeys().map(part => [part, 0]));
   (state.sessions || []).forEach(session => {
     const started = new Date(session.startedAt);
     if (started >= weekStart && started <= today) {
-      weekParts[PART_META[session.part] ? session.part : 'sherlock'] += sessionSeconds(session);
+      weekParts[isKnownPart(session.part) ? session.part : 'sherlock'] += sessionSeconds(session);
     }
   });
   if (state.activeTimer && new Date(state.activeTimer.startedAt) >= weekStart) {
-    const part = PART_META[state.activeTimer.part] ? state.activeTimer.part : 'sherlock';
+    const part = isKnownPart(state.activeTimer.part) ? state.activeTimer.part : 'sherlock';
     weekParts[part] += Math.max(0, (Date.now() - new Date(state.activeTimer.startedAt).getTime()) / 1000);
   }
   const weekTotal = Object.values(weekParts).reduce((sum, seconds) => sum + seconds, 0);
-  document.getElementById('partTimeSummary').innerHTML = Object.keys(PART_META).map(part => {
+  document.getElementById('partTimeSummary').innerHTML = partKeys().map((part, index) => {
     const pct = weekTotal ? Math.round(weekParts[part] / weekTotal * 100) : 0;
-    return `<div class="part-time-chip"><strong>${formatDuration(weekParts[part], true)}</strong><span>${PART_META[part].label} · ${pct}%</span></div>`;
+    return `<div class="part-time-chip"><strong>${formatDuration(weekParts[part], true)}</strong><span>${escapeHtml(getPartMeta(part, index).label)} · ${pct}%</span></div>`;
   }).join('');
   const colors = themePalette(8);
   let cursor = 0;
@@ -5033,11 +5300,55 @@ document.getElementById('activeTimerStop').addEventListener('click', () => stopT
 document.getElementById('plannerToggle').addEventListener('click', () => setPlannerOpen(true));
 document.getElementById('plannerClose').addEventListener('click', () => setPlannerOpen(false));
 document.getElementById('plannerScrim').addEventListener('click', () => setPlannerOpen(false));
-document.getElementById('mainMenuToggle').addEventListener('click', () => setMainDrawerOpen(true));
-document.getElementById('mainDrawerClose').addEventListener('click', () => setMainDrawerOpen(false));
+document.getElementById('mainMenuToggle').addEventListener('click', () => {
+  setMainDrawerOpen(!document.getElementById('mainDrawer').classList.contains('open'));
+});
 document.getElementById('mainDrawerScrim').addEventListener('click', () => setMainDrawerOpen(false));
+document.getElementById('topbarAvatar').addEventListener('click', () => setMainDrawerOpen(true));
+
+async function createPartList() {
+  const name = prompt('新任务列表名称', '新的学习分类');
+  if (!name?.trim()) return;
+  const part = `part-${Date.now().toString(36)}`;
+  const index = partKeys().length;
+  const palette = themePalette(8);
+  state.partPlans[part] = {
+    name: name.trim(),
+    goal: '点击这里补充这个分类的目标。',
+    tasks: []
+  };
+  state.partMeta[part] = {
+    label: `Part ${index + 1}`,
+    fallbackName: name.trim(),
+    ratio: '自定义',
+    color: palette[index % palette.length]
+  };
+  state.partOrder.push(part);
+  await saveState();
+  renderPartSystem();
+  requestAnimationFrame(() => document.querySelector(`[data-board-part="${part}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }));
+}
+
+document.getElementById('createTaskButton').addEventListener('click', () => {
+  setAppView('overview', false);
+  requestAnimationFrame(() => {
+    const input = document.querySelector('.board-quick-add input');
+    if (input) {
+      input.focus();
+      input.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+    } else {
+      createPartList();
+    }
+  });
+});
+document.getElementById('newListButton').addEventListener('click', createPartList);
 
 document.addEventListener('change', async (e) => {
+  if (e.target.matches('[data-part-name]')) {
+    renderPartSidebar();
+    await saveState();
+    return;
+  }
   if (e.target.matches('.task input[type="checkbox"]')) {
     const taskDiv = e.target.closest('[data-week]');
     if (!taskDiv) return;
@@ -5146,7 +5457,7 @@ document.addEventListener('submit', async (e) => {
   const input = form.querySelector('[name="customTitle"]');
   const title = input.value.trim();
   if (!title) return;
-  const part = PART_META[form.querySelector('[name="customPart"]')?.value]
+  const part = isKnownPart(form.querySelector('[name="customPart"]')?.value)
     ? form.querySelector('[name="customPart"]').value
     : 'sherlock';
   state.customTasks.push({
@@ -5163,6 +5474,29 @@ document.addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('click', async (e) => {
+  if (e.target.closest('#addBoardCard')) {
+    await createPartList();
+    return;
+  }
+  const focusPartButton = e.target.closest('[data-focus-part]');
+  if (focusPartButton) {
+    setAppView('overview', false);
+    document.querySelector(`[data-board-part="${focusPartButton.dataset.focusPart}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    if (window.innerWidth <= 900) setMainDrawerOpen(false);
+    return;
+  }
+  const movePartButton = e.target.closest('[data-move-part]');
+  if (movePartButton) {
+    const [part, deltaRaw] = movePartButton.dataset.movePart.split(':');
+    const index = state.partOrder.indexOf(part);
+    const next = index + Number(deltaRaw);
+    if (index >= 0 && next >= 0 && next < state.partOrder.length) {
+      [state.partOrder[index], state.partOrder[next]] = [state.partOrder[next], state.partOrder[index]];
+      await saveState();
+      renderPartSystem();
+    }
+    return;
+  }
   const openPartButton = e.target.closest('[data-open-part]');
   if (openPartButton) {
     openPlanPart = openPartButton.dataset.openPart;
@@ -5245,7 +5579,7 @@ document.addEventListener('click', async (e) => {
     }
     return;
   }
-  const appViewButton = e.target.closest('.app-nav-btn');
+  const appViewButton = e.target.closest('[data-app-view]');
   if (appViewButton) {
     setAppView(appViewButton.dataset.appView);
     return;
@@ -6371,15 +6705,20 @@ async function importPrompt() {
     state.customTasks = Array.isArray(state.customTasks) ? state.customTasks.map(task => Object.assign({ part: 'sherlock' }, task)) : [];
     const planDefaults = defaultPartPlans();
     const importedPlans = state.partPlans || {};
+    const importedOrder = Array.isArray(state.partOrder) ? state.partOrder : [];
+    const allParts = [...importedOrder, ...Object.keys(importedPlans), ...Object.keys(planDefaults)]
+      .filter((part, index, all) => all.indexOf(part) === index);
     state.partPlans = {};
-    Object.keys(PART_META).forEach(part => {
+    allParts.forEach(part => {
       const saved = importedPlans[part];
       state.partPlans[part] = {
-        name: saved?.name || planDefaults[part].name,
-        goal: saved?.goal || planDefaults[part].goal,
-        tasks: Array.isArray(saved?.tasks) ? saved.tasks : planDefaults[part].tasks
+        name: saved?.name || planDefaults[part]?.name || '新任务列表',
+        goal: saved?.goal || planDefaults[part]?.goal || '点击编辑这一分类的学习目标。',
+        tasks: Array.isArray(saved?.tasks) ? saved.tasks : (planDefaults[part]?.tasks || [])
       };
     });
+    state.partMeta = Object.assign(defaultPartMeta(), state.partMeta || {});
+    state.partOrder = allParts;
     state.partActionLog = state.partActionLog && typeof state.partActionLog === 'object' ? state.partActionLog : {};
     state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(state.theme) ? state.theme : 'forest';
     state.customAccent = /^#[0-9a-f]{6}$/i.test(state.customAccent || '') ? state.customAccent : '#2C4A3E';
@@ -6459,6 +6798,7 @@ async function init() {
   syncUserInterface();
   setTheme(state.theme, false);
   setAppView(state.appView, false);
+  setMainDrawerOpen(window.innerWidth > 900);
   showActiveWeek();
   updateAll();
   if (!currentUser) {
