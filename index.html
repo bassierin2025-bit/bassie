@@ -2706,6 +2706,25 @@ body:not(.drawer-open) .container { padding-left: 24px; }
 }
 .topbar-actions button:hover { background: #f1f3f4; }
 .topbar-actions .topbar-avatar { background: var(--accent); color: #fff; font-size: 14px; }
+.account-popover {
+  position: fixed; top: 58px; right: 18px; z-index: 150; width: 300px; padding: 16px;
+  border: 1px solid var(--g-border); border-radius: 18px; background: #fff;
+  box-shadow: 0 8px 28px rgba(60,64,67,.24);
+}
+.account-popover[hidden] { display: none; }
+.account-head { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--g-border); }
+.account-avatar {
+  width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--accent); color: #fff; font-weight: 700;
+}
+.account-head small, .account-head strong { display: block; }
+.account-head small { color: var(--g-muted); font-size: 11px; }
+.account-head strong { margin-top: 2px; color: var(--g-text); font-size: 14px; }
+.account-popover .theme-picker { margin: 12px 0; padding: 8px 0; border: 0; box-shadow: none; }
+.account-logout {
+  width: 100%; padding: 10px; border: 1px solid var(--g-border); border-radius: 10px;
+  background: #fff; color: var(--g-text); cursor: pointer;
+}
 .main-menu-toggle {
   top: 10px; left: 14px; z-index: 140; border: 0; border-radius: 50%;
   background: transparent; box-shadow: none;
@@ -2714,6 +2733,7 @@ body:not(.drawer-open) .container { padding-left: 24px; }
 .main-drawer {
   top: 64px; z-index: 110; width: 256px; padding: 18px 12px 22px;
   border: 0; box-shadow: none; background: var(--g-bg); transform: translateX(-100%);
+  overflow-y: auto; scrollbar-width: thin;
 }
 .main-drawer.open { transform: translateX(0); }
 .main-drawer-scrim { z-index: 109; background: rgba(60,64,67,.3); }
@@ -2737,11 +2757,6 @@ body:not(.drawer-open) .container { padding-left: 24px; }
   border-radius: 0 20px 20px 0; background: var(--g-blue-soft); color: #001d35;
   box-shadow: none; font-weight: 700;
 }
-.main-drawer .app-userbar {
-  position: absolute; left: 12px; right: 12px; bottom: 14px; margin: 0; padding: 10px 12px;
-  border: 0; border-radius: 12px; background: #eef1f5; box-shadow: none; font-size: 11px;
-}
-.main-drawer .logout-button { padding: 5px 8px; border: 0; background: transparent; text-align: left; }
 .drawer-section { margin: 0 0 16px; padding: 0; border: 0; border-radius: 0; background: transparent; }
 .drawer-section-title {
   margin: 0 0 5px; padding: 0 16px; color: var(--g-text);
@@ -2753,19 +2768,26 @@ body:not(.drawer-open) .container { padding-left: 24px; }
   background: transparent; color: var(--g-text); text-align: left; font-size: 13px; cursor: pointer;
 }
 .sidebar-list-item:hover, .new-list-button:hover { background: #e9eef6; }
+.sidebar-list-item {
+  margin: 3px 0; border-radius: 10px;
+  background: color-mix(in srgb, var(--list-color) 12%, transparent);
+}
+.sidebar-list-item:hover { background: color-mix(in srgb, var(--list-color) 20%, white); }
+.sidebar-list-item.active { background: color-mix(in srgb, var(--list-color) 28%, white); font-weight: 700; }
 .sidebar-list-item small { color: var(--g-muted); }
 .sidebar-list-dot { width: 12px; height: 12px; border-radius: 3px; }
-.new-list-button { grid-template-columns: 18px 1fr; color: var(--g-muted); }
-.main-drawer .week-tabs { gap: 2px; background: transparent; }
+.new-list-button {
+  display: flex; gap: 8px; color: var(--g-muted); white-space: nowrap;
+}
+.main-drawer .week-tabs {
+  display: grid; grid-template-columns: 1fr; gap: 2px; background: transparent;
+}
 .main-drawer .wt-btn {
-  padding: 7px 4px; border: 0; border-radius: 12px; background: transparent; box-shadow: none;
+  min-height: 36px; display: grid; grid-template-columns: 28px 1fr; align-items: center;
+  padding: 5px 12px; border: 0; border-radius: 12px; background: transparent;
+  box-shadow: none; text-align: left;
 }
 .main-drawer .wt-btn.active { border: 0; background: var(--g-blue-soft); box-shadow: none; }
-.drawer-settings { margin: 6px 8px 88px; color: var(--g-muted); font-size: 13px; }
-.drawer-settings summary { padding: 8px; cursor: pointer; }
-.main-drawer .theme-picker {
-  margin: 4px 0; padding: 8px; border: 0; box-shadow: none; background: transparent;
-}
 .learning-system { display: none !important; }
 
 .home-part-overview {
@@ -2777,6 +2799,27 @@ body:not(.drawer-open) .container { padding-left: 24px; }
   min-width: 0; min-height: 520px; padding: 0; overflow: hidden;
   border: 1px solid var(--g-border); border-radius: 16px; background: #fff; box-shadow: none;
 }
+.home-part-overview.part-focused {
+  display: block; overflow: visible;
+}
+.home-part-overview.part-focused .home-part-card {
+  width: min(100%, 920px); min-height: 0; margin: 0 auto;
+}
+.home-part-overview.part-focused .board-task-list {
+  display: grid; grid-template-columns: 1fr; padding: 0 18px 18px;
+}
+.home-part-overview.part-focused .board-task { padding: 16px 8px; }
+.board-back {
+  display: none; margin: 15px 18px 0; padding: 8px 12px; border: 0; border-radius: 18px;
+  background: #eef3fc; color: var(--g-blue); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.part-focused .board-back { display: inline-flex; }
+.board-task-note {
+  display: none; width: 100%; min-height: 68px; margin-top: 10px; padding: 9px 10px;
+  border: 1px solid var(--g-border); border-radius: 10px; resize: vertical;
+  background: #f8fafd; color: var(--g-text); font-size: 12px; line-height: 1.45;
+}
+.part-focused .board-task-note { display: block; }
 .board-card-head {
   display: flex; align-items: start; justify-content: space-between; gap: 8px; padding: 18px 18px 8px;
 }
@@ -2838,6 +2881,41 @@ body:not(.drawer-open) .container { padding-left: 24px; }
 .cover-title, .home-part-number, .colophon-mark { font-style: normal !important; }
 body[data-app-view="tasks"] .week-view.active,
 .month-dash, .data-panel, .cover { border-radius: 16px; box-shadow: none; }
+.index-nav button {
+  flex: 1; min-width: 42px; padding: 9px 6px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--g-muted); font-size: 13px; cursor: pointer;
+}
+.index-nav button:hover { background: #f1f3f4; }
+.index-nav button.active { background: var(--g-blue-soft); color: #001d35; font-weight: 700; }
+.index-nav button.complete { color: var(--g-blue); }
+.custom-date-label {
+  display: flex; align-items: center; gap: 5px; color: var(--g-muted); font-size: 10px;
+}
+.custom-date-input {
+  padding: 7px; border: 1px solid var(--line); border-radius: 8px;
+  background: #fff; color: var(--ink); font-size: 11px;
+}
+.custom-task-form {
+  grid-template-columns: minmax(180px, 1fr) auto auto auto;
+}
+.task-date-badge {
+  margin-left: 6px; padding: 3px 7px; border-radius: 999px;
+  background: #eef3fc; color: var(--g-blue); font-size: 9px; font-weight: 600;
+}
+.weekly-review-input {
+  width: 100%; min-height: 110px; margin-top: 12px; padding: 12px;
+  border: 1px solid var(--g-border); border-radius: 12px; resize: vertical;
+  background: #fff; color: var(--g-text); font-size: 13px; line-height: 1.55;
+}
+body.drawer-open[data-app-view="time"] .month-dash {
+  grid-template-columns: 1fr;
+}
+body.drawer-open[data-app-view="time"] .month-dash > *,
+body.drawer-open[data-app-view="time"] .heatmap-panel,
+body.drawer-open[data-app-view="time"] .actual-panel,
+body.drawer-open[data-app-view="time"] .trend-panel { grid-column: 1; }
+body.drawer-open[data-app-view="time"] .today-chart-grid { grid-template-columns: 1fr; }
+body.drawer-open[data-app-view="time"] .time-pie { width: 136px; margin-inline: auto; }
 
 @media (min-width: 901px) {
   .main-drawer-scrim { display: none !important; }
@@ -2850,6 +2928,7 @@ body[data-app-view="tasks"] .week-view.active,
   .main-drawer { width: min(280px, calc(100vw - 32px)); background: #fff; box-shadow: 8px 0 30px rgba(60,64,67,.2); }
   .home-part-overview { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; overflow-x: visible; }
   .home-part-card { min-height: 430px; }
+  .custom-task-form { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -2880,10 +2959,6 @@ body[data-app-view="tasks"] .week-view.active,
     <strong>Listening Tasks</strong>
   </div>
   <button class="google-create-button" id="createTaskButton" type="button"><span>＋</span>创建</button>
-<div class="app-userbar">
-  <span class="current-user">当前用户：<strong id="currentUsername">—</strong></span>
-  <button class="logout-button" type="button" id="logoutButton">退出 / 切换用户</button>
-</div>
 <nav class="app-nav" id="appNav">
   <button class="app-nav-btn active" type="button" data-app-view="overview">总览</button>
   <button class="app-nav-btn" type="button" data-app-view="tasks">今天任务</button>
@@ -2899,33 +2974,34 @@ body[data-app-view="tasks"] .week-view.active,
     <div class="drawer-section-title">周计划</div>
     <div id="drawerWeekSlot"></div>
   </div>
-  <details class="drawer-settings">
-    <summary>外观与账户</summary>
-    <div class="theme-picker" aria-label="配色主题">
-      <span>界面配色</span>
-      <button class="theme-dot active" type="button" data-theme-choice="forest" title="森林"></button>
-      <button class="theme-dot" type="button" data-theme-choice="ocean" title="海蓝"></button>
-      <button class="theme-dot" type="button" data-theme-choice="lavender" title="薰衣草"></button>
-      <button class="theme-dot" type="button" data-theme-choice="sunset" title="暖霞"></button>
-      <button class="theme-dot" type="button" data-theme-choice="midnight" title="夜蓝"></button>
-      <label class="custom-color-label" title="打开系统取色器">
-        <input id="customAccentColor" type="color" value="#2C4A3E" aria-label="自定义主题色">
-        <span>自定义</span>
-      </label>
-      <button class="eyedropper-btn" id="eyedropperButton" type="button" title="从屏幕上吸取颜色">吸色</button>
-    </div>
-  </details>
 </aside>
 <header class="google-topbar">
   <div class="topbar-brand"><span class="topbar-logo">L</span><strong>Listening Tasks</strong></div>
   <div class="topbar-title" id="topbarTitle">任务总览</div>
   <div class="topbar-actions">
-    <button type="button" data-app-view="overview" title="任务板">▦</button>
-    <button type="button" data-app-view="time" title="学习时长">◷</button>
-    <button type="button" data-app-view="reports" title="报告">▤</button>
-    <button class="topbar-avatar" type="button" id="topbarAvatar" title="打开导航">L</button>
+    <button class="topbar-avatar" type="button" id="topbarAvatar" title="个人中心" aria-expanded="false">B</button>
   </div>
 </header>
+<div class="account-popover" id="accountPopover" hidden>
+  <div class="account-head">
+    <span class="account-avatar">B</span>
+    <div><small>当前用户</small><strong id="currentUsername">—</strong></div>
+  </div>
+  <div class="theme-picker" aria-label="配色主题">
+    <span>界面配色</span>
+    <button class="theme-dot active" type="button" data-theme-choice="forest" title="森林"></button>
+    <button class="theme-dot" type="button" data-theme-choice="ocean" title="海蓝"></button>
+    <button class="theme-dot" type="button" data-theme-choice="lavender" title="薰衣草"></button>
+    <button class="theme-dot" type="button" data-theme-choice="sunset" title="暖霞"></button>
+    <button class="theme-dot" type="button" data-theme-choice="midnight" title="夜蓝"></button>
+    <label class="custom-color-label" title="打开系统取色器">
+      <input id="customAccentColor" type="color" value="#2C4A3E" aria-label="自定义主题色">
+      <span>自定义</span>
+    </label>
+    <button class="eyedropper-btn" id="eyedropperButton" type="button" title="从屏幕上吸取颜色">吸色</button>
+  </div>
+  <button class="account-logout" type="button" id="logoutButton">退出 / 切换用户</button>
+</div>
 <div class="active-timer" id="activeTimerBar">
   <span class="active-timer-title" id="activeTimerTitle">正在计时</span>
   <span class="active-timer-clock" id="activeTimerClock">00:00:00</span>
@@ -3042,13 +3118,13 @@ body[data-app-view="tasks"] .week-view.active,
   </div>
 
   <div class="dash-section report-panel">
-    <h4 class="dash-section-title">月度小结 · auto-generated</h4>
+    <h4 class="dash-section-title" id="weeklyReviewTitle">Week I 周记小结 · weekly review</h4>
     <div class="analysis-box" id="monthAnalysisBox">
-      <div class="a-empty">勾几个再回来,这里会出现具体的进度小结、最强/最弱的 track、一条针对性建议。</div>
+      <div class="a-empty">本周开始记录后，这里会生成周度小结与建议。</div>
     </div>
     <div class="share-row">
-      <button class="share-btn primary" onclick="exportPDF('month')"><span class="sb-icon">↓</span> 导出 PDF</button>
-      <button class="share-btn" onclick="showAsText('month')"><span class="sb-icon">⧉</span> 看文字版</button>
+      <button class="share-btn primary" id="exportWeeklyReview" type="button"><span class="sb-icon">↓</span> 导出本周 PDF</button>
+      <button class="share-btn" id="textWeeklyReview" type="button"><span class="sb-icon">⧉</span> 本周文字版</button>
     </div>
   </div>
 
@@ -3883,6 +3959,7 @@ function createInitialState(username = '') {
     partMeta: defaultPartMeta(),
     partOrder: ['sherlock', 'ielts', 'shorts'],
     partActionLog: {},
+    weekReviews: {},
     theme: 'forest',
     customAccent: '#2C4A3E'
   };
@@ -3892,6 +3969,7 @@ function createInitialState(username = '') {
 
 let state = createInitialState(currentUser);
 let openPlanPart = 'sherlock';
+let focusedPart = '';
 
 function emptyWeekState() {
   return {
@@ -3970,6 +4048,7 @@ async function loadState() {
       state.partMeta = Object.assign(defaultPartMeta(), parsed.partMeta || {});
       state.partOrder = allParts;
       state.partActionLog = parsed.partActionLog && typeof parsed.partActionLog === 'object' ? parsed.partActionLog : {};
+      state.weekReviews = parsed.weekReviews && typeof parsed.weekReviews === 'object' ? parsed.weekReviews : {};
       state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(parsed.theme) ? parsed.theme : 'forest';
       state.customAccent = /^#[0-9a-f]{6}$/i.test(parsed.customAccent || '') ? parsed.customAccent : '#2C4A3E';
       if (parsed.weeks) {
@@ -4033,6 +4112,7 @@ function customTaskHTML(task) {
       <input type="checkbox" id="${id}">
       <input class="custom-title-input" data-custom-title="${id}" value="${escapeHtml(task.title)}" aria-label="自定义任务标题">
       <span class="task-part-badge">${escapeHtml(meta.label)}</span>
+      ${task.scheduledDate ? `<span class="task-date-badge">${escapeHtml(task.scheduledDate)}</span>` : ''}
     </div>
     <div class="task-actions">
       <button type="button" class="timer-btn" data-timer-task="${id}" data-part="${part}" data-week="${task.week}" data-day="${task.day}" data-task-title="${escapeHtml(task.title)}">开始计时</button>
@@ -4103,11 +4183,15 @@ function renderHomePartOverview() {
   if (!root) return;
   const palette = themePalette(8);
   const keys = partKeys();
-  root.innerHTML = keys.map((part, index) => {
+  const visibleKeys = focusedPart && state.partPlans[focusedPart] ? [focusedPart] : keys;
+  root.classList.toggle('part-focused', visibleKeys.length === 1 && !!focusedPart);
+  root.innerHTML = visibleKeys.map(part => {
+    const index = keys.indexOf(part);
     const meta = getPartMeta(part, index);
     const plan = state.partPlans[part];
     const color = meta.color || palette[index % palette.length];
     return `<article class="home-part-card" data-board-part="${part}" style="--part-color:${color}">
+      <button class="board-back" type="button" data-close-part>← 返回全部任务列表</button>
       <header class="board-card-head">
         <div>
           <div class="home-part-label">${escapeHtml(meta.label)}</div>
@@ -4129,6 +4213,7 @@ function renderHomePartOverview() {
           <div class="board-task-copy">
             <input data-plan-title="${part}:${task.id}" value="${escapeHtml(task.title)}" aria-label="任务标题">
             <input data-plan-detail="${part}:${task.id}" value="${escapeHtml(task.detail || '')}" aria-label="任务说明">
+            <textarea class="board-task-note" data-plan-note="${part}:${task.id}" placeholder="Note · 记录心得、卡点或下一步…">${escapeHtml(task.note || '')}</textarea>
           </div>
           <button class="board-task-delete" type="button" data-delete-plan="${part}:${task.id}" title="删除">⋮</button>
         </article>`).join('')}
@@ -4139,7 +4224,7 @@ function renderHomePartOverview() {
       </footer>
     </article>`;
   }).join('');
-  root.insertAdjacentHTML('beforeend', `<button class="add-board-card" id="addBoardCard" type="button">
+  if (!focusedPart) root.insertAdjacentHTML('beforeend', `<button class="add-board-card" id="addBoardCard" type="button">
     <span>＋</span><strong>新建任务列表</strong><small>添加新的 Part 或学习分类</small>
   </button>`);
   renderPartSidebar();
@@ -4189,7 +4274,7 @@ function renderPartSidebar() {
   if (!root) return;
   root.innerHTML = partKeys().map((part, index) => {
     const meta = getPartMeta(part, index);
-    return `<button class="sidebar-list-item" type="button" data-focus-part="${part}">
+    return `<button class="sidebar-list-item ${focusedPart === part ? 'active' : ''}" type="button" data-focus-part="${part}" style="--list-color:${meta.color || themePalette(8)[index % 8]}">
       <span class="sidebar-list-dot" style="background:${meta.color || themePalette(8)[index % 8]}"></span>
       <span>${escapeHtml(state.partPlans[part].name)}</span>
       <small>${state.partPlans[part].tasks.length}</small>
@@ -4336,8 +4421,16 @@ function renderWeekContent(week) {
   const nav = document.createElement('nav');
   nav.className = 'index-nav';
   nav.innerHTML = [1,2,3,4,5,6,7].map(n =>
-    `<a href="#" data-day-link="${week.num}-${n}" data-day-select="${week.num}-${n}">${romanize(n)}</a>`
+    `<button type="button" data-day-link="${week.num}-${n}" data-day-select="${week.num}-${n}">${n}</button>`
   ).join('');
+  nav.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-day-select]');
+    if (!button) return;
+    const [weekNum, dayNum] = button.dataset.daySelect.split('-').map(Number);
+    event.preventDefault();
+    showActiveDay(weekNum, dayNum);
+    saveState();
+  });
   root.appendChild(nav);
 
   // Days
@@ -4409,6 +4502,9 @@ function renderWeekContent(week) {
       <form class="custom-task-form" data-custom-form="${week.num}-${day.num}">
         <input class="custom-task-input" name="customTitle" maxlength="160" placeholder="添加今天想做的其他任务…" required>
         <select class="custom-part-select" name="customPart" aria-label="任务所属部分">${partOptionsHTML()}</select>
+        <label class="custom-date-label">日期
+          <input class="custom-date-input" name="customDate" type="date" value="${isoDate(new Date())}" aria-label="任务日期">
+        </label>
         <button class="custom-add-btn" type="submit">＋ 添加</button>
       </form>
       <div data-custom-list="${week.num}-${day.num}">
@@ -4503,6 +4599,7 @@ function showActiveWeek() {
   });
   document.getElementById('floatWeek').textContent = 'W' + state.activeWeek;
   showActiveDay(state.activeWeek, Number(state.activeDays[state.activeWeek]) || 1);
+  if (typeof renderMonthAnalysis === 'function') renderMonthAnalysis();
 }
 
 function showActiveDay(weekNum, dayNum) {
@@ -4808,7 +4905,7 @@ function updateAll() {
       }
     }
     // index nav
-    const lnk = document.querySelector(`a[data-day-link="${wn}-${dn}"]`);
+    const lnk = document.querySelector(`[data-day-link="${wn}-${dn}"]`);
     if (lnk) lnk.classList.toggle('complete', done === total && total > 0);
   });
 
@@ -5304,7 +5401,21 @@ document.getElementById('mainMenuToggle').addEventListener('click', () => {
   setMainDrawerOpen(!document.getElementById('mainDrawer').classList.contains('open'));
 });
 document.getElementById('mainDrawerScrim').addEventListener('click', () => setMainDrawerOpen(false));
-document.getElementById('topbarAvatar').addEventListener('click', () => setMainDrawerOpen(true));
+document.getElementById('topbarAvatar').addEventListener('click', () => {
+  const popover = document.getElementById('accountPopover');
+  popover.hidden = !popover.hidden;
+  document.getElementById('topbarAvatar').setAttribute('aria-expanded', String(!popover.hidden));
+});
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#accountPopover, #topbarAvatar')) return;
+  const popover = document.getElementById('accountPopover');
+  if (popover && !popover.hidden) {
+    popover.hidden = true;
+    document.getElementById('topbarAvatar').setAttribute('aria-expanded', 'false');
+  }
+});
+document.getElementById('exportWeeklyReview').addEventListener('click', () => exportPDF('week', state.activeWeek));
+document.getElementById('textWeeklyReview').addEventListener('click', () => showAsText('week', state.activeWeek));
 
 async function createPartList() {
   const name = prompt('新任务列表名称', '新的学习分类');
@@ -5403,6 +5514,22 @@ document.addEventListener('input', (e) => {
     }
     return;
   }
+  if (e.target.matches('[data-plan-note]')) {
+    const [part, taskId] = e.target.dataset.planNote.split(':');
+    const task = findPlanTask(part, taskId);
+    if (task) {
+      task.note = e.target.value;
+      clearTimeout(window._partPlanTimer);
+      window._partPlanTimer = setTimeout(saveState, 500);
+    }
+    return;
+  }
+  if (e.target.matches('[data-week-review]')) {
+    state.weekReviews[e.target.dataset.weekReview] = e.target.value;
+    clearTimeout(window._weekReviewTimer);
+    window._weekReviewTimer = setTimeout(saveState, 500);
+    return;
+  }
   if (e.target.matches('textarea.reflection-input')) {
     const wnum = e.target.dataset.week;
     state.weeks[wnum].reflections[e.target.id] = e.target.value;
@@ -5457,6 +5584,7 @@ document.addEventListener('submit', async (e) => {
   const input = form.querySelector('[name="customTitle"]');
   const title = input.value.trim();
   if (!title) return;
+  const scrollTop = window.scrollY;
   const part = isKnownPart(form.querySelector('[name="customPart"]')?.value)
     ? form.querySelector('[name="customPart"]').value
     : 'sherlock';
@@ -5466,22 +5594,31 @@ document.addEventListener('submit', async (e) => {
     part,
     week,
     day,
+    scheduledDate: form.querySelector('[name="customDate"]')?.value || '',
     createdAt: new Date().toISOString(),
     archived: false
   });
   await saveState();
   refreshTaskViews();
+  requestAnimationFrame(() => window.scrollTo({ top: scrollTop, behavior: 'instant' }));
 });
 
 document.addEventListener('click', async (e) => {
+  if (e.target.closest('[data-close-part]')) {
+    focusedPart = '';
+    renderPartSystem();
+    return;
+  }
   if (e.target.closest('#addBoardCard')) {
     await createPartList();
     return;
   }
   const focusPartButton = e.target.closest('[data-focus-part]');
   if (focusPartButton) {
+    focusedPart = focusPartButton.dataset.focusPart;
     setAppView('overview', false);
-    document.querySelector(`[data-board-part="${focusPartButton.dataset.focusPart}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    renderPartSystem();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (window.innerWidth <= 900) setMainDrawerOpen(false);
     return;
   }
@@ -5588,8 +5725,9 @@ document.addEventListener('click', async (e) => {
   if (daySelect) {
     const [weekNum, dayNum] = daySelect.dataset.daySelect.split('-').map(Number);
     showActiveDay(weekNum, dayNum);
-    saveState();
     e.preventDefault();
+    saveState();
+    document.querySelector(`.week-view[data-week-num="${weekNum}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
   const timerButton = e.target.closest('.timer-btn');
@@ -5755,17 +5893,23 @@ function dayAnalysisText(weekNum, dayNum) {
 }
 
 function renderMonthAnalysis(ws) {
-  const a = monthAnalysis(ws);
+  const weekNum = Number(state.activeWeek) || 1;
+  const a = weekAnalysis(weekNum);
   const box = document.getElementById('monthAnalysisBox');
   if (!box) return;
+  const title = document.getElementById('weeklyReviewTitle');
+  if (title) title.textContent = `Week ${romanize(weekNum)} 周记小结 · weekly review`;
+  const savedReview = state.weekReviews?.[weekNum] || '';
+  const reviewField = `<textarea class="weekly-review-input" data-week-review="${weekNum}" placeholder="自定义复盘 · 本周发生了什么、哪里卡住、下周准备调整什么…">${escapeHtml(savedReview)}</textarea>`;
   if (!a) {
-    box.innerHTML = '<div class="a-empty">勾几个再回来,这里会出现具体的进度小结、最强/最弱的 track、一条针对性建议。</div>';
+    box.innerHTML = `<div class="a-empty">本周开始记录后，这里会生成进度小结。你也可以先写自己的复盘。</div>${reviewField}`;
     return;
   }
   box.innerHTML = `
     <div class="a-line a-numbers">${a.summary}</div>
     ${a.insight ? `<div class="a-line">${a.insight}</div>` : ''}
     <div class="a-suggest"><strong>建议</strong>${a.suggestion}</div>
+    ${reviewField}
   `;
 }
 
@@ -6207,6 +6351,10 @@ function buildWeekPrintHTML(weekNum, date) {
       <div class="pv-suggest"><strong>建议</strong>${a.suggestion}</div>
     </div>`;
   }
+  const customReview = state.weekReviews?.[weekNum]?.trim();
+  const customReviewHtml = customReview
+    ? `<div class="pv-section"><h3>自定义周记复盘</h3><div class="pv-reflection-text">${escapeHtml(customReview)}</div></div>`
+    : '';
 
   // Day-by-day details (all tasks)
   let detailsHtml = `<div class="pv-section"><h3>本周任务清单 · 全部</h3>`;
@@ -6241,6 +6389,7 @@ function buildWeekPrintHTML(weekNum, date) {
     ${actualWeekHtml}
     ${trackHtml}
     ${analysisHtml}
+    ${customReviewHtml}
     ${detailsHtml}
 
     <div class="pv-footer">Generated ${date} · A Listening Diary</div>
@@ -6511,6 +6660,8 @@ function buildReportText(scope, params) {
         body += `\n· ${v.trim()}`;
       });
     }
+    const customReview = state.weekReviews?.[wn]?.trim();
+    if (customReview) body += `\n\n— 自定义周记复盘 —\n${customReview}`;
     const taskNotes = collectTaskNotes([wn]);
     if (taskNotes.length) {
       body += '\n\n— 任务 Notes —';
@@ -6720,6 +6871,7 @@ async function importPrompt() {
     state.partMeta = Object.assign(defaultPartMeta(), state.partMeta || {});
     state.partOrder = allParts;
     state.partActionLog = state.partActionLog && typeof state.partActionLog === 'object' ? state.partActionLog : {};
+    state.weekReviews = state.weekReviews && typeof state.weekReviews === 'object' ? state.weekReviews : {};
     state.theme = ['forest','ocean','lavender','sunset','midnight','custom'].includes(state.theme) ? state.theme : 'forest';
     state.customAccent = /^#[0-9a-f]{6}$/i.test(state.customAccent || '') ? state.customAccent : '#2C4A3E';
     // Make sure each week has the right shape
@@ -6754,6 +6906,7 @@ async function resetMonth() {
   state.activeWeek = 1;
   state.actionLog = {};
   state.partActionLog = {};
+  state.weekReviews = {};
   state.sessions = [];
   state.activeTimer = null;
   state.customTasks = [];
