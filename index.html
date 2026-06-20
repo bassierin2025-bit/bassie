@@ -10,6 +10,9 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
   <title>英语能力提升中心</title>
   <style>
     :root {
@@ -48,8 +51,9 @@
       margin: 0;
       background: var(--bg);
       color: var(--ink);
-      font-family: "Microsoft YaHei", "PingFang SC", "Inter", system-ui, sans-serif;
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
       letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
     }
     body[data-dark-theme="true"] {
       --bg: #0e0f11;
@@ -74,17 +78,18 @@
     .topbar {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      gap: 10px;
+      gap: 12px;
       align-items: start;
-      margin-bottom: 18px;
-      padding: 14px;
+      margin-bottom: 20px;
+      padding: 20px 22px 18px;
       border: 0;
-      border-radius: 22px;
+      border-radius: 26px;
       background:
-        radial-gradient(68px 68px at 92% 18%, color-mix(in srgb, var(--accent-2) 28%, transparent), transparent 72%),
-        radial-gradient(110px 76px at 78% 98%, color-mix(in srgb, var(--voice) 15%, transparent), transparent 70%),
-        linear-gradient(135deg, color-mix(in srgb, var(--paper) 90%, var(--data-bg)), color-mix(in srgb, var(--paper) 78%, var(--data-bg-2)));
-      box-shadow: 0 14px 34px rgba(45, 45, 38, .065);
+        radial-gradient(90px 80px at 94% 12%, color-mix(in srgb, var(--accent-2) 32%, transparent), transparent 72%),
+        radial-gradient(130px 90px at 76% 104%, color-mix(in srgb, var(--voice) 18%, transparent), transparent 70%),
+        radial-gradient(200px 120px at 20% 110%, color-mix(in srgb, var(--data-bg-2) 30%, transparent), transparent 70%),
+        linear-gradient(145deg, color-mix(in srgb, var(--paper) 94%, var(--data-bg)), color-mix(in srgb, var(--paper) 82%, var(--data-bg-2)));
+      box-shadow: 0 2px 10px rgba(45,45,38,.06), 0 20px 48px rgba(45,45,38,.07);
       overflow: hidden;
       position: relative;
     }
@@ -93,27 +98,31 @@
       font-size: 24px;
       line-height: 1.2;
       color: var(--ink);
-      font-weight: 650;
+      font-weight: 700;
+      font-family: "Noto Serif SC", "PingFang SC", "Microsoft YaHei", serif;
+      letter-spacing: -.01em;
     }
     .brand-kicker {
-      margin: 0 0 3px;
-      color: color-mix(in srgb, var(--accent) 70%, var(--ink));
+      margin: 0 0 4px;
+      color: color-mix(in srgb, var(--accent) 80%, #c05000);
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: .09em;
+      letter-spacing: .13em;
       text-transform: uppercase;
+      font-family: "Inter", system-ui, sans-serif;
     }
     .brand-word {
       position: absolute;
       right: 12px;
       top: -18px;
       z-index: -1;
-      color: color-mix(in srgb, var(--accent) 8%, transparent);
-      font-size: 78px;
-      font-weight: 760;
-      letter-spacing: 0;
+      color: color-mix(in srgb, var(--accent) 11%, transparent);
+      font-size: 82px;
+      font-weight: 800;
+      letter-spacing: -.02em;
       pointer-events: none;
       user-select: none;
+      font-family: "Inter", system-ui, sans-serif;
     }
     .brand-copy { position: relative; z-index: 0; overflow: hidden; min-height: 62px; display: grid; align-content: center; }
     .brand-copy h1 {
@@ -131,10 +140,12 @@
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
-      padding: 4px 9px;
+      padding: 4px 10px;
       color: var(--muted);
-      background: color-mix(in srgb, #fff 74%, var(--data-bg));
+      background: color-mix(in srgb, #fff 80%, var(--data-bg));
       font-size: 10.5px;
+      font-weight: 500;
+      box-shadow: inset 0 0 0 1px rgba(45,45,38,.07), 0 1px 3px rgba(45,45,38,.05);
     }
     .subtitle {
       margin: 4px 0 0;
@@ -145,21 +156,29 @@
     .top-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-start; align-items: center; }
     .btn {
       border: 1px solid var(--line);
-      background: #fff;
+      background: linear-gradient(180deg, #ffffff, #f8f9fa);
       color: var(--ink);
-      min-height: 28px;
-      padding: 4px 8px;
+      min-height: 30px;
+      padding: 5px 12px;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
       gap: 5px;
       font-size: 12px;
-      box-shadow: none;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(45,45,38,.08), 0 1px 2px rgba(45,45,38,.05);
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
     }
-    .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .btn.icon { width: 30px; justify-content: center; padding: 0; border-radius: 8px; }
-    .btn:hover { background: #f8fafd; border-color: var(--line-strong); }
-    .btn:active { background: #f1f3f4; }
+    .btn.primary {
+      background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 88%, #fff) 0%, var(--accent) 100%);
+      color: #fff;
+      border-color: color-mix(in srgb, var(--accent) 90%, #c04000);
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 38%, transparent), 0 1px 3px rgba(0,0,0,.1);
+    }
+    .btn.icon { width: 30px; justify-content: center; padding: 0; border-radius: 9px; }
+    .btn:hover { background: linear-gradient(180deg, #fff, #f2f4f6); border-color: var(--line-strong); box-shadow: 0 2px 8px rgba(45,45,38,.13); transform: translateY(-1px); }
+    .btn.primary:hover { background: linear-gradient(160deg, var(--accent), color-mix(in srgb, var(--accent) 80%, #000)); transform: translateY(-1px); box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 45%, transparent); }
+    .btn:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(45,45,38,.08); }
     body[data-dark-theme="true"] .btn,
     body[data-dark-theme="true"] .palette,
     body[data-dark-theme="true"] .palette-card,
@@ -249,9 +268,9 @@
     .panel {
       background: var(--paper);
       border: 0;
-      border-radius: 10px;
-      box-shadow: none;
-      padding: 14px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(45,45,38,.06), 0 10px 30px rgba(45,45,38,.05);
+      padding: 18px;
     }
     .dashboard > .panel:nth-child(1) { grid-area: today; }
     .dashboard > .panel:nth-child(2) { grid-area: materials; }
@@ -276,8 +295,9 @@
       margin: 0;
       font-size: 14px;
       color: var(--ink);
-      font-weight: 650;
+      font-weight: 700;
       line-height: 1.2;
+      letter-spacing: -.01em;
     }
     .tiny { color: var(--quiet); font-size: 11px; }
     .date-row {
@@ -305,15 +325,17 @@
       border: 1px solid var(--line);
       background: #fff;
       color: var(--ink);
-      border-radius: 6px;
+      border-radius: 9px;
       outline: 0;
-      padding: 8px 9px;
+      padding: 8px 10px;
       min-width: 0;
+      box-shadow: inset 0 1px 2px rgba(45,45,38,.05);
+      transition: border-color .15s ease, box-shadow .15s ease;
     }
-    textarea { resize: vertical; line-height: 1.45; }
+    textarea { resize: vertical; line-height: 1.5; }
     input:focus, select:focus, textarea:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(26,115,232,.12);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent), inset 0 1px 2px rgba(45,45,38,.04);
     }
 
     .today-grid {
@@ -328,16 +350,17 @@
     }
     .stat {
       border: 0;
-      background: color-mix(in srgb, #fff 78%, var(--data-bg));
-      border-radius: 13px;
-      padding: 12px 14px;
-      min-height: 78px;
+      background: color-mix(in srgb, #fff 80%, var(--data-bg));
+      border-radius: 16px;
+      padding: 14px 16px;
+      min-height: 84px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 2px 8px rgba(45,45,38,.06);
     }
-    .stat:nth-child(2) { background: color-mix(in srgb, #fff 76%, var(--ielts)); }
-    .stat:nth-child(3) { background: color-mix(in srgb, #fff 76%, var(--voice)); }
-    .stat:nth-child(4) { background: color-mix(in srgb, #fff 76%, var(--social)); }
-    .stat span { display: block; color: var(--muted); font-size: 10.5px; }
-    .stat strong { display: block; margin-top: 4px; font-size: 18px; color: var(--ink); font-weight: 650; }
+    .stat:nth-child(2) { background: color-mix(in srgb, #fff 80%, var(--ielts)); }
+    .stat:nth-child(3) { background: color-mix(in srgb, #fff 80%, var(--voice)); }
+    .stat:nth-child(4) { background: color-mix(in srgb, #fff 80%, var(--social)); }
+    .stat span { display: block; color: var(--muted); font-size: 10.5px; font-weight: 500; letter-spacing: .02em; }
+    .stat strong { display: block; margin-top: 5px; font-size: 20px; color: var(--ink); font-weight: 700; letter-spacing: -.02em; font-family: "Inter", system-ui, sans-serif; }
     .stat small {
       display: block;
       margin-top: 3px;
@@ -373,11 +396,11 @@
       grid-template-columns: 18px 3px minmax(0, 1fr) auto;
       gap: 10px;
       align-items: center;
-      padding: 8px 10px;
+      padding: 10px 12px;
       border: 0;
       border-radius: 14px;
-      background: linear-gradient(180deg, color-mix(in srgb, #fff 88%, var(--soft)), color-mix(in srgb, var(--soft) 72%, #fff));
-      box-shadow: none;
+      background: linear-gradient(180deg, color-mix(in srgb, #fff 92%, var(--soft)), color-mix(in srgb, var(--soft) 68%, #fff));
+      box-shadow: 0 1px 4px rgba(45,45,38,.07), inset 0 1px 0 rgba(255,255,255,.9);
     }
     .task::before {
       content: "";
@@ -412,11 +435,13 @@
     .chip {
       border-radius: 999px;
       border: 0;
-      padding: 2px 7px;
+      padding: 3px 8px;
       color: var(--muted);
-      background: #f1f3f4;
+      background: #f0f2f4;
       font-size: 10.5px;
+      font-weight: 500;
       white-space: nowrap;
+      box-shadow: inset 0 0 0 1px rgba(45,45,38,.07);
     }
     .chip.ielts { color: #79610b; background: #fff4bd; }
     .chip.voice { color: #98513a; background: #fff0e9; }
