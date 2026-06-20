@@ -1774,6 +1774,7 @@
     const SESSION_KEY = "trichannel-current-user";
     const TOKEN_KEY = "trichannel-cloud-token";
     const USER_ID_KEY = "trichannel-cloud-user-id";
+    const CLIENT_ID_KEY = "trichannel-client-id";
     const SUPABASE_CONFIG = window.TRICHANNEL_SUPABASE || {};
     const cloudConfigured = !!(SUPABASE_CONFIG.url && SUPABASE_CONFIG.publishableKey);
     const sdkConfigured = !!(cloudConfigured && window.supabase);
@@ -1781,6 +1782,8 @@
     let cloudUserId = localStorage.getItem(USER_ID_KEY) || null;
     let cloudAccessToken = localStorage.getItem(TOKEN_KEY) || "";
     let currentUsername = localStorage.getItem(SESSION_KEY) || "";
+    const clientId = localStorage.getItem(CLIENT_ID_KEY) || uid();
+    localStorage.setItem(CLIENT_ID_KEY, clientId);
     let localSyncAvailable = false;
     let localSaveTimer = null;
     let localPollTimer = null;
@@ -1858,6 +1861,8 @@
         const parsed = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
         return {
           days: parsed.days || {},
+          updatedAt: Number(parsed.updatedAt || 0),
+          clientId: parsed.clientId || clientId,
           activeTimer: parsed.activeTimer || null,
           timerUpdatedAt: Number(parsed.timerUpdatedAt || 0),
           palette: parsed.palette || "sage",
@@ -1872,11 +1877,13 @@
           ]
         };
       } catch {
-        return { days: {}, materials: [], activeTimer: null, timerUpdatedAt: 0, palette: "sage", errorTags: defaultErrorTags, hiddenErrorTags: [], outputTags: ["工作解释", "改写", "态度", "复述", "生活场景"], talkTags: ["认同", "惊讶", "缓和", "抱怨回应", "确认理解", "追问"] };
+        return { days: {}, materials: [], updatedAt: 0, clientId, activeTimer: null, timerUpdatedAt: 0, palette: "sage", errorTags: defaultErrorTags, hiddenErrorTags: [], outputTags: ["工作解释", "改写", "态度", "复述", "生活场景"], talkTags: ["认同", "惊讶", "缓和", "抱怨回应", "确认理解", "追问"] };
       }
     }
 
     function save() {
+      state.updatedAt = Date.now();
+      state.clientId = clientId;
       backupState("auto");
       localStorage.setItem(STORE_KEY, JSON.stringify(state));
       scheduleLocalSave();
@@ -1888,7 +1895,6 @@
       if (localSyncAvailable) {
         clearTimeout(localSaveTimer);
         saveLocalState().then(() => showToast("已保存到电脑同步中心")).catch(() => showToast("已本机保存，同步中心稍后重试"));
-        return;
       }
       if (!cloudConfigured || !cloudUserId) {
         showToast("已保存在本机，登录后可同步");
@@ -1904,7 +1910,6 @@
         if (localSyncAvailable) {
           clearTimeout(localSaveTimer);
           saveLocalState().catch(err => console.warn("Silent local sync failed", err));
-          return;
         }
         if (cloudConfigured && cloudUserId) {
           clearTimeout(saveCloudTimer);
@@ -1924,11 +1929,20 @@
       const output = days.reduce((sum, d) => sum + (d.outputEntries || []).length + (d.talkEntries || []).length, 0);
       const sessions = days.reduce((sum, d) => sum + (d.sessions || []).length, 0);
       const checks = days.reduce((sum, d) => sum + Object.values(d.checks || {}).filter(Boolean).length, 0);
+      const reviewText = days.map(d => [
+        d.review?.dailyNote || "",
+        d.review?.tomorrowFocus || "",
+        ...(d.wrongEntries || []).map(e => `${e.id}:${e.q}:${e.tag}:${e.note}:${e.updatedAt || e.createdAt || ""}`),
+        ...(d.outputEntries || []).map(e => `${e.id}:${e.tag}:${e.text}:${e.updatedAt || e.createdAt || ""}`),
+        ...(d.talkEntries || []).map(e => `${e.id}:${e.mood}:${e.text}:${e.updatedAt || e.createdAt || ""}`)
+      ].join("|")).join("||");
       return JSON.stringify({
         wrong,
         output,
         sessions,
         checks,
+        reviewText,
+        updatedAt: Number(source.updatedAt || 0),
         activeTimer: source.activeTimer || null,
         timerUpdatedAt: Number(source.timerUpdatedAt || 0),
         materials: (source.materials || []).length
@@ -1950,7 +1964,6 @@
     }
 
     function scheduleCloudSave() {
-      if (localSyncAvailable) return;
       if (!cloudConfigured || !cloudUserId) return;
       clearTimeout(saveCloudTimer);
       saveCloudTimer = setTimeout(saveCloudState, 650);
@@ -2022,8 +2035,24 @@
     }
 
     function mergeReview(local = {}, remote = {}) {
-      const merged = { ...remote, ...local };
-      Object.keys(remote || {}).forEach(key => {
+      const localTimes = local?._fieldUpdatedAt || {};
+      const remoteTimes = remote?._fieldUpdatedAt || {};
+      const merged = { ...remote, ...local, _fieldUpdatedAt: { ...remoteTimes, ...localTimes } };
+      const keys = new Set([...Object.keys(remote || {}), ...Object.keys(local || {})]);
+      keys.delete("_fieldUpdatedAt");
+      keys.forEach(key => {
+        const localTime = Number(localTimes[key] || 0);
+        const remoteTime = Number(remoteTimes[key] || 0);
+        if (remoteTime > localTime) {
+          merged[key] = remote[key];
+          merged._fieldUpdatedAt[key] = remoteTime;
+          return;
+        }
+        if (localTime > remoteTime) {
+          merged[key] = local[key];
+          merged._fieldUpdatedAt[key] = localTime;
+          return;
+        }
         if ((local?.[key] === undefined || local?.[key] === "") && remote[key] !== undefined) merged[key] = remote[key];
       });
       return merged;
@@ -2078,6 +2107,8 @@
       return {
         ...remote,
         ...local,
+        updatedAt: Math.max(Number(remote.updatedAt || 0), Number(local.updatedAt || 0)),
+        clientId: local.clientId || remote.clientId || clientId,
         days: mergedDays,
         materials: mergeArrayByKey(remote.materials || [], local.materials || []),
         errorTags: errorTags.length ? errorTags : defaultErrorTags,
@@ -2178,6 +2209,7 @@
         clearTimeout(saveCloudTimer);
         clearInterval(localPollTimer);
         localPollTimer = setInterval(() => pullLocalState({ silent: true }), 3000);
+        scheduleCloudSave();
         renderAccount();
       } catch (err) {
         localSyncAvailable = false;
@@ -2186,7 +2218,6 @@
     }
 
     async function saveCloudState() {
-      if (localSyncAvailable) return;
       if (!cloudConfigured || !cloudUserId) return;
       if (syncInProgress) {
         pendingCloudSave = true;
@@ -2851,10 +2882,16 @@
       try {
         const record = await fetchCloudRecord();
         if (record?.state && record.updated_at !== lastCloudUpdatedAt) {
+          const before = stateSignature(record.state);
           state = mergeStates(loadState(), record.state);
+          const after = stateSignature(state);
           lastCloudUpdatedAt = record.updated_at || lastCloudUpdatedAt;
           localStorage.setItem(STORE_KEY, JSON.stringify(state));
           render({ persist: false });
+          if (after !== before) {
+            pendingCloudSave = true;
+            scheduleCloudSave();
+          }
           if (!silent) showToast("已拉取另一端记录");
         }
         renderAccount();
@@ -3381,7 +3418,11 @@
 
     ["errorTag", "tomorrowFocus", "dailyNote"].forEach(id => {
       document.getElementById(id).addEventListener("input", e => {
-        day().review[id] = e.target.value;
+        const currentDay = day();
+        currentDay.review[id] = e.target.value;
+        currentDay.review._fieldUpdatedAt = currentDay.review._fieldUpdatedAt || {};
+        currentDay.review._fieldUpdatedAt[id] = Date.now();
+        currentDay.updatedAt = Date.now();
         save(); renderStats(); renderTags(); renderMonthPanel();
         if (id === "dailyNote") scheduleSilentSyncNow();
       });
@@ -3462,7 +3503,8 @@
           entry.updatedAt = Date.now();
         }
       } else {
-        day().wrongEntries.unshift({ id: uid(), q, tag, note, createdAt: Date.now() });
+        const now = Date.now();
+        day().wrongEntries.unshift({ id: uid(), q, tag, note, createdAt: now, updatedAt: now });
       }
       clearEditingEntry();
       document.getElementById("wrongQ").value = "";
@@ -3485,7 +3527,8 @@
           entry.updatedAt = Date.now();
         }
       } else {
-        day().outputEntries.unshift({ id: uid(), text, tag, createdAt: Date.now() });
+        const now = Date.now();
+        day().outputEntries.unshift({ id: uid(), text, tag, createdAt: now, updatedAt: now });
       }
       clearEditingEntry();
       document.getElementById("sentenceOutput").value = "";
@@ -3508,7 +3551,8 @@
           entry.updatedAt = Date.now();
         }
       } else {
-        day().talkEntries.unshift({ id: uid(), text, mood, createdAt: Date.now() });
+        const now = Date.now();
+        day().talkEntries.unshift({ id: uid(), text, mood, createdAt: now, updatedAt: now });
       }
       clearEditingEntry();
       document.getElementById("smallTalk").value = "";
@@ -3572,6 +3616,7 @@
         return false;
       }
       if (!d.deletedEntryIds.includes(id)) d.deletedEntryIds.push(id);
+      d.updatedAt = Date.now();
       saveAndSyncNow();
       render({ persist: false });
       renderStats();
@@ -3696,7 +3741,7 @@
       document.getElementById("installBtn").hidden = false;
     });
     function mobileInstallUrl() {
-      return `${location.origin}${location.pathname}?v=43`;
+      return `${location.origin}${location.pathname}?v=44`;
     }
     function openInstallHelp() {
       document.getElementById("mobileInstallUrl").value = mobileInstallUrl();
@@ -3734,6 +3779,7 @@
   </script>
 </body>
 </html>
+
 
 
 
