@@ -2002,22 +2002,14 @@
     }
 
     async function fetchCloudRecord() {
-      if (!cloudConfigured || !cloudUserId) return;
-      if (cloudAccessToken) {
-        const rows = await cloudFetch(`/rest/v1/diary_states?select=state,updated_at&user_id=eq.${encodeURIComponent(cloudUserId)}&limit=1`, {
-          method: "GET"
-        });
-        return rows?.[0] || null;
-      }
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient
-          .from("diary_states")
-          .select("state,updated_at")
-          .eq("user_id", cloudUserId)
-          .maybeSingle();
-        if (!error) return data || null;
-      }
-      return null;
+      if (!supabaseClient || !cloudUserId) return null;
+      const { data, error } = await supabaseClient
+        .from("diary_states")
+        .select("state,updated_at")
+        .eq("user_id", cloudUserId)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return data || null;
     }
 
     function entryKey(entry) {
@@ -2212,7 +2204,7 @@
 
     async function saveCloudState() {
       if (localSyncAvailable) return;
-      if (!cloudConfigured || !cloudUserId) return;
+      if (!supabaseClient || !cloudUserId) return;
       if (syncInProgress) {
         pendingCloudSave = true;
         return;
@@ -2227,21 +2219,13 @@
           render({ persist: false });
         }
         const payload = { user_id: cloudUserId, state, updated_at: new Date().toISOString() };
-        if (cloudAccessToken) {
-          const rows = await cloudFetch("/rest/v1/diary_states?select=updated_at", {
-            method: "POST",
-            headers: { Prefer: "resolution=merge-duplicates,return=representation" },
-            body: JSON.stringify(payload)
-          });
-          lastCloudUpdatedAt = rows?.[0]?.updated_at || payload.updated_at;
-        } else if (supabaseClient) {
-          const { data } = await supabaseClient.from("diary_states").upsert(payload).select("updated_at").maybeSingle();
-          lastCloudUpdatedAt = data?.updated_at || payload.updated_at;
-        }
+        const { data, error } = await supabaseClient.from("diary_states").upsert(payload).select("updated_at").maybeSingle();
+        if (error) throw new Error(error.message);
+        lastCloudUpdatedAt = data?.updated_at || payload.updated_at;
         renderAccount();
       } catch (err) {
         console.warn("Cloud save failed", err);
-        showToast("云端同步失败，已先保存在本机");
+        showToast("同步失败，稍后自动重试");
       } finally {
         syncInProgress = false;
         if (pendingCloudSave) {
