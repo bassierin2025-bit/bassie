@@ -1775,7 +1775,10 @@
     const TOKEN_KEY = "trichannel-cloud-token";
     const USER_ID_KEY = "trichannel-cloud-user-id";
     const CLIENT_ID_KEY = "trichannel-client-id";
-    const SUPABASE_CONFIG = window.TRICHANNEL_SUPABASE || {};
+    const SUPABASE_CONFIG = window.TRICHANNEL_SUPABASE || {
+      url: "https://invzfthsnacmjksdkcin.supabase.co",
+      publishableKey: "sb_publishable_d5c_oBI1vosugpkAecRX1g_lDxVoxor"
+    };
     const cloudConfigured = !!(SUPABASE_CONFIG.url && SUPABASE_CONFIG.publishableKey);
     const sdkConfigured = !!(cloudConfigured && window.supabase);
     const supabaseClient = sdkConfigured ? window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publishableKey) : null;
@@ -2213,6 +2216,7 @@
         renderAccount();
       } catch (err) {
         localSyncAvailable = false;
+        render({ persist: false });
         renderAccount();
       }
     }
@@ -3741,7 +3745,7 @@
       document.getElementById("installBtn").hidden = false;
     });
     function mobileInstallUrl() {
-      return `${location.origin}${location.pathname}?v=44`;
+      return `${location.origin}${location.pathname}?v=46`;
     }
     function openInstallHelp() {
       document.getElementById("mobileInstallUrl").value = mobileInstallUrl();
@@ -3771,14 +3775,24 @@
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     }
 
-    setMobileTab(mobileTab);
-    render();
-    initLocalSync();
-    initCloudSession();
-    ticker = setInterval(updateLiveTimes, 1000);
+    async function bootstrap() {
+      setMobileTab(mobileTab);
+      await initLocalSync();
+      if (!localSyncAvailable) render({ persist: false });
+      await initCloudSession();
+      ticker = setInterval(updateLiveTimes, 1000);
+    }
+
+    bootstrap().catch(err => {
+      console.warn("Bootstrap failed", err);
+      render({ persist: false });
+      ticker = setInterval(updateLiveTimes, 1000);
+    });
   </script>
 </body>
 </html>
+
+
 
 
 
