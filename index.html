@@ -2902,28 +2902,28 @@
         renderAccount();
         return;
       }
+      // 始终优先通过 supabaseClient 获取 session（自动刷新过期 token）
+      if (supabaseClient) {
+        const { data } = await withTimeout(supabaseClient.auth.getSession(), 6000).catch(() => ({ data: null }));
+        const user = data?.session?.user;
+        if (user) {
+          cloudUserId = user.id;
+          cloudAccessToken = data.session?.access_token || "";
+          if (cloudAccessToken) localStorage.setItem(TOKEN_KEY, cloudAccessToken);
+          localStorage.setItem(USER_ID_KEY, cloudUserId);
+          currentUsername = localStorage.getItem(SESSION_KEY) || user.email?.split("@")[0] || "";
+          await loadCloudState().catch(() => renderAccount());
+          startCloudPolling();
+          return;
+        }
+      }
+      // supabaseClient 不可用时降级用存储的 token
       if (cloudAccessToken && cloudUserId) {
         await loadCloudState().catch(() => renderAccount());
         startCloudPolling();
         return;
       }
-      if (!supabaseClient) {
-        renderAccount();
-        return;
-      }
-      const { data } = await withTimeout(supabaseClient.auth.getSession(), 5000).catch(() => ({ data: null }));
-      const user = data?.session?.user;
-      if (user) {
-        cloudUserId = user.id;
-        cloudAccessToken = data.session?.access_token || "";
-        if (cloudAccessToken) localStorage.setItem(TOKEN_KEY, cloudAccessToken);
-        localStorage.setItem(USER_ID_KEY, cloudUserId);
-        currentUsername = localStorage.getItem(SESSION_KEY) || user.email?.split("@")[0] || "";
-        await loadCloudState();
-        startCloudPolling();
-      } else {
-        renderAccount();
-      }
+      renderAccount();
     }
 
     document.getElementById("dateInput").addEventListener("change", e => {
