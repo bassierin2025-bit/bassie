@@ -1,13 +1,13 @@
 {
-  "name": "Listening Diary",
-  "short_name": "Listening",
-  "description": "按用户名记录每日听力练习、反思和月度打卡热力图。",
+  "name": "英语能力提升中心",
+  "short_name": "英语中心",
+  "description": "雅思判断、英式声音和 small talk 输出的一页式训练面板。",
   "lang": "zh-CN",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F5EFE3",
-  "theme_color": "#2C4A3E",
+  "background_color": "#FFFBD3",
+  "theme_color": "#8AA832",
   "icons": [
     {
       "src": "./icon.svg",
