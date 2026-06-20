@@ -1,9 +1,9 @@
-﻿{
+{
   "name": "英语能力提升中心",
   "short_name": "英语中心",
   "description": "雅思判断、英式声音和 small talk 输出的一页式训练面板。",
   "lang": "zh-CN",
-  "start_url": "./?v=46",
+  "start_url": "./?v=43",
   "scope": "./",
   "display": "standalone",
   "background_color": "#FFFBD3",
@@ -17,6 +17,3 @@
     }
   ]
 }
-
-
-
