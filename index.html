@@ -2046,11 +2046,10 @@
       return merged;
     }
 
-    function mergeChecks(local = {}, remote = {}) {
-      const keys = new Set([...Object.keys(local || {}), ...Object.keys(remote || {})]);
-      const merged = {};
-      keys.forEach(key => merged[key] = Boolean(local[key] || remote[key]));
-      return merged;
+    // checks 合并改为"最后写入优先"，通过 checksUpdatedAt 时间戳判断
+    function mergeChecks(local = {}, remote = {}, localTime = 0, remoteTime = 0) {
+      if (localTime >= remoteTime) return local || {};
+      return remote || {};
     }
 
     const MAX_ACTIVE_TIMER_MS = 6 * 60 * 60 * 1000;
@@ -2065,10 +2064,13 @@
     function mergeDay(local = {}, remote = {}) {
       const deletedEntryIds = Array.from(new Set([...(remote.deletedEntryIds || []), ...(local.deletedEntryIds || [])]));
       const notDeleted = entry => !deletedEntryIds.includes(entry?.id);
+      const localChecksTime = Number(local.checksUpdatedAt || 0);
+      const remoteChecksTime = Number(remote.checksUpdatedAt || 0);
       return {
         ...remote,
         ...local,
-        checks: mergeChecks(local.checks || {}, remote.checks || {}),
+        checks: mergeChecks(local.checks || {}, remote.checks || {}, localChecksTime, remoteChecksTime),
+        checksUpdatedAt: Math.max(localChecksTime, remoteChecksTime) || undefined,
         customTasks: mergeArrayByKey(remote.customTasks || [], local.customTasks || []),
         sessions: mergeArrayByKey(remote.sessions || [], local.sessions || [], sessionKey),
         wrongEntries: mergeArrayByKey(remote.wrongEntries || [], local.wrongEntries || []).filter(notDeleted),
@@ -3195,6 +3197,7 @@
       if (!e.target.matches('input[type="checkbox"]')) return;
       const id = e.target.closest("[data-task-id]").dataset.taskId;
       day().checks[id] = e.target.checked;
+      day().checksUpdatedAt = Date.now();
       render();
     });
 
@@ -3325,6 +3328,7 @@
       if (!selectedTimerTaskId) return;
       if (state.activeTimer?.date === selectedDate && state.activeTimer?.taskId === selectedTimerTaskId) stopTimer();
       day().checks[selectedTimerTaskId] = true;
+      day().checksUpdatedAt = Date.now();
       render();
       renderTimerDialog();
       showToast("已完成");
