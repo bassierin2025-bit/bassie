@@ -2883,7 +2883,7 @@
       try {
         const record = await fetchCloudRecord();
         if (record?.state && record.updated_at !== lastCloudUpdatedAt) {
-          state = mergeStates(loadState(), record.state);
+          state = mergeStates(state, record.state);
           lastCloudUpdatedAt = record.updated_at || lastCloudUpdatedAt;
           localStorage.setItem(STORE_KEY, JSON.stringify(state));
           render({ persist: false });
@@ -2895,6 +2895,7 @@
         if (!silent) showToast("拉取云端失败");
       } finally {
         syncInProgress = false;
+        if (pendingCloudSave) { pendingCloudSave = false; scheduleCloudSave(); }
       }
     }
 
