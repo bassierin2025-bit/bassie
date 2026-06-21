@@ -2110,7 +2110,9 @@
 
     function mergeDay(local = {}, remote = {}) {
       const deletedEntryIds = Array.from(new Set([...(remote.deletedEntryIds || []), ...(local.deletedEntryIds || [])]));
+      const deletedSessionIds = Array.from(new Set([...(remote.deletedSessionIds || []), ...(local.deletedSessionIds || [])]));
       const notDeleted = entry => !deletedEntryIds.includes(entry?.id);
+      const sessionNotDeleted = s => !deletedSessionIds.includes(s?.id);
       const localChecksTime = Number(local.checksUpdatedAt || 0);
       const remoteChecksTime = Number(remote.checksUpdatedAt || 0);
       return {
@@ -2119,11 +2121,12 @@
         checks: mergeChecks(local.checks || {}, remote.checks || {}, localChecksTime, remoteChecksTime),
         checksUpdatedAt: Math.max(localChecksTime, remoteChecksTime) || undefined,
         customTasks: mergeArrayByKey(remote.customTasks || [], local.customTasks || []),
-        sessions: mergeArrayByKey(remote.sessions || [], local.sessions || [], sessionKey),
+        sessions: mergeArrayByKey(remote.sessions || [], local.sessions || [], sessionKey).filter(sessionNotDeleted),
         wrongEntries: mergeArrayByKey(remote.wrongEntries || [], local.wrongEntries || []).filter(notDeleted),
         outputEntries: mergeArrayByKey(remote.outputEntries || [], local.outputEntries || []).filter(notDeleted),
         talkEntries: mergeArrayByKey(remote.talkEntries || [], local.talkEntries || []).filter(notDeleted),
         deletedEntryIds,
+        deletedSessionIds,
         review: mergeReview(local.review || {}, remote.review || {}),
         scores: mergeReview(local.scores || {}, remote.scores || {})
       };
@@ -3342,6 +3345,8 @@
 
     function clearTaskTime(taskId, date = selectedDate) {
       const d = day(date);
+      const toDelete = (d.sessions || []).filter(s => s.taskId === taskId && s.id);
+      d.deletedSessionIds = Array.from(new Set([...(d.deletedSessionIds || []), ...toDelete.map(s => s.id)]));
       d.sessions = (d.sessions || []).filter(session => session.taskId !== taskId);
       if (isActiveTask(taskId, date)) state.activeTimer = null;
       state.timerUpdatedAt = Date.now();
