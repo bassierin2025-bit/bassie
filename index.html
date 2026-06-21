@@ -2244,7 +2244,8 @@
         }
         clearInterval(localPollTimer);
         localPollTimer = setInterval(() => pullLocalState({ silent: true }), 3000);
-        scheduleCloudSave();
+        // 本地服务器就绪后，立即从云端拉取一次，合并手机出门期间记录的内容
+        loadCloudState().catch(() => {});
         renderAccount();
       } catch (err) {
         localSyncAvailable = false;
