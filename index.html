@@ -3095,16 +3095,26 @@
           note.textContent = "SDK 登录超时，正在切换备用通道...";
         }
       }
+      async function fetchAndStore(mode) {
+        const result = await authWithFetch(username, password, mode);
+        if (supabaseClient && result?.session?.access_token && result?.session?.refresh_token) {
+          await supabaseClient.auth.setSession({
+            access_token: result.session.access_token,
+            refresh_token: result.session.refresh_token
+          }).catch(() => {});
+        }
+        return result;
+      }
       try {
         note.textContent = "正在用备用通道登录...";
-        return await authWithFetch(username, password, "signin");
+        return await fetchAndStore("signin");
       } catch (signinError) {
         note.textContent = "正在用备用通道注册...";
         try {
-          const signup = await authWithFetch(username, password, "signup");
+          const signup = await fetchAndStore("signup");
           if (signup?.session?.access_token) return signup;
           note.textContent = "注册完成，正在用备用通道重新登录...";
-          return await authWithFetch(username, password, "signin");
+          return await fetchAndStore("signin");
         } catch (signupError) {
           throw new Error(`登录失败：${signinError.message || "无法登录"}；注册失败：${signupError.message || "无法注册"}`);
         }
