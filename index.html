@@ -1810,6 +1810,7 @@
     let cloudAccessToken = localStorage.getItem(TOKEN_KEY) || "";
     let currentUsername = localStorage.getItem(SESSION_KEY) || "";
     let localSyncAvailable = false;
+    let localSyncFailCount = 0;
     let localSaveTimer = null;
     let localPollTimer = null;
     let localSyncInProgress = false;
@@ -2213,9 +2214,15 @@
           }
           if (!silent) showToast("已从电脑同步中心拉取");
         }
+        localSyncFailCount = 0;
         renderAccount();
       } catch (err) {
-        localSyncAvailable = false;
+        localSyncFailCount++;
+        if (localSyncFailCount >= 3) {
+          localSyncAvailable = false;
+          localSyncFailCount = 0;
+          renderAccount();
+        }
         console.warn("Local sync pull failed", err);
       } finally {
         localSyncInProgress = false;
