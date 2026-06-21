@@ -1799,7 +1799,10 @@
     const SESSION_KEY = "trichannel-current-user";
     const TOKEN_KEY = "trichannel-cloud-token";
     const USER_ID_KEY = "trichannel-cloud-user-id";
-    const SUPABASE_CONFIG = window.TRICHANNEL_SUPABASE || {};
+    const SUPABASE_CONFIG = window.TRICHANNEL_SUPABASE || {
+      url: "https://invzfthsnacmjksdkcin.supabase.co",
+      publishableKey: "sb_publishable_d5c_oBI1vosugpkAecRX1g_lDxVoxor"
+    };
     const cloudConfigured = !!(SUPABASE_CONFIG.url && SUPABASE_CONFIG.publishableKey);
     const sdkConfigured = !!(cloudConfigured && window.supabase);
     const supabaseClient = sdkConfigured ? window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publishableKey) : null;
@@ -1913,7 +1916,6 @@
       if (localSyncAvailable) {
         clearTimeout(localSaveTimer);
         saveLocalState().then(() => showToast("已保存到电脑同步中心")).catch(() => showToast("已本机保存，同步中心稍后重试"));
-        return;
       }
       if (!cloudConfigured || !cloudUserId) {
         showToast("已保存在本机，登录后可同步");
@@ -1929,7 +1931,6 @@
         if (localSyncAvailable) {
           clearTimeout(localSaveTimer);
           saveLocalState().catch(err => console.warn("Silent local sync failed", err));
-          return;
         }
         if (cloudConfigured && cloudUserId) {
           clearTimeout(saveCloudTimer);
@@ -1975,7 +1976,6 @@
     }
 
     function scheduleCloudSave() {
-      if (localSyncAvailable) return;
       if (!cloudConfigured || !cloudUserId) return;
       clearTimeout(saveCloudTimer);
       saveCloudTimer = setTimeout(saveCloudState, 650);
@@ -2185,6 +2185,7 @@
           if (after !== before) {
             pendingLocalSave = true;
             scheduleLocalSave();
+            scheduleCloudSave();
           }
           if (!silent) showToast("已从电脑同步中心拉取");
         }
@@ -2212,13 +2213,14 @@
           if (after !== before) {
             pendingLocalSave = true;
             scheduleLocalSave();
+            scheduleCloudSave();
           }
         } else {
           await saveLocalState();
         }
-        clearTimeout(saveCloudTimer);
         clearInterval(localPollTimer);
         localPollTimer = setInterval(() => pullLocalState({ silent: true }), 3000);
+        scheduleCloudSave();
         renderAccount();
       } catch (err) {
         localSyncAvailable = false;
@@ -2227,7 +2229,6 @@
     }
 
     async function saveCloudState() {
-      if (localSyncAvailable) return;
       if (!cloudUserId) return;
       if (syncInProgress) { pendingCloudSave = true; return; }
       syncInProgress = true;
