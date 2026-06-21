@@ -2932,6 +2932,18 @@
         const { data } = await withTimeout(supabaseClient.auth.getSession(), 6000).catch(() => ({ data: null }));
         const user = data?.session?.user;
         if (user) {
+          if (String(user.email || "").toLowerCase().startsWith("bassrierin@")) {
+            await supabaseClient.auth.signOut().catch(() => {});
+            cloudUserId = null;
+            cloudAccessToken = "";
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(USER_ID_KEY);
+            currentUsername = "bassierin";
+            localStorage.setItem(SESSION_KEY, currentUsername);
+            renderAccount();
+            showToast("检测到旧拼写账号，请用 bassierin 重新登录");
+            return;
+          }
           cloudUserId = user.id;
           cloudAccessToken = data.session?.access_token || "";
           if (cloudAccessToken) localStorage.setItem(TOKEN_KEY, cloudAccessToken);
@@ -2945,6 +2957,17 @@
       }
       // supabaseClient 不可用时降级用存储的 token
       if (cloudAccessToken && cloudUserId) {
+        if (cloudUserId === "cd1e7c3a-60a1-4957-98b6-2dda1064d51b") {
+          cloudUserId = null;
+          cloudAccessToken = "";
+          localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(USER_ID_KEY);
+          currentUsername = "bassierin";
+          localStorage.setItem(SESSION_KEY, currentUsername);
+          renderAccount();
+          showToast("检测到旧拼写账号，请用 bassierin 重新登录");
+          return;
+        }
         await loadCloudState().catch(() => renderAccount());
         startCloudPolling();
         if (pendingCloudSave) saveCloudState().catch(err => console.warn("Pending cloud save failed", err));
@@ -2991,8 +3014,13 @@
       return String(username || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 24);
     }
 
+    function canonicalUsername(username) {
+      const clean = normalizeUsername(username);
+      return clean === "bassrierin" ? "bassierin" : clean;
+    }
+
     function usernameEmail(username) {
-      return `${normalizeUsername(username)}@trichannel-english.app`;
+      return `${canonicalUsername(username)}@trichannel-english.app`;
     }
 
     function withTimeout(promise, ms = 12000) {
@@ -3080,7 +3108,7 @@
         submitBtn.disabled = false;
         return;
       }
-      const username = normalizeUsername(document.getElementById("authUsername").value);
+      const username = canonicalUsername(document.getElementById("authUsername").value);
       const password = document.getElementById("authPassword").value;
       if (username.length < 3) {
         note.textContent = "用户名至少 3 位。";
@@ -3750,7 +3778,7 @@
       document.getElementById("installBtn").hidden = false;
     });
     function mobileInstallUrl() {
-      return `${location.origin}${location.pathname}?v=49`;
+      return `${location.origin}${location.pathname}?v=50`;
     }
     function openInstallHelp() {
       document.getElementById("mobileInstallUrl").value = mobileInstallUrl();
@@ -3795,6 +3823,7 @@
   </script>
 </body>
 </html>
+
 
 
 
