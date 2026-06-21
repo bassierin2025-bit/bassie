@@ -1990,18 +1990,26 @@
       };
     }
 
-    async function cloudFetch(path, options = {}, ms = 10000) {
+    async function cloudFetch(path, options = {}, ms = 10000, retried = false) {
+      await refreshToken();
       const response = await withTimeout(fetch(`${SUPABASE_CONFIG.url}${path}`, {
         ...options,
         headers: cloudHeaders(options.headers || {})
       }), ms);
       const text = await response.text();
       const json = text ? JSON.parse(text) : null;
+      const message = json?.msg || json?.message || "";
+      if (!response.ok && response.status === 401 && /jwt expired/i.test(message) && !retried) {
+        cloudAccessToken = "";
+        localStorage.removeItem(TOKEN_KEY);
+        await refreshToken(true);
+        if (cloudAccessToken) return cloudFetch(path, options, ms, true);
+      }
       if (!response.ok) throw new Error(json?.msg || json?.message || `云端请求失败 ${response.status}`);
       return json;
     }
 
-    async function refreshToken() {
+    async function refreshToken(force = false) {
       if (!supabaseClient) return;
       try {
         let session = null;
@@ -2009,7 +2017,7 @@
         session = sd?.session;
         if (session?.access_token) {
           const exp = session.expires_at ? session.expires_at * 1000 : 0;
-          if (exp && exp - Date.now() < 60000) {
+          if (force || (exp && exp - Date.now() < 60000)) {
             const { data: rd } = await withTimeout(supabaseClient.auth.refreshSession(), 8000);
             if (rd?.session) session = rd.session;
           }
