@@ -1819,6 +1819,7 @@
     let syncInProgress = false;
     let pendingCloudSave = false;
     let cloudPollTimer = null;
+    let cloudRetryTimer = null;
     let lastCloudUpdatedAt = "";
     let noteSyncTimer = null;
     const palettePresets = {
@@ -1983,6 +1984,16 @@
       }
       clearTimeout(saveCloudTimer);
       saveCloudTimer = setTimeout(saveCloudState, 300);
+    }
+
+    function queueCloudRetry(reason = "") {
+      if (!cloudConfigured) return;
+      pendingCloudSave = true;
+      clearTimeout(cloudRetryTimer);
+      cloudRetryTimer = setTimeout(() => {
+        if (cloudUserId) saveCloudState().catch(err => console.warn("Cloud retry failed", err));
+      }, 3000);
+      if (reason) console.warn("Cloud save queued:", reason);
     }
 
     function cloudHeaders(extra = {}) {
@@ -2242,7 +2253,7 @@
     }
 
     async function saveCloudState() {
-      if (!cloudUserId) return;
+      if (!cloudUserId) { queueCloudRetry("no user"); return; }
       if (syncInProgress) { pendingCloudSave = true; return; }
       syncInProgress = true;
       try {
@@ -2265,6 +2276,7 @@
         renderAccount();
       } catch (err) {
         console.warn("Cloud save failed", err.message);
+        queueCloudRetry(err.message || "save failed");
         showToast("同步失败：" + (err.message || "未知错误"));
       } finally {
         syncInProgress = false;
@@ -3778,7 +3790,7 @@
       document.getElementById("installBtn").hidden = false;
     });
     function mobileInstallUrl() {
-      return `${location.origin}${location.pathname}?v=50`;
+      return `${location.origin}${location.pathname}?v=51`;
     }
     function openInstallHelp() {
       document.getElementById("mobileInstallUrl").value = mobileInstallUrl();
@@ -3823,6 +3835,7 @@
   </script>
 </body>
 </html>
+
 
 
 
