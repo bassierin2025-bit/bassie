@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "trichannel-english-v57";
+﻿const CACHE_NAME = "trichannel-english-v58";
 const APP_SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./supabase-config.js"];
 
 self.addEventListener("install", event => {

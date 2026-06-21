@@ -2549,8 +2549,11 @@
       renderOutputTagOptions();
       renderTalkTagOptions();
       document.getElementById("errorTag").value = r.errorTag || "转折";
-      document.getElementById("dailyNote").value = r.dailyNote || "";
-      document.getElementById("tomorrowFocus").value = r.tomorrowFocus || "";
+      const focused = document.activeElement;
+      const dailyNoteEl = document.getElementById("dailyNote");
+      const tomorrowEl = document.getElementById("tomorrowFocus");
+      if (focused !== dailyNoteEl) dailyNoteEl.value = r.dailyNote || "";
+      if (focused !== tomorrowEl) tomorrowEl.value = r.tomorrowFocus || "";
       renderEntryLists();
     }
 
