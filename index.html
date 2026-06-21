@@ -2242,6 +2242,7 @@
         renderAccount();
       } catch (err) {
         console.warn("Cloud save failed", err.message);
+        showToast("同步失败：" + (err.message || "未知错误"));
       } finally {
         syncInProgress = false;
         if (pendingCloudSave) { pendingCloudSave = false; scheduleCloudSave(); }
