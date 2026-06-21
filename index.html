@@ -2004,10 +2004,19 @@
     async function refreshToken() {
       if (!supabaseClient) return;
       try {
-        const { data } = await withTimeout(supabaseClient.auth.getSession(), 5000);
-        if (data?.session?.access_token) {
-          cloudAccessToken = data.session.access_token;
-          cloudUserId = data.session.user?.id || cloudUserId;
+        let session = null;
+        const { data: sd } = await withTimeout(supabaseClient.auth.getSession(), 5000);
+        session = sd?.session;
+        if (session?.access_token) {
+          const exp = session.expires_at ? session.expires_at * 1000 : 0;
+          if (exp && exp - Date.now() < 60000) {
+            const { data: rd } = await withTimeout(supabaseClient.auth.refreshSession(), 8000);
+            if (rd?.session) session = rd.session;
+          }
+        }
+        if (session?.access_token) {
+          cloudAccessToken = session.access_token;
+          cloudUserId = session.user?.id || cloudUserId;
           localStorage.setItem(TOKEN_KEY, cloudAccessToken);
           if (cloudUserId) localStorage.setItem(USER_ID_KEY, cloudUserId);
         }
