@@ -1976,9 +1976,13 @@
     }
 
     function scheduleCloudSave() {
-      if (!cloudConfigured || !cloudUserId) return;
+      if (!cloudConfigured) return;
+      if (!cloudUserId) {
+        pendingCloudSave = true;
+        return;
+      }
       clearTimeout(saveCloudTimer);
-      saveCloudTimer = setTimeout(saveCloudState, 650);
+      saveCloudTimer = setTimeout(saveCloudState, 300);
     }
 
     function cloudHeaders(extra = {}) {
@@ -2027,6 +2031,7 @@
           cloudUserId = session.user?.id || cloudUserId;
           localStorage.setItem(TOKEN_KEY, cloudAccessToken);
           if (cloudUserId) localStorage.setItem(USER_ID_KEY, cloudUserId);
+          if (pendingCloudSave) scheduleCloudSave();
         }
       } catch (e) { /* ignore */ }
     }
@@ -2913,7 +2918,8 @@
     function startCloudPolling() {
       clearInterval(cloudPollTimer);
       if (!cloudConfigured || !cloudUserId) return;
-      cloudPollTimer = setInterval(() => pullCloudState({ silent: true }), 6000);
+      pullCloudState({ silent: true });
+      cloudPollTimer = setInterval(() => pullCloudState({ silent: true }), 2000);
     }
 
     async function initCloudSession() {
@@ -2933,6 +2939,7 @@
           currentUsername = localStorage.getItem(SESSION_KEY) || user.email?.split("@")[0] || "";
           await loadCloudState().catch(() => renderAccount());
           startCloudPolling();
+          if (pendingCloudSave) saveCloudState().catch(err => console.warn("Pending cloud save failed", err));
           return;
         }
       }
@@ -2940,6 +2947,7 @@
       if (cloudAccessToken && cloudUserId) {
         await loadCloudState().catch(() => renderAccount());
         startCloudPolling();
+        if (pendingCloudSave) saveCloudState().catch(err => console.warn("Pending cloud save failed", err));
         return;
       }
       renderAccount();
@@ -3742,7 +3750,7 @@
       document.getElementById("installBtn").hidden = false;
     });
     function mobileInstallUrl() {
-      return `${location.origin}${location.pathname}?v=48`;
+      return `${location.origin}${location.pathname}?v=49`;
     }
     function openInstallHelp() {
       document.getElementById("mobileInstallUrl").value = mobileInstallUrl();
@@ -3772,6 +3780,13 @@
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     }
 
+    window.addEventListener("focus", () => {
+      if (cloudConfigured && cloudUserId) pullCloudState({ silent: true });
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && cloudConfigured && cloudUserId) pullCloudState({ silent: true });
+    });
+
     setMobileTab(mobileTab);
     render({ persist: false });
     initLocalSync();
@@ -3780,6 +3795,7 @@
   </script>
 </body>
 </html>
+
 
 
 
