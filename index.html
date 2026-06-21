@@ -2921,11 +2921,15 @@
       try {
         const record = await fetchCloudRecord();
         if (record?.state && record.updated_at !== lastCloudUpdatedAt) {
+          const sigBefore = stateSignature(record.state);
           state = mergeStates(state, record.state);
+          const sigAfter = stateSignature(state);
           lastCloudUpdatedAt = record.updated_at || lastCloudUpdatedAt;
           localStorage.setItem(STORE_KEY, JSON.stringify(state));
           scheduleLocalSave();
           render({ persist: false });
+          // 如果本地有云端没有的内容（离线改动），合并后立刻推送到云端
+          if (sigAfter !== sigBefore) pendingCloudSave = true;
           if (!silent) showToast("已拉取另一端记录");
         }
         renderAccount();
