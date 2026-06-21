@@ -2876,6 +2876,7 @@
         const after = stateSignature(state);
         lastCloudUpdatedAt = record.updated_at || lastCloudUpdatedAt;
         localStorage.setItem(STORE_KEY, JSON.stringify(state));
+        scheduleLocalSave();
         if (after !== before) {
           pendingCloudSave = true;
           scheduleCloudSave();
@@ -2895,6 +2896,7 @@
           state = mergeStates(state, record.state);
           lastCloudUpdatedAt = record.updated_at || lastCloudUpdatedAt;
           localStorage.setItem(STORE_KEY, JSON.stringify(state));
+          scheduleLocalSave();
           render({ persist: false });
           if (!silent) showToast("已拉取另一端记录");
         }
@@ -3740,7 +3742,7 @@
       document.getElementById("installBtn").hidden = false;
     });
     function mobileInstallUrl() {
-      return `${location.origin}${location.pathname}?v=43`;
+      return `${location.origin}${location.pathname}?v=48`;
     }
     function openInstallHelp() {
       document.getElementById("mobileInstallUrl").value = mobileInstallUrl();
@@ -3771,7 +3773,7 @@
     }
 
     setMobileTab(mobileTab);
-    render();
+    render({ persist: false });
     initLocalSync();
     initCloudSession();
     ticker = setInterval(updateLiveTimes, 1000);
