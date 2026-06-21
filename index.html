@@ -2093,10 +2093,20 @@
       return merged;
     }
 
-    // checks 合并改为"最后写入优先"，通过 checksUpdatedAt 时间戳判断
-    function mergeChecks(local = {}, remote = {}, localTime = 0, remoteTime = 0) {
-      if (localTime >= remoteTime) return local || {};
-      return remote || {};
+    // 每个任务独立记时间戳，避免整体覆盖导致勾选互相反掉
+    function mergeChecksLog(local = {}, remote = {}) {
+      const result = { ...remote };
+      Object.entries(local).forEach(([id, entry]) => {
+        if (!remote[id] || Number(entry.t || 0) >= Number(remote[id].t || 0)) {
+          result[id] = entry;
+        }
+      });
+      return result;
+    }
+    function checksFromLog(log = {}) {
+      const out = {};
+      Object.entries(log).forEach(([id, entry]) => { out[id] = !!entry.v; });
+      return out;
     }
 
     const MAX_ACTIVE_TIMER_MS = 6 * 60 * 60 * 1000;
@@ -2113,13 +2123,23 @@
       const deletedSessionIds = Array.from(new Set([...(remote.deletedSessionIds || []), ...(local.deletedSessionIds || [])]));
       const notDeleted = entry => !deletedEntryIds.includes(entry?.id);
       const sessionNotDeleted = s => !deletedSessionIds.includes(s?.id);
+      const localLog = local.checksLog || {};
+      const remoteLog = remote.checksLog || {};
+      // 兼容旧数据：把 checks 对象升级成带时间戳的 log
       const localChecksTime = Number(local.checksUpdatedAt || 0);
       const remoteChecksTime = Number(remote.checksUpdatedAt || 0);
+      Object.entries(local.checks || {}).forEach(([id, v]) => {
+        if (!localLog[id]) localLog[id] = { v: !!v, t: localChecksTime || 1 };
+      });
+      Object.entries(remote.checks || {}).forEach(([id, v]) => {
+        if (!remoteLog[id]) remoteLog[id] = { v: !!v, t: remoteChecksTime || 1 };
+      });
+      const mergedLog = mergeChecksLog(localLog, remoteLog);
       return {
         ...remote,
         ...local,
-        checks: mergeChecks(local.checks || {}, remote.checks || {}, localChecksTime, remoteChecksTime),
-        checksUpdatedAt: Math.max(localChecksTime, remoteChecksTime) || undefined,
+        checksLog: mergedLog,
+        checks: checksFromLog(mergedLog),
         customTasks: mergeArrayByKey(remote.customTasks || [], local.customTasks || []),
         sessions: mergeArrayByKey(remote.sessions || [], local.sessions || [], sessionKey).filter(sessionNotDeleted),
         wrongEntries: mergeArrayByKey(remote.wrongEntries || [], local.wrongEntries || []).filter(notDeleted),
@@ -3302,8 +3322,10 @@
     document.getElementById("taskList").addEventListener("change", e => {
       if (!e.target.matches('input[type="checkbox"]')) return;
       const id = e.target.closest("[data-task-id]").dataset.taskId;
+      const _t = Date.now();
+      day().checksLog = day().checksLog || {};
+      day().checksLog[id] = { v: e.target.checked, t: _t };
       day().checks[id] = e.target.checked;
-      day().checksUpdatedAt = Date.now();
       render();
     });
 
@@ -3435,8 +3457,10 @@
     document.getElementById("timerDoneBtn").addEventListener("click", () => {
       if (!selectedTimerTaskId) return;
       if (state.activeTimer?.date === selectedDate && state.activeTimer?.taskId === selectedTimerTaskId) stopTimer();
+      const _tt = Date.now();
+      day().checksLog = day().checksLog || {};
+      day().checksLog[selectedTimerTaskId] = { v: true, t: _tt };
       day().checks[selectedTimerTaskId] = true;
-      day().checksUpdatedAt = Date.now();
       render();
       renderTimerDialog();
       showToast("已完成");
