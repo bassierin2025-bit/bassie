@@ -2001,15 +2001,28 @@
       return json;
     }
 
+    async function refreshToken() {
+      if (!supabaseClient) return;
+      try {
+        const { data } = await withTimeout(supabaseClient.auth.getSession(), 5000);
+        if (data?.session?.access_token) {
+          cloudAccessToken = data.session.access_token;
+          cloudUserId = data.session.user?.id || cloudUserId;
+          localStorage.setItem(TOKEN_KEY, cloudAccessToken);
+          if (cloudUserId) localStorage.setItem(USER_ID_KEY, cloudUserId);
+        }
+      } catch (e) { /* ignore */ }
+    }
+
     async function fetchCloudRecord() {
-      if (!supabaseClient || !cloudUserId) return null;
-      const { data, error } = await supabaseClient
-        .from("diary_states")
-        .select("state,updated_at")
-        .eq("user_id", cloudUserId)
-        .maybeSingle();
-      if (error) throw new Error(error.message);
-      return data || null;
+      if (!cloudUserId) return null;
+      await refreshToken();
+      if (!cloudAccessToken || !cloudUserId) return null;
+      const rows = await cloudFetch(
+        `/rest/v1/diary_states?select=state,updated_at&user_id=eq.${encodeURIComponent(cloudUserId)}&limit=1`,
+        { method: "GET" }
+      );
+      return rows?.[0] || null;
     }
 
     function entryKey(entry) {
@@ -2206,13 +2219,12 @@
 
     async function saveCloudState() {
       if (localSyncAvailable) return;
-      if (!supabaseClient || !cloudUserId) return;
-      if (syncInProgress) {
-        pendingCloudSave = true;
-        return;
-      }
+      if (!cloudUserId) return;
+      if (syncInProgress) { pendingCloudSave = true; return; }
       syncInProgress = true;
       try {
+        await refreshToken();
+        if (!cloudAccessToken) throw new Error("未登录");
         const record = await fetchCloudRecord().catch(() => null);
         if (record?.state) {
           state = mergeStates(state, record.state);
@@ -2221,19 +2233,18 @@
           render({ persist: false });
         }
         const payload = { user_id: cloudUserId, state, updated_at: new Date().toISOString() };
-        const { data, error } = await supabaseClient.from("diary_states").upsert(payload).select("updated_at").maybeSingle();
-        if (error) throw new Error(error.message);
-        lastCloudUpdatedAt = data?.updated_at || payload.updated_at;
+        const rows = await cloudFetch("/rest/v1/diary_states?select=updated_at", {
+          method: "POST",
+          headers: { Prefer: "resolution=merge-duplicates,return=representation" },
+          body: JSON.stringify(payload)
+        });
+        lastCloudUpdatedAt = rows?.[0]?.updated_at || payload.updated_at;
         renderAccount();
       } catch (err) {
-        console.warn("Cloud save failed", err);
-        showToast("同步失败，稍后自动重试");
+        console.warn("Cloud save failed", err.message);
       } finally {
         syncInProgress = false;
-        if (pendingCloudSave) {
-          pendingCloudSave = false;
-          scheduleCloudSave();
-        }
+        if (pendingCloudSave) { pendingCloudSave = false; scheduleCloudSave(); }
       }
     }
 
